@@ -1,0 +1,30 @@
+{
+  "name": "nhom12ib",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoAnInternetBankingNhom12/BackEnd.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DoAnInternetBankingNhom12/BackEnd/issues"
+  },
+  "homepage": "https://github.com/DoAnInternetBankingNhom12/BackEnd#readme",
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "cors": "2.8.5",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "jsonwebtoken": "8.5.1",
+    "moment": "2.29.4",
+    "mongoose": "6.7.1",
+    "morgan": "1.10.0",
+    "ws": "8.11.0"
+  }
+}

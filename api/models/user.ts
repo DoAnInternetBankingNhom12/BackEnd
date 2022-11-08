@@ -1,18 +1,18 @@
 import { Document, model, Schema } from 'mongoose';
 
 const userSchema = new Schema<User>({
-  idUser: Number,
-  name: String,
-  userName: String,
-  password: String,
+  id: { type: String, required: true },
+  name: { type: String, required: true },
+  userName: { type: String, required: true },
+  password: { type: String, required: true },
   refreshToken: String,
   createTime: Number,
   updateTime: Number,
   _status: Boolean
 }, { collection: 'user' });
 
-interface User extends Document {
-  idUser: number,
+export interface User extends Document {
+  id: string,
   name: string,
   userName: string,
   password: string,

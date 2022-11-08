@@ -1,14 +1,16 @@
 import { Request, Response } from 'express';
+import { User } from 'interfaces/user.interface';
 import * as moment from 'moment';
 
 abstract class BaseCtrl {
 
   abstract model: any;
+  abstract table: string;
 
   // Get all
   getAll = async (req: Request, res: Response) => {
     try {
-      const docs = await this.model.find({ _status: true });
+      const docs = await this.model.find({ _status: true }, { _id: 0, __v: 0, _status: 0 });
 
       return res.status(200).json({
         data: docs,
@@ -16,7 +18,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Get all data error!`,
+        mgs: `Get all ${this.table} error!`,
         success: false,
         error: {
           mgs: err.message,
@@ -30,7 +32,7 @@ abstract class BaseCtrl {
   // Count all
   count = async (req: Request, res: Response) => {
     try {
-      const count = await this.model.count({ _status: true });
+      const count = await this.model.count({ _status: true }, { _id: 0, __v: 0, _status: 0 });
 
       return res.status(200).json({
         data: count,
@@ -38,7 +40,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Count data error!`,
+        mgs: `Count ${this.table} error!`,
         success: false,
         error: {
           mgs: err.message,
@@ -60,17 +62,17 @@ abstract class BaseCtrl {
         req.body._status = true;
 
         const obj = await new this.model(req.body).save();
-
+        obj.__v = undefined;
+        obj._status = undefined;
         return res.status(201).json({
-          mgs: `Create data id ${obj.id} success!`,
+          mgs: `Create ${this.table} id ${obj.id} success!`,
           data: obj,
           success: true
         });
       }
 
       return res.status(200).json({
-        msg: `Data id ${req.body.id} is exist!`,
-        data: req.body,
+        msg: `${this.table} id ${req.body.id} is exist!`,
         success: false,
         error: {
           status: 200,
@@ -79,8 +81,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Create data id ${req.body.id} error!`,
-        data: req.body,
+        mgs: `Create ${this.table} id ${req.body.id} error!`,
         success: false,
         error: {
           mgs: err.message,
@@ -94,7 +95,7 @@ abstract class BaseCtrl {
   // Get by id
   get = async (req: Request, res: Response) => {
     try {
-      const obj = await this.model.findOne({ id: req.params.id });
+      const obj = await this.model.findOne({ id: req.params.id }, { _id: 0, __v: 0, _status: 0 });
 
       return res.status(200).json({
         data: obj,
@@ -102,7 +103,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Get data id ${req.body.id} error!`,
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
         data: req.params.id,
         success: false,
         error: {
@@ -123,7 +124,7 @@ abstract class BaseCtrl {
         req.body.updateTime = moment().unix();
         req.body._status = true;
 
-        await this.model.findOneAndUpdate({ id: req.params.id }, req.body);
+        await this.model.findOneAndUpdate({ id: req.params.id }, req.body, { _id: 0, __v: 0, _status: 0 });
 
         return res.status(200).json({
           data: req.body,
@@ -132,7 +133,7 @@ abstract class BaseCtrl {
       }
 
       return res.status(200).json({
-        mgs: `Not exist data id ${req.params.id} to update!`,
+        mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
         data: req.body,
         success: false,
         error: {
@@ -142,7 +143,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Update data id ${req.params.id} error!`,
+        mgs: `Update ${this.table} id ${req.params.id} error!`,
         data: req.body,
         success: false,
         error: {
@@ -162,13 +163,13 @@ abstract class BaseCtrl {
       if (idExist) {
         await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false });
         return res.status(200).json({
-          mgs: `Delete data id ${req.params.id} success!`,
+          mgs: `Delete ${this.table} id ${req.params.id} success!`,
           success: true
         });
       }
 
       return res.status(200).json({
-        mgs: `Not exist data id ${req.params.id} to delete!`,
+        mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
         success: false,
         error: {
           status: 200,
@@ -177,7 +178,7 @@ abstract class BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Delete data id ${req.params.id} error!`,
+        mgs: `Delete ${this.table} id ${req.params.id} error!`,
         data: req.body,
         success: false,
         error: {

@@ -1,5 +1,6 @@
 import { Router, Application } from 'express';
 
+// Controllers
 import UserCtrl from './controllers/user.controller';
 
 const setRoutes = (app: Application): void => {

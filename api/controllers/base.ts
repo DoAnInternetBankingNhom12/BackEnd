@@ -32,7 +32,7 @@ abstract class BaseCtrl {
   // Count all
   count = async (req: Request, res: Response) => {
     try {
-      const count = await this.model.count({ _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const count = await this.model.count({ _status: true });
 
       return res.status(200).json({
         data: count,
@@ -54,32 +54,33 @@ abstract class BaseCtrl {
   // Insert
   insert = async (req: Request, res: Response) => {
     try {
-      const idExist = await this.model.findOne({ id: req.body.id });
+      const count = await this.model.count();
+      req.body.id = `${this.table.toLocaleLowerCase()}${count + 1}`;
+      req.body.createTime = moment().unix();
+      req.body.updateTime = moment().unix();
+      req.body._status = true;
 
-      if (!idExist) {
-        req.body.createTime = moment().unix();
-        req.body.updateTime = moment().unix();
-        req.body._status = true;
+      const obj = await new this.model(req.body).save();
+      obj.__v = undefined;
+      obj._status = undefined;
+      return res.status(201).json({
+        mgs: `Create ${this.table} id ${obj.id} success!`,
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
 
-        const obj = await new this.model(req.body).save();
-        obj.__v = undefined;
-        obj._status = undefined;
-        return res.status(201).json({
-          mgs: `Create ${this.table} id ${obj.id} success!`,
-          data: obj,
-          success: true
+      if (err && err.code === 11000) {
+        return res.status(200).json({
+          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+          success: false,
+          error: {
+            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+            code: 11000
+          }
         });
       }
 
-      return res.status(200).json({
-        msg: `${this.table} id ${req.body.id} is exist!`,
-        success: false,
-        error: {
-          status: 200,
-          code: 5001
-        }
-      });
-    } catch (err: any) {
       return res.status(400).json({
         mgs: `Create ${this.table} id ${req.body.id} error!`,
         success: false,

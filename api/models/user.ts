@@ -1,9 +1,9 @@
 import { Document, model, Schema } from 'mongoose';
 
 const userSchema = new Schema<User>({
-  id: { type: String, required: true },
+  id: { type: String, required: true, unique : true},
   name: { type: String, required: true },
-  userName: { type: String, required: true },
+  userName: { type: String, required: true, unique : true },
   password: { type: String, required: true },
   refreshToken: String,
   createTime: Number,

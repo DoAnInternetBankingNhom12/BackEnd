@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { User } from 'interfaces/user.interface';
 import * as moment from 'moment';
 
 abstract class BaseCtrl {

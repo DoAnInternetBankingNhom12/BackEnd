@@ -7,6 +7,7 @@ const userSchema = new Schema<User>({
   userName: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   refreshToken: String,
+  token: String,
   createTime: { type: Number, default: moment().unix() },
   updateTime: { type: Number, default: moment().unix() },
   _status: { type: Boolean, default: true }
@@ -18,6 +19,7 @@ export interface User extends Document {
   userName: string,
   password: string,
   refreshToken: string,
+  token: string,
   createTime: number,
   updateTime: number,
   _status: boolean

@@ -10,6 +10,7 @@ import BaseCtrl from './base';
 // Utils
 import * as moment from 'moment';
 import * as bcrypt from 'bcryptjs';
+import * as lodash from 'lodash';
 import * as jwt from 'jsonwebtoken';
 import { decodeBase64 } from '../utils/utils';
 
@@ -115,7 +116,7 @@ class UserCtrl extends BaseCtrl {
   login = async (req: Request, res: Response) => {
     try {
       const { userName, password } = decodeBase64(req.headers.info);
-      console.log(decodeBase64(req.headers.info));
+
       if (!(userName && password)) {
         return res.status(200).send({
           mgs: 'Data invalid!',
@@ -127,7 +128,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const user: any = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 });
+      const user: any = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
 
       if (user && (await bcrypt.compare(password, user.password))) {
         const token = jwt.sign(
@@ -140,7 +141,7 @@ class UserCtrl extends BaseCtrl {
 
         user.token = token;
         user.password = undefined;
-        console.log('user', user);
+
         return res.status(200).json({
           mgs: 'Sign in success!',
           data: user,
@@ -162,7 +163,8 @@ class UserCtrl extends BaseCtrl {
         mgs: 'Sign in error!',
         success: false,
         error: {
-          error: err.message,
+          error: err,
+          mgs: err.message,
           status: 409,
           code: 5000
         }

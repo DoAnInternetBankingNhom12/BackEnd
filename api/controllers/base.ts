@@ -189,6 +189,20 @@ abstract class BaseCtrl {
       });
     }
   };
+
+  async getId() {
+    let count = await this.model.count();
+    let id = `${this.table.toLocaleLowerCase()}${count}`;
+    let idExist = await this.model.findOne({ id }).exec();
+
+    do {
+      id = `${this.table.toLocaleLowerCase()}${count}`;
+      idExist = await this.model.findOne({ id }).exec();
+      count++;
+    } while(idExist)
+
+    return id;
+  }
 }
 
 export default BaseCtrl;

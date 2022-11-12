@@ -1,6 +1,6 @@
 import { Schema, Document, model } from 'mongoose';
 
-const bankShema = new Schema<Bank>({
+const bankSchema = new Schema<Bank>({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true, unique: true },
   phoneNumbers: { type: String, required: true },
@@ -20,6 +20,6 @@ export interface Bank extends Document {
   _status: boolean
 };
 
-const Bank = model<Bank>('bank', bankShema);
+const Bank = model<Bank>('bank', bankSchema);
 
 export default Bank;

@@ -9,6 +9,8 @@ import * as cors from 'cors';
 import setMongo from './databases/mogodb';
 import setRoutes from './routes';
 
+import {encryptedData, decryptedData} from './utils/utils';
+
 
 const corsOptions = {
   origin: 'http://localhost:4200',
@@ -30,6 +32,10 @@ const main = async (): Promise<any> => {
   try {
     await setMongo();
     setRoutes(app);
+    const dataEncrypted = encryptedData('hola');
+    const dataDecrypted = decryptedData(dataEncrypted);
+    console.log('dataEncrypted', dataEncrypted);
+    console.log('dataDecrypted', dataDecrypted);
 
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {

@@ -3,5 +3,7 @@ export interface User {
   name: string,
   userName: string,
   password: string,
-  refreshToken: string
+  refreshToken: string,
+  createTime: number,
+  updateTime: number,
 };

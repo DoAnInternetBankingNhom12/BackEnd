@@ -19,6 +19,7 @@ const setRoutes = (app: Application): void => {
   router.route('/users').get(userCtrl.getAll);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user').post(userCtrl.createUser);
+  // router.route('/user/customer').post(userCtrl.createUserCustommer);
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
@@ -55,8 +56,9 @@ const setRoutes = (app: Application): void => {
   router.route('/role/:id').put(roleCtrl.update);
   router.route('/role/:id').delete(roleCtrl.delete);
 
-  // Login
+  // Login || Logout
   router.route('/login').get(userCtrl.login);
+  router.route('/logout').get(userCtrl.logout);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

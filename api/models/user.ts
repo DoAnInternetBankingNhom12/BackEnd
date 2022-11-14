@@ -3,7 +3,6 @@ import * as moment from 'moment';
 
 const userSchema = new Schema<User>({
   id: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
   userName: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   refreshToken: String,
@@ -15,7 +14,6 @@ const userSchema = new Schema<User>({
 
 export interface User extends Document {
   id: string,
-  name: string,
   userName: string,
   password: string,
   refreshToken: string,

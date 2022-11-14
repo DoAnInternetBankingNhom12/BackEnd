@@ -3,7 +3,6 @@ dotenv.config();
 
 import * as express from 'express';
 import * as morgan from 'morgan';
-import * as path from 'path';
 import * as cors from 'cors';
 
 import setMongo from './databases/mogodb';

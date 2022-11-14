@@ -4,12 +4,14 @@ import { Router, Application } from 'express';
 import UserCtrl from './controllers/user.controller';
 import BankCtrl from './controllers/bank.controller';
 import CustomerCtrl from './controllers/customer.controller';
+import EmployeeCtrl from './controllers/employee.controller';
 
 const setRoutes = (app: Application): void => {
   const router = Router();
   const userCtrl = new UserCtrl();
   const bankCtrl = new BankCtrl();
   const customerCtrl = new CustomerCtrl();
+  const employeeCtrl = new EmployeeCtrl();
 
   // User
   router.route('/users').get(userCtrl.getAll);
@@ -34,6 +36,14 @@ const setRoutes = (app: Application): void => {
   router.route('/customer').post(customerCtrl.insert);
   router.route('/customer/:id').put(customerCtrl.update);
   router.route('/customer/:id').delete(customerCtrl.delete);
+
+  //Employee
+  router.route('/employees').get(employeeCtrl.getAll);
+  router.route('/employees/count').get(employeeCtrl.count);
+  router.route('/employee/:id').get(employeeCtrl.get);
+  router.route('/employee').post(employeeCtrl.insert);
+  router.route('/employee/:id').put(employeeCtrl.update);
+  router.route('/employee/:id').delete(employeeCtrl.delete);
 
   // Login
   router.route('/login').get(userCtrl.login);

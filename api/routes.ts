@@ -5,6 +5,7 @@ import UserCtrl from './controllers/user.controller';
 import BankCtrl from './controllers/bank.controller';
 import CustomerCtrl from './controllers/customer.controller';
 import EmployeeCtrl from './controllers/employee.controller';
+import RoleCtrl from './controllers/role.controller';
 
 const setRoutes = (app: Application): void => {
   const router = Router();
@@ -12,6 +13,7 @@ const setRoutes = (app: Application): void => {
   const bankCtrl = new BankCtrl();
   const customerCtrl = new CustomerCtrl();
   const employeeCtrl = new EmployeeCtrl();
+  const roleCtrl = new RoleCtrl();
 
   // User
   router.route('/users').get(userCtrl.getAll);
@@ -44,6 +46,11 @@ const setRoutes = (app: Application): void => {
   router.route('/employee').post(employeeCtrl.insert);
   router.route('/employee/:id').put(employeeCtrl.update);
   router.route('/employee/:id').delete(employeeCtrl.delete);
+
+  //Role
+  router.route('/roles').get(roleCtrl.getAll);
+  router.route('/roles/count').get(roleCtrl.count);
+  router.route('/role/:id').get(roleCtrl.get);
 
   // Login
   router.route('/login').get(userCtrl.login);

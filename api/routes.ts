@@ -51,6 +51,9 @@ const setRoutes = (app: Application): void => {
   router.route('/roles').get(roleCtrl.getAll);
   router.route('/roles/count').get(roleCtrl.count);
   router.route('/role/:id').get(roleCtrl.get);
+  router.route('/role').post(roleCtrl.insert);
+  router.route('/role/:id').put(roleCtrl.update);
+  router.route('/role/:id').delete(roleCtrl.delete);
 
   // Login
   router.route('/login').get(userCtrl.login);

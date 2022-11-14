@@ -70,49 +70,49 @@ class UserCtrl extends BaseCtrl {
     }
   };
 
-  // createUserCustommer = async (req: Request, res: Response) => {
-  //   try {
-  //     const id = await this.getId();
-  //     req.body.id = id;
-  //     req.body.createTime = moment().unix();
-  //     req.body.updateTime = moment().unix();
-  //     req.body._status = true;
-  //     const objUser = req.body;
-  //     const encryptedPassword = await bcrypt.hash(req.body.password, 10);
-  //     const refreshToken = await bcrypt.hash(`${req.body.userName}${req.body.id}${moment().unix().toString()}`, 1)
-  //     objUser.password = encryptedPassword;
-  //     objUser.refreshToken = refreshToken;
-  //     const obj: any = await new this.model(objUser).save();
-  //     const customer = new CustomerCtrl();
-  //     console.log('obj User', obj);
-  //     obj.__v = undefined;
-  //     obj._id = undefined;
-  //     obj.name = req.body.name;
-  //     return customer.createCustomerByUser(obj, res)
-  //   } catch (err: any) {
+  createUserCustommer = async (req: Request, res: Response) => {
+    try {
+      const id = await this.getId();
+      req.body.id = id;
+      req.body.createTime = moment().unix();
+      req.body.updateTime = moment().unix();
+      req.body._status = true;
+      const objUser = req.body;
+      const encryptedPassword = await bcrypt.hash(req.body.password, 10);
+      const refreshToken = await bcrypt.hash(`${req.body.userName}${req.body.id}${moment().unix().toString()}`, 1)
+      objUser.password = encryptedPassword;
+      objUser.refreshToken = refreshToken;
+      const obj: any = await new this.model(objUser).save();
+      const customer = new CustomerCtrl();
+      console.log('obj User', obj);
+      obj.__v = undefined;
+      obj._id = undefined;
+      obj.name = req.body.name;
+      return customer.createCustomerByUser(obj, res)
+    } catch (err: any) {
 
-  //     if (err && err.code === 11000) {
-  //       return res.status(200).json({
-  //         msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
-  //         success: false,
-  //         error: {
-  //           mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
-  //           code: 11000
-  //         }
-  //       });
-  //     }
+      if (err && err.code === 11000) {
+        return res.status(200).json({
+          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+          success: false,
+          error: {
+            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+            code: 11000
+          }
+        });
+      }
 
-  //     return res.status(400).json({
-  //       mgs: `Create user id ${req.body.id} error!`,
-  //       success: false,
-  //       error: {
-  //         mgs: err.message,
-  //         status: 400,
-  //         code: 5000
-  //       }
-  //     });
-  //   }
-  // };
+      return res.status(400).json({
+        mgs: `Create user id ${req.body.id} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
 
   login = async (req: Request, res: Response) => {
     try {

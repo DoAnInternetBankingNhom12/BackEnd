@@ -7,6 +7,9 @@ import CustomerCtrl from './controllers/customer.controller';
 import EmployeeCtrl from './controllers/employee.controller';
 import RoleCtrl from './controllers/role.controller';
 
+// Middlewares
+import auth from './middleware/auth.middleware';
+
 const setRoutes = (app: Application): void => {
   const router = Router();
   const userCtrl = new UserCtrl();
@@ -19,7 +22,7 @@ const setRoutes = (app: Application): void => {
   router.route('/users').get(userCtrl.getAll);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user').post(userCtrl.createUser);
-  // router.route('/user/customer').post(userCtrl.createUserCustommer);
+  router.route('/user/customer').post(userCtrl.createUserCustommer);
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);

@@ -27,6 +27,7 @@ class UserCtrl extends BaseCtrl {
       req.body.createTime = moment().unix();
       req.body.updateTime = moment().unix();
       req.body._status = true;
+      req.body.customer = undefined;
 
       const objUser = req.body;
       const encryptedPassword = await bcrypt.hash(req.body.password, 10);
@@ -77,18 +78,28 @@ class UserCtrl extends BaseCtrl {
       req.body.createTime = moment().unix();
       req.body.updateTime = moment().unix();
       req.body._status = true;
+      req.body.customer = undefined;
+
       const objUser = req.body;
       const encryptedPassword = await bcrypt.hash(req.body.password, 10);
       const refreshToken = await bcrypt.hash(`${req.body.userName}${req.body.id}${moment().unix().toString()}`, 1)
       objUser.password = encryptedPassword;
       objUser.refreshToken = refreshToken;
+
       const obj: any = await new this.model(objUser).save();
       const customer = new CustomerCtrl();
-      console.log('obj User', obj);
       obj.__v = undefined;
       obj._id = undefined;
       obj.name = req.body.name;
-      return customer.createCustomerByUser(obj, res)
+
+      const customerObj = await customer.createCustomerByUser(obj);
+      obj.customer = customerObj;
+
+      return res.status(201).json({
+        mgs: `Create ${this.table} id ${obj.id} success!`,
+        data: obj,
+        success: true
+      });
     } catch (err: any) {
 
       if (err && err.code === 11000) {

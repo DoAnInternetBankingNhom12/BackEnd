@@ -40,4 +40,4 @@ export function encryptedData(data: any) {
 export function decodeBase64(value: any) {
     const jsonString = Buffer.from(value, 'base64').toString('utf8');
     return JSON.parse(jsonString);
-  }
+}

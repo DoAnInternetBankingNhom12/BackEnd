@@ -8,6 +8,7 @@ const userSchema = new Schema<User>({
   password: { type: String, required: true },
   refreshToken: String,
   token: String,
+  customer: Object,
   createTime: { type: Number, default: moment().unix() },
   updateTime: { type: Number, default: moment().unix() },
   _status: { type: Boolean, default: true }
@@ -20,9 +21,18 @@ export interface User extends Document {
   password: string,
   refreshToken: string,
   token: string,
+  customer: Customer,
   createTime: number,
   updateTime: number,
   _status: boolean
+};
+
+interface Customer {
+  id: string,
+  idUser: string,
+  name: string,
+  accountBalance: number,
+  paymentAccount: string,
 };
 
 const User = model<User>('user', userSchema);

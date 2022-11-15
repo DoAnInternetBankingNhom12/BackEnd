@@ -9,8 +9,7 @@ import * as cors from 'cors';
 import setMongo from './databases/mogodb';
 import setRoutes from './routes';
 
-import {encryptedData, decryptedData} from './utils/utils';
-
+import { encryptedData, decryptedData } from './utils/utils';
 
 const corsOptions = {
   origin: 'http://localhost:4200',

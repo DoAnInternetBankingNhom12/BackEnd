@@ -14,7 +14,7 @@ class CustomerCtrl extends BaseCtrl {
   table = 'Customer';
 
   // Create
-  createCustomerByUser = async (user: any, res: Response) => {
+  createCustomerByUser = async (user: any) => {
     try {
       const id = await this.getId();
       let objCustomer: any = {
@@ -28,38 +28,33 @@ class CustomerCtrl extends BaseCtrl {
         _status: true
       };
 
-      const obj = await new this.model(objCustomer).save();
+      const obj: any = await new this.model(objCustomer).save();
       obj.__v = undefined;
       obj._id = undefined;
-      user.customer = obj;
+      obj._status = undefined;
+      obj.createTime = undefined;
+      obj.updateTime = undefined;
 
-      return res.status(201).json({
-        mgs: `Create customer id ${obj.id} success!`,
-        data: user,
-        success: true
-      });
+      return obj;
     } catch (err: any) {
 
       if (err && err.code === 11000) {
-        return res.status(200).json({
-          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+        return {
+          mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
           success: false,
-          error: {
-            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
-            code: 11000
-          }
-        });
+          code: 11000
+        }
+          ;
       }
 
-      return res.status(400).json({
+      return {
         mgs: `Create customer id ${user.id} error!`,
         success: false,
         error: {
           mgs: err.message,
-          status: 400,
           code: 5000
         }
-      });
+      };
     }
   };
 

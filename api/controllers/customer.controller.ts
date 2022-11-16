@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 // Controllers
 import BaseCtrl from './base';
+import EmployeeCtrl from '../controllers/employee.controller';
 
 // Models
 import Customer from '../models/customer';
@@ -28,14 +29,17 @@ class CustomerCtrl extends BaseCtrl {
         _status: true
       };
 
-      const obj: any = await new this.model(objCustomer).save();
-      obj.__v = undefined;
-      obj._id = undefined;
-      obj._status = undefined;
-      obj.createTime = undefined;
-      obj.updateTime = undefined;
+      const objData: any = await new this.model(objCustomer).save();
+      objData.__v = undefined;
+      objData._id = undefined;
+      objData._status = undefined;
+      objData.createTime = undefined;
+      objData.updateTime = undefined;
 
-      return obj;
+      return {
+        data: objData,
+        success: true
+      }
     } catch (err: any) {
 
       if (err && err.code === 11000) {
@@ -57,6 +61,56 @@ class CustomerCtrl extends BaseCtrl {
       };
     }
   };
+
+  createEmployeeByUser = async (user: any, phoneNumbers: string) => {
+    try {
+      const objCustomer = await this.createCustomerByUser(user);
+      const objData: any = {};
+      if (objCustomer && objCustomer.success) {
+        objData.customer = objCustomer.data;
+        const employeeCtrl = new EmployeeCtrl();
+        const objEmployee = await employeeCtrl.createEmployeeOrAdminByCustomer(objCustomer.data, phoneNumbers, 'employee');
+
+        if (objEmployee && objEmployee.success) {
+          objData.employee = objEmployee.data;
+
+          return {
+            data: objData,
+            success: true
+          };
+        }
+
+        return {
+          mgs: `Create employee error!`,
+          success: false
+        };
+      }
+
+      return {
+        mgs: `Create customer error!`,
+        success: false
+      };
+    } catch (err: any) {
+      if (err && err.code === 11000) {
+        return {
+          mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+          success: false,
+          code: 11000
+        }
+          ;
+      }
+
+      return {
+        mgs: `Create customer error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          code: 5000
+        }
+      };
+    }
+
+  }
 
   private async getRDPaymentAccountNB() {
     const min = 0;

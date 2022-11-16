@@ -22,28 +22,14 @@ class UserCtrl extends BaseCtrl {
   // Create
   createUser = async (req: Request, res: Response) => {
     try {
-      const id = await this.getId();
-      req.body.id = id;
-      req.body.createTime = moment().unix();
-      req.body.updateTime = moment().unix();
-      req.body._status = true;
-      req.body.customer = undefined;
-
-      const objUser = req.body;
-      const encryptedPassword = await bcrypt.hash(req.body.password, 10);
-      const refreshToken = await bcrypt.hash(`${req.body.userName}${req.body.id}${moment().unix().toString()}`, 1)
-
-      objUser.password = encryptedPassword;
-      objUser.refreshToken = refreshToken;
-
-      const obj = await new this.model(objUser).save();
-
-      obj.__v = undefined;
-      obj._id = undefined;
+      const objUser = await this.setDataDefault(req.body);
+      const objData = await new this.model(objUser).save();
+      objData.__v = undefined;
+      objData._id = undefined;
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${obj.id} success!`,
-        data: obj,
+        mgs: `Create ${this.table} id ${objData.id} success!`,
+        data: objData,
         success: true
       });
     } catch (err: any) {
@@ -73,35 +59,30 @@ class UserCtrl extends BaseCtrl {
 
   createUserCustommer = async (req: Request, res: Response) => {
     try {
-      const id = await this.getId();
-      req.body.id = id;
-      req.body.createTime = moment().unix();
-      req.body.updateTime = moment().unix();
-      req.body._status = true;
-      req.body.customer = undefined;
-
-      const objUser = req.body;
-      const encryptedPassword = await bcrypt.hash(req.body.password, 10);
-      const refreshToken = await bcrypt.hash(`${req.body.userName}${req.body.id}${moment().unix().toString()}`, 1)
-      objUser.password = encryptedPassword;
-      objUser.refreshToken = refreshToken;
-
-      const obj: any = await new this.model(objUser).save();
+      const objUser = await this.setDataDefault(req.body);
+      const objData: any = await new this.model(objUser).save();
+      objData.__v = undefined;
+      objData._id = undefined;
+      objData.name = req.body.name;
       const customer = new CustomerCtrl();
-      obj.__v = undefined;
-      obj._id = undefined;
-      obj.name = req.body.name;
 
-      const customerObj = await customer.createCustomerByUser(obj);
-      obj.customer = customerObj;
+      const customerObj = await customer.createCustomerByUser(objData);
+
+      if ( customerObj && customerObj.success) {
+        objData.customer = customerObj.data;
+        return res.status(201).json({
+          mgs: `Create ${this.table} id ${objData.id} success!`,
+          data: objData,
+          success: true
+        });
+      }
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${obj.id} success!`,
-        data: obj,
+        mgs: `Create ${this.table} id ${objData.id} success but error create customer data!`,
+        data: objData,
         success: true
       });
     } catch (err: any) {
-
       if (err && err.code === 11000) {
         return res.status(200).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
@@ -124,6 +105,74 @@ class UserCtrl extends BaseCtrl {
       });
     }
   };
+
+  createUserEmployee = async (req: Request, res: Response) => {
+    try {
+      const objUser = await this.setDataDefault(req.body);
+      const objData: any = await new this.model(objUser).save();
+      objData.__v = undefined;
+      objData._id = undefined;
+      objData.name = req.body.name;
+      const customer = new CustomerCtrl();
+
+      const objEmployee = await customer.createEmployeeByUser(objData, req.body.phoneNumbers);
+
+      if ( objEmployee && objEmployee.success) {
+        objData.customer = objEmployee.data.customer;
+        objData.employee = objEmployee.data.employee;
+
+        return res.status(201).json({
+          mgs: `Create ${this.table} id ${objData.id} success!`,
+          data: objData,
+          success: true
+        });
+      }
+
+      return res.status(201).json({
+        mgs: `Create ${this.table} id ${objData.id} success but error create customer or employee data!`,
+        data: objData,
+        success: true
+      });
+    } catch (err: any) {
+      if (err && err.code === 11000) {
+        return res.status(200).json({
+          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+          success: false,
+          error: {
+            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+            code: 11000
+          }
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Create user id ${req.body.id} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  private setDataDefault = async (obj: any) => {
+    const id = await this.getId();
+    obj.id = id;
+    obj.createTime = moment().unix();
+    obj.updateTime = moment().unix();
+    obj._status = true;
+    obj.customer = undefined;
+    obj.employee = undefined;
+
+    const objUser = obj;
+    const encryptedPassword = await bcrypt.hash(obj.password, 10);
+    const refreshToken = await bcrypt.hash(`${obj.userName}${obj.id}${moment().unix().toString()}`, 1)
+    objUser.password = encryptedPassword;
+    objUser.refreshToken = refreshToken;
+    return objUser;
+  }
 
   login = async (req: Request, res: Response) => {
     try {

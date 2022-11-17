@@ -315,6 +315,44 @@ class UserCtrl extends BaseCtrl {
       });
     };
   }
+
+  changePassword = async (req: Request, res: Response) => {
+    try{
+      const { userName, password, newPassword } = decodeBase64(req.headers.info);
+      
+      let user: any = undefined;
+
+      if (userName && password) {
+        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
+        
+        if (user && (await bcrypt.compare(password, user.password))) {
+          const result:any = await this.model.findOneAndUpdate({ id: user.id }, { password: await bcrypt.hash(newPassword,10) }, { _id: 0, __v: 0, _status: 0 });
+          if(result) {
+            result.password = undefined;
+            return res.status(200).json({
+              mgs: 'Change password success!',
+              data: result,
+              success: true
+            });
+          }
+          return res.status(400).send({
+            mgs: 'Change password error!',
+            success: false,
+          });
+        }
+      }      
+    }
+    catch(err:any) {
+      return res.status(400).send({
+        mgs: 'Change password error!',
+        success: false,
+        error: {
+          error: err,
+          mgs: err.message,
+        }
+      });
+    }
+  }
 }
 
 function generalToken(id: string, userName: string) {
@@ -326,5 +364,7 @@ function generalToken(id: string, userName: string) {
     }
   );
 };
+
+
 
 export default UserCtrl;

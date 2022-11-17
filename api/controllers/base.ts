@@ -10,7 +10,7 @@ abstract class BaseCtrl {
   getAll = async (req: Request, res: Response) => {
     try {
       const docs = await this.model.find({ _status: true }, { _id: 0, __v: 0, _status: 0 });
-
+      
       return res.status(200).json({
         data: docs,
         success: true

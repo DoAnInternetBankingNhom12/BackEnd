@@ -68,7 +68,7 @@ class UserCtrl extends BaseCtrl {
 
       const customerObj = await customer.createCustomerByUser(objData);
 
-      if ( customerObj && customerObj.success) {
+      if (customerObj && customerObj.success) {
         objData.customer = customerObj.data;
         return res.status(201).json({
           mgs: `Create ${this.table} id ${objData.id} success!`,
@@ -117,7 +117,7 @@ class UserCtrl extends BaseCtrl {
 
       const objEmployee = await customer.createEmployeeByUser(objData, req.body.phoneNumbers);
 
-      if ( objEmployee && objEmployee.success) {
+      if (objEmployee && objEmployee.success) {
         objData.customer = objEmployee.data.customer;
         objData.employee = objEmployee.data.employee;
 
@@ -317,17 +317,19 @@ class UserCtrl extends BaseCtrl {
   }
 
   changePassword = async (req: Request, res: Response) => {
-    try{
+    try {
       const { userName, password, newPassword } = decodeBase64(req.headers.info);
-      
+
       let user: any = undefined;
 
-      if (userName && password) {
-        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
-        
+      if (userName && password && newPassword) {
+        user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 });
+
         if (user && (await bcrypt.compare(password, user.password))) {
-          const result:any = await this.model.findOneAndUpdate({ id: user.id }, { password: await bcrypt.hash(newPassword,10) }, { _id: 0, __v: 0, _status: 0 });
-          if(result) {
+          const encryptedPassword = await bcrypt.hash(newPassword, 10);
+          const result: any = await this.model.findOneAndUpdate({ id: user.id }, { password: encryptedPassword }, { _id: 0, __v: 0, _status: 0 });
+
+          if (result) {
             result.password = undefined;
             return res.status(200).json({
               mgs: 'Change password success!',
@@ -335,14 +337,20 @@ class UserCtrl extends BaseCtrl {
               success: true
             });
           }
+
           return res.status(400).send({
             mgs: 'Change password error!',
             success: false,
           });
         }
-      }      
+      }
+
+      return res.status(400).send({
+        mgs: 'Data invalid error!',
+        success: false,
+      });
     }
-    catch(err:any) {
+    catch (err: any) {
       return res.status(400).send({
         mgs: 'Change password error!',
         success: false,

@@ -31,10 +31,10 @@ const main = async (): Promise<any> => {
   try {
     await setMongo();
     setRoutes(app);
-    const dataEncrypted = encryptedData('hola');
-    const dataDecrypted = decryptedData(dataEncrypted);
-    console.log('dataEncrypted', dataEncrypted);
-    console.log('dataDecrypted', dataDecrypted);
+    // const dataEncrypted = encryptedData('hola');
+    // const dataDecrypted = decryptedData(dataEncrypted);
+    // console.log('dataEncrypted', dataEncrypted);
+    // console.log('dataDecrypted', dataDecrypted);
 
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {

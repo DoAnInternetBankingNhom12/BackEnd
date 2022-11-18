@@ -5,7 +5,8 @@ import User from '../models/user';
 
 // Controllers
 import BaseCtrl from './base';
-import CustomerCtrl from '../controllers/customer.controller';
+import CustomerCtrl from './customer.controller';
+import EmployeeCtrl from './employee.controller';
 
 // Utils
 import * as moment from 'moment';
@@ -113,14 +114,13 @@ class UserCtrl extends BaseCtrl {
       objData.__v = undefined;
       objData._id = undefined;
       objData.name = req.body.name;
-      const customer = new CustomerCtrl();
+      objData.phoneNumbers = req.body.phoneNumbers;
+      const employee = new EmployeeCtrl();
 
-      const objEmployee = await customer.createEmployeeByUser(objData, req.body.phoneNumbers);
+      const employeeObj = await employee.createEmployeeByUser(objData, 'employee');
 
-      if (objEmployee && objEmployee.success) {
-        objData.customer = objEmployee.data.customer;
-        objData.employee = objEmployee.data.employee;
-
+      if (employeeObj && employeeObj.success) {
+        objData.customer = employeeObj.data;
         return res.status(201).json({
           mgs: `Create ${this.table} id ${objData.id} success!`,
           data: objData,
@@ -129,7 +129,7 @@ class UserCtrl extends BaseCtrl {
       }
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${objData.id} success but error create customer or employee data!`,
+        mgs: `Create ${this.table} id ${objData.id} success but error create employee data!`,
         data: objData,
         success: true
       });
@@ -176,8 +176,7 @@ class UserCtrl extends BaseCtrl {
 
   login = async (req: Request, res: Response) => {
     try {
-      const { userName, password } = decodeBase64(req.headers.info);
-      const { refreshToken } = decodeBase64(req.headers.info);
+      const { userName, password, refreshToken } = decodeBase64(req.headers.info);
       let user: any = undefined;
 
       if (userName && password) {
@@ -250,8 +249,7 @@ class UserCtrl extends BaseCtrl {
 
   logout = async (req: Request, res: Response) => {
     try {
-      const { userName, password } = decodeBase64(req.headers.info);
-      const { refreshToken } = decodeBase64(req.headers.info);
+      const { userName, password, refreshToken } = decodeBase64(req.headers.info);
       let user: any = undefined;
 
       if (userName && password) {

@@ -62,56 +62,6 @@ class CustomerCtrl extends BaseCtrl {
     }
   };
 
-  createEmployeeByUser = async (user: any, phoneNumbers: string) => {
-    try {
-      const objCustomer = await this.createCustomerByUser(user);
-      const objData: any = {};
-      if (objCustomer && objCustomer.success) {
-        objData.customer = objCustomer.data;
-        const employeeCtrl = new EmployeeCtrl();
-        const objEmployee = await employeeCtrl.createEmployeeOrAdminByCustomer(objCustomer.data, phoneNumbers, 'employee');
-
-        if (objEmployee && objEmployee.success) {
-          objData.employee = objEmployee.data;
-
-          return {
-            data: objData,
-            success: true
-          };
-        }
-
-        return {
-          mgs: `Create employee error!`,
-          success: false
-        };
-      }
-
-      return {
-        mgs: `Create customer error!`,
-        success: false
-      };
-    } catch (err: any) {
-      if (err && err.code === 11000) {
-        return {
-          mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
-          success: false,
-          code: 11000
-        }
-          ;
-      }
-
-      return {
-        mgs: `Create customer error!`,
-        success: false,
-        error: {
-          mgs: err.message,
-          code: 5000
-        }
-      };
-    }
-
-  }
-
   private async getRDPaymentAccountNB() {
     const min = 0;
     const max = 999999999999;

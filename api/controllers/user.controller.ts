@@ -13,7 +13,7 @@ import * as moment from 'moment';
 import * as lodash from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { decodeBase64 } from '../utils/utils';
+import { decodeBase64, isNull } from '../utils/utils';
 
 
 class UserCtrl extends BaseCtrl {
@@ -320,7 +320,7 @@ class UserCtrl extends BaseCtrl {
 
       let user: any = undefined;
 
-      if (userName && password && newPassword) {
+      if (!isNull(userName) && !isNull(password) && !isNull(newPassword)) {
         user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 });
 
         if (user && (await bcrypt.compare(password, user.password))) {

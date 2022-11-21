@@ -2,7 +2,7 @@ import { Schema, Document, model } from "mongoose";
 
 const customerSchema = new Schema<Customer>({
     id: { type: String, required: true, unique: true },
-    idUser: { type: String, required: true },
+    idUser: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     accountBalance: { type: Number, required: true, default:50000 },
     paymentAccount: { type: String, required: true },

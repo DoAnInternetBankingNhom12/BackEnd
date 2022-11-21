@@ -3,8 +3,8 @@ import { Schema, Document, model } from 'mongoose';
 const bankSchema = new Schema<Bank>({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true, unique: true },
-  phoneNumbers: { type: String, required: true },
-  addresses: { type: String, required: true },
+  phoneNumbers: { type: [String], required: true },
+  addresses: { type: [String], required: true },
   createTime: Number,
   updateTime: Number,
   _status: Boolean
@@ -13,8 +13,8 @@ const bankSchema = new Schema<Bank>({
 export interface Bank extends Document {
   id: string,
   name: string,
-  phoneNumbers: string,
-  addresses: string,
+  phoneNumbers: string[],
+  addresses: string[],
   createTime: number,
   updateTime: number,
   _status: boolean

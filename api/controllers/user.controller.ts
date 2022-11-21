@@ -36,7 +36,7 @@ class UserCtrl extends BaseCtrl {
     } catch (err: any) {
 
       if (err && err.code === 11000) {
-        return res.status(200).json({
+        return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
           success: false,
           error: {

@@ -6,6 +6,7 @@ import BankCtrl from './controllers/bank.controller';
 import CustomerCtrl from './controllers/customer.controller';
 import EmployeeCtrl from './controllers/employee.controller';
 import RoleCtrl from './controllers/role.controller';
+import ReceiverCtrl from './controllers/receiver.controller';
 
 // Middlewares
 import auth from './middleware/auth.middleware';
@@ -17,6 +18,7 @@ const setRoutes = (app: Application): void => {
   const customerCtrl = new CustomerCtrl();
   const employeeCtrl = new EmployeeCtrl();
   const roleCtrl = new RoleCtrl();
+  const receiverCtrl = new ReceiverCtrl();
 
   // User
   router.route('/users').get(userCtrl.getAll);
@@ -30,7 +32,7 @@ const setRoutes = (app: Application): void => {
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
 
-  //Bank
+  // Bank
   router.route('/banks').get(bankCtrl.getAll);
   router.route('/banks/count').get(bankCtrl.count);
   router.route('/bank/:id').get(bankCtrl.get);
@@ -38,15 +40,15 @@ const setRoutes = (app: Application): void => {
   router.route('/bank/:id').put(bankCtrl.update);
   router.route('/bank/:id').delete(bankCtrl.delete);
 
-  //Customer
+  // Customer
   router.route('/customers').get(customerCtrl.getAll);
   router.route('/customers/count').get(customerCtrl.count);
   router.route('/customer/:id').get(customerCtrl.get);
-  router.route('/customer').post(customerCtrl.insert);
-  router.route('/customer/:id').put(customerCtrl.update);
-  router.route('/customer/:id').delete(customerCtrl.delete);
+  router.route('/customer').post(customerCtrl.createCustomer);
+  router.route('/customer/:id').put(customerCtrl.updateCustomer);
+  router.route('/customer/:id').delete(customerCtrl.deleteCustomer);
 
-  //Employee
+  // Employee
   router.route('/employees').get(employeeCtrl.getAll);
   router.route('/employees/count').get(employeeCtrl.count);
   router.route('/employee/:id').get(employeeCtrl.get);
@@ -54,13 +56,21 @@ const setRoutes = (app: Application): void => {
   router.route('/employee/:id').put(employeeCtrl.update);
   router.route('/employee/:id').delete(employeeCtrl.delete);
 
-  //Role
+  // Role
   router.route('/roles').get(roleCtrl.getAll);
   router.route('/roles/count').get(roleCtrl.count);
   router.route('/role/:id').get(roleCtrl.get);
   router.route('/role').post(roleCtrl.insert);
   router.route('/role/:id').put(roleCtrl.update);
   router.route('/role/:id').delete(roleCtrl.delete);
+
+  // // Receiver
+  // router.route('/receivers').get(receiverCtrl.getAll);
+  // router.route('/receivers/count').get(receiverCtrl.count);
+  // router.route('/receiver/:id').get(receiverCtrl.get);
+  // router.route('/receiver').post(receiverCtrl.insert);
+  // router.route('/receiver/:id').put(receiverCtrl.update);
+  // router.route('/receiver/:id').delete(receiverCtrl.delete);
 
   // Login || Logout
   router.route('/login').get(userCtrl.login);

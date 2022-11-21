@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 
 // Controllers
 import BaseCtrl from './base';
-import EmployeeCtrl from '../controllers/employee.controller';
 
 // Models
 import Customer from '../models/customer';
+import User from '../models/user';
 
 // Utils
 import * as moment from 'moment';
@@ -13,8 +13,55 @@ import * as moment from 'moment';
 class CustomerCtrl extends BaseCtrl {
   model = Customer;
   table = 'Customer';
+  modelUser = User;
 
   // Create
+  createCustomer = async (req: Request, res: Response) => {
+    try {
+      const idUserExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
+
+      if (!idUserExist) {
+        return res.status(400).json({
+          msg: `ID user is not exist!`,
+          success: false
+        });
+      }
+
+      const objUser = await this.setDataDefault(req.body);
+      const objData = await new this.model(objUser).save();
+      objData.__v = undefined;
+      objData._id = undefined;
+
+      return res.status(201).json({
+        mgs: `Create ${this.table} id ${objData.id} success!`,
+        data: objData,
+        success: true
+      });
+    } catch (err: any) {
+
+      if (err && err.code === 11000) {
+        return res.status(400).json({
+          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+          success: false,
+          error: {
+            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+            code: 11000
+          }
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Create customer id ${req.body.id} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
   createCustomerByUser = async (user: any) => {
     try {
       const id = await this.getId();
@@ -57,6 +104,113 @@ class CustomerCtrl extends BaseCtrl {
       };
     }
   };
+
+  // Update 
+  updateCustomer = async (req: Request, res: Response) => {
+    try {
+      const idExist = await this.model.findOne({ id: req.params.id }).exec();
+      
+      if (!idExist) {
+        return res.status(400).json({
+          mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
+          data: req.body,
+          success: false,
+          error: {
+            status: 200,
+            code: 5002
+          }
+        });
+      }
+
+      if (req.body.idUser) {
+        const idUserExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
+  
+        if (!idUserExist) {
+          return res.status(400).json({
+            msg: `ID user is not exist!`,
+            success: false
+          });
+        }
+      }
+
+      await this.model.findOneAndUpdate({ id: req.params.id }, req.body, { _id: 0, __v: 0, _status: 0 });
+
+      return res.status(200).json({
+        data: req.body,
+        success: true
+      });
+
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Update ${this.table} id ${req.params.id} error!`,
+        data: req.body,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  // Delete
+  deleteCustomer = async (req: Request, res: Response) => {
+    try {
+      const idExist = await this.model.findOne({ id: req.params.id, _status: true }).exec();
+      const customer = await this.model.findOne({ id: req.params.id, _status: true });
+
+      if (idExist && customer && customer.idUser) {
+        await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false });
+        await this.modelUser.findOneAndUpdate({ id: customer.idUser }, { _status: false });
+        return res.status(200).json({
+          mgs: `Delete ${this.table} id ${req.params.id} and user id success!`,
+          success: true
+        });
+      }
+
+      if (idExist) {
+        await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false });
+        return res.status(200).json({
+          mgs: `Delete ${this.table} id ${req.params.id} and can't delete user success!`,
+          success: true
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
+        success: false,
+        error: {
+          status: 200,
+          code: 5002
+        }
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Delete ${this.table} id ${req.params.id} error!`,
+        data: req.body,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  private setDataDefault = async (obj: any) => {
+    const id = await this.getId();
+    obj.id = id;
+    obj.createTime = moment().unix();
+    obj.updateTime = moment().unix();
+    obj._status = true;
+
+    const objData = obj; 
+    objData.accountBalance = 50000;
+    objData.paymentAccount = await this.getRDPaymentAccountNB();
+    return objData;
+  }
 
   private async getRDPaymentAccountNB() {
     const min = 0;

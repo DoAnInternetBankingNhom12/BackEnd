@@ -153,6 +153,52 @@ class UserCtrl extends BaseCtrl {
     }
   };
 
+  createUserAdmin = async (req: Request, res: Response) => {
+    try {
+      const objUser = await this.setDataDefault(req.body);
+      const objData: any = await new this.model(objUser).save();
+      objData.__v = undefined;
+      objData._id = undefined;
+      objData.name = req.body.name;
+      objData.phoneNumbers = req.body.phoneNumbers;
+      const employee = new EmployeeCtrl();
+
+      const adminObj = await employee.createEmployeeByUser(objData, 'admin');
+
+      if (adminObj && adminObj.success) {
+        objData.customer = adminObj.data;
+        return res.status(201).json({
+          mgs: `Create ${this.table} id ${objData.id} success!`,
+          data: objData,
+          success: true
+        });
+      }
+
+      return res.status(201).json({
+        mgs: `Create ${this.table} id ${objData.id} success but error create admin data!`,
+        data: objData,
+        success: true
+      });
+    } catch (err: any) {
+      if (err && err.code === 11000) {
+        return res.status(400).json({
+          msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
+          success: false,
+          error: {
+            mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
+            code: 11000
+          }
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Create user id ${req.body.id} error!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
   private setDataDefault = async (obj: any) => {
     const id = await this.getId();
     obj.id = id;

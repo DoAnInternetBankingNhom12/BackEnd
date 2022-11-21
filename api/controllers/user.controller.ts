@@ -85,7 +85,7 @@ class UserCtrl extends BaseCtrl {
       });
     } catch (err: any) {
       if (err && err.code === 11000) {
-        return res.status(200).json({
+        return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
           success: false,
           error: {
@@ -135,7 +135,7 @@ class UserCtrl extends BaseCtrl {
       });
     } catch (err: any) {
       if (err && err.code === 11000) {
-        return res.status(200).json({
+        return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
           success: false,
           error: {
@@ -148,11 +148,7 @@ class UserCtrl extends BaseCtrl {
       return res.status(400).json({
         mgs: `Create user id ${req.body.id} error!`,
         success: false,
-        error: {
-          mgs: err.message,
-          status: 400,
-          code: 5000
-        }
+        error: err
       });
     }
   };
@@ -214,7 +210,7 @@ class UserCtrl extends BaseCtrl {
       }
 
       if (!user) {
-        return res.status(200).send({
+        return res.status(400).send({
           mgs: 'Data invalid!',
           data: {
             userName,
@@ -281,7 +277,7 @@ class UserCtrl extends BaseCtrl {
       }
 
       if (!user) {
-        return res.status(200).send({
+        return res.status(400).send({
           mgs: 'Data invalid!',
           data: {
             userName,

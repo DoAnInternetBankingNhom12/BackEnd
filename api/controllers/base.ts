@@ -70,7 +70,7 @@ abstract class BaseCtrl {
     } catch (err: any) {
 
       if (err && err.code === 11000) {
-        return res.status(200).json({
+        return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,
           success: false,
           error: {
@@ -132,7 +132,7 @@ abstract class BaseCtrl {
         });
       }
 
-      return res.status(200).json({
+      return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
         data: req.body,
         success: false,
@@ -168,7 +168,7 @@ abstract class BaseCtrl {
         });
       }
 
-      return res.status(200).json({
+      return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
         success: false,
         error: {

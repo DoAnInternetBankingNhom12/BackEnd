@@ -47,17 +47,13 @@ class CustomerCtrl extends BaseCtrl {
           mgs: `Trùng dữ liệu ${Object.keys(err.keyValue)}`,
           success: false,
           code: 11000
-        }
-          ;
+        };
       }
 
       return {
         mgs: `Create customer id ${user.id} error!`,
         success: false,
-        error: {
-          mgs: err.message,
-          code: 5000
-        }
+        error: err
       };
     }
   };

@@ -52,10 +52,7 @@ class EmployeeCtrl extends BaseCtrl {
       return {
         mgs: `Create customer id ${user.id} error!`,
         success: false,
-        error: {
-          mgs: err.message,
-          code: 5000
-        }
+        error: err,
       };
     }
   };

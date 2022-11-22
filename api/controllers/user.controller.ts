@@ -200,7 +200,7 @@ class UserCtrl extends BaseCtrl {
   };
 
   private setDataDefault = async (obj: any) => {
-    const id = await this.getId();
+    const id = await this.generateId();
     obj.id = id;
     obj.createTime = moment().unix();
     obj.updateTime = moment().unix();

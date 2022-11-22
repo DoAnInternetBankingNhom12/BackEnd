@@ -15,7 +15,7 @@ class EmployeeCtrl extends BaseCtrl {
 
   createEmployeeByUser = async (user: any, accountType: 'employee' | 'admin') => {
     try {
-      const id = await this.getId();
+      const id = await this.generateId();
       const objEmployee: any = {
         id,
         idCustomer: user.id,

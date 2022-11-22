@@ -64,7 +64,7 @@ class CustomerCtrl extends BaseCtrl {
 
   createCustomerByUser = async (user: any) => {
     try {
-      const id = await this.getId();
+      const id = await this.generateId();
       let objCustomer: any = {
         id,
         idUser: user.id,
@@ -200,7 +200,7 @@ class CustomerCtrl extends BaseCtrl {
   };
 
   private setDataDefault = async (obj: any) => {
-    const id = await this.getId();
+    const id = await this.generateId();
     obj.id = id;
     obj.createTime = moment().unix();
     obj.updateTime = moment().unix();

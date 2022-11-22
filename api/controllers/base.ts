@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+
+// Utils
 import * as moment from 'moment';
+import * as lodash from 'lodash';
+import { isNull } from '../utils/utils';
 
 abstract class BaseCtrl {
 
@@ -9,8 +13,25 @@ abstract class BaseCtrl {
   // Get all
   getAll = async (req: Request, res: Response) => {
     try {
-      const docs = await this.model.find({ _status: true }, { _id: 0, __v: 0, _status: 0 });
-      
+      const { inActive, isAll } = lodash.cloneDeep(req.body);
+
+      let _status = true;
+
+      if (!isNull(inActive) && inActive === true) {
+        _status = false;
+      }
+
+      let docs = undefined;
+
+      if (isAll) {
+        docs = await this.model.find({}, { _id: 0, __v: 0, _status: 0 });
+        return res.status(200).json({
+          data: docs,
+          success: true
+        });
+      }
+
+      docs = await this.model.find({ _status }, { _id: 0, __v: 0, _status: 0 });
       return res.status(200).json({
         data: docs,
         success: true
@@ -53,8 +74,8 @@ abstract class BaseCtrl {
   // Insert
   insert = async (req: Request, res: Response) => {
     try {
-      const count = await this.model.count();
-      req.body.id = `${this.table.toLocaleLowerCase()}${count + 1}`;
+      const id = await this.generateId();
+      req.body.id = id;
       req.body.createTime = moment().unix();
       req.body.updateTime = moment().unix();
       req.body._status = true;
@@ -190,7 +211,7 @@ abstract class BaseCtrl {
     }
   };
 
-  async getId() {
+  async generateId() {
     let count = await this.model.count();
     let id = `${this.table.toLocaleLowerCase()}${count}`;
     let idExist = await this.model.findOne({ id }).exec();
@@ -199,7 +220,7 @@ abstract class BaseCtrl {
       id = `${this.table.toLocaleLowerCase()}${count}`;
       idExist = await this.model.findOne({ id }).exec();
       count++;
-    } while(idExist)
+    } while (idExist)
 
     return id;
   }

@@ -30,7 +30,7 @@ const setRoutes = (app: Application): void => {
   router.route('/user/admin').post(userCtrl.createUserAdmin);
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
-  router.route('/user/:id').delete(userCtrl.delete);
+  router.route('/user/:id').delete(userCtrl.deleteUser);
 
   // Bank
   router.route('/banks').get(bankCtrl.getAll);

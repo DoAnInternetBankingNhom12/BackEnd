@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 
 // Models
 import User from '../models/user';
+import Custommer from '../models/customer';
+import Employee from '../models/employee';
 
 // Controllers
 import BaseCtrl from './base';
@@ -9,16 +11,18 @@ import CustomerCtrl from './customer.controller';
 import EmployeeCtrl from './employee.controller';
 
 // Utils
-import * as moment from 'moment';
-import * as lodash from 'lodash';
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import { decodeBase64, isNull } from '../utils/utils';
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcryptjs';
+import * as lodash from 'lodash';
+import * as moment from 'moment';
 
 
 class UserCtrl extends BaseCtrl {
   model = User;
   table = 'User';
+  modelCustommer = Custommer;
+  modelEmployee = Employee;
 
   // Create
   createUser = async (req: Request, res: Response) => {
@@ -195,6 +199,49 @@ class UserCtrl extends BaseCtrl {
         mgs: `Create user id ${req.body.id} error!`,
         success: false,
         error: err
+      });
+    }
+  };
+
+  // Delete
+  deleteUser = async (req: Request, res: Response) => {
+    try {
+      const isUser = await this.model.findOne({ id: req.params.id });
+      console.log(isUser);
+      
+      if (!isNull(isUser)) {
+        req.body.updateTime = moment().unix();
+        console.log()
+        await this.model.findOneAndUpdate({ id: req.params.id }, { updateTime: req.body.updateTime, _status: false });
+        await this.modelEmployee.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
+        await this.modelCustommer.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
+
+        return res.status(200).json({
+          mgs: `Delete ${this.table} id ${req.params.id} success!`,
+          data: req.body,
+          success: true
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
+        data: req.body,
+        success: false,
+        error: {
+          status: 200,
+          code: 5002
+        }
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Update ${this.table} id ${req.params.id} error!`,
+        data: req.body,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
       });
     }
   };

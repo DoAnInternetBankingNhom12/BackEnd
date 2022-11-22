@@ -20,9 +20,9 @@ import * as moment from 'moment';
 
 class UserCtrl extends BaseCtrl {
   model = User;
-  table = 'User';
-  modelCustommer = Custommer;
   modelEmployee = Employee;
+  modelCustommer = Custommer;
+  table = 'User';
 
   // Create
   createUser = async (req: Request, res: Response) => {

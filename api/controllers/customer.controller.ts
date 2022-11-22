@@ -4,16 +4,19 @@ import { Request, Response } from 'express';
 import BaseCtrl from './base';
 
 // Models
-import Customer from '../models/customer';
 import User from '../models/user';
+import Customer from '../models/customer';
+import Employee from '../models/employee';
 
 // Utils
 import * as moment from 'moment';
+import { isNull } from '../utils/utils';
 
 class CustomerCtrl extends BaseCtrl {
   model = Customer;
-  table = 'Customer';
   modelUser = User;
+  modelEmployee = Employee;
+  table = 'Customer';
 
   // Create
   createCustomer = async (req: Request, res: Response) => {
@@ -23,6 +26,14 @@ class CustomerCtrl extends BaseCtrl {
       if (!idUserExist) {
         return res.status(400).json({
           msg: `ID user is not exist!`,
+          success: false
+        });
+      }
+
+      const idExist = await this.modelEmployee.findOne({ idUser: req.body.idUser }).exec();
+      if (idExist) {
+        return res.status(400).json({
+          msg: `ID user is exist in employee!`,
           success: false
         });
       }
@@ -122,12 +133,20 @@ class CustomerCtrl extends BaseCtrl {
         });
       }
 
-      if (req.body.idUser) {
+      if (!isNull(req.body.idUser)) {
         const idUserExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
   
         if (!idUserExist) {
           return res.status(400).json({
             msg: `ID user is not exist!`,
+            success: false
+          });
+        }
+
+        const idExist = await this.modelEmployee.findOne({ idUser: req.body.idUser }).exec();
+        if (idExist) {
+          return res.status(400).json({
+            msg: `ID user is exist in employee!`,
             success: false
           });
         }

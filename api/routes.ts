@@ -52,9 +52,9 @@ const setRoutes = (app: Application): void => {
   router.route('/employees').get(employeeCtrl.getAll);
   router.route('/employees/count').get(employeeCtrl.count);
   router.route('/employee/:id').get(employeeCtrl.get);
-  router.route('/employee').post(employeeCtrl.insert);
-  router.route('/employee/:id').put(employeeCtrl.update);
-  router.route('/employee/:id').delete(employeeCtrl.delete);
+  router.route('/employee').post(employeeCtrl.createEmployee);
+  router.route('/employee/:id').put(employeeCtrl.updateEmployee);
+  router.route('/employee/:id').delete(employeeCtrl.deleteEmployee);
 
   // Role
   router.route('/roles').get(roleCtrl.getAll);

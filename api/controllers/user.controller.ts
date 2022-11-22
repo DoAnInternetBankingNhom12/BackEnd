@@ -206,26 +206,22 @@ class UserCtrl extends BaseCtrl {
   // Delete
   deleteUser = async (req: Request, res: Response) => {
     try {
-      const isUser = await this.model.findOne({ id: req.params.id });
-      console.log(isUser);
+      const isExistUser = await this.model.findOne({ id: req.params.id }).exec();
       
-      if (!isNull(isUser)) {
+      if (!isNull(isExistUser)) {
         req.body.updateTime = moment().unix();
-        console.log()
         await this.model.findOneAndUpdate({ id: req.params.id }, { updateTime: req.body.updateTime, _status: false });
         await this.modelEmployee.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
         await this.modelCustommer.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
 
         return res.status(200).json({
           mgs: `Delete ${this.table} id ${req.params.id} success!`,
-          data: req.body,
           success: true
         });
       }
 
       return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
-        data: req.body,
         success: false,
         error: {
           status: 200,
@@ -235,7 +231,6 @@ class UserCtrl extends BaseCtrl {
     } catch (err: any) {
       return res.status(400).json({
         mgs: `Update ${this.table} id ${req.params.id} error!`,
-        data: req.body,
         success: false,
         error: {
           mgs: err.message,

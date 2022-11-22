@@ -22,13 +22,13 @@ const setRoutes = (app: Application): void => {
 
   // User
   router.route('/users').get(userCtrl.getAll);
+  router.route('/user/:id').get(userCtrl.get);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/changePassword').get(userCtrl.changePassword);
   router.route('/user').post(userCtrl.createUser);
   router.route('/user/customer').post(userCtrl.createUserCustommer);
   router.route('/user/employee').post(userCtrl.createUserEmployee);
   router.route('/user/admin').post(userCtrl.createUserAdmin);
-  router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.deleteUser);
 

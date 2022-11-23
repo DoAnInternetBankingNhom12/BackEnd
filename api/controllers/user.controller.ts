@@ -264,7 +264,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (userName && password) {
-        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
+        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0, password: 0 }));
 
         if (user && (await bcrypt.compare(password, user.password))) {
           const token = generalToken(user.id, userName);
@@ -337,7 +337,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (refreshToken) {
-        user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0 }));
+        user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0, password: 0 }));
 
         if (user) {
           const token = generalToken(user.id, user.userName);
@@ -452,13 +452,13 @@ class UserCtrl extends BaseCtrl {
 
   changePassword = async (req: Request, res: Response) => {
     try {
+      console.log('go here');
       const { userName, password, newPassword } = decodeBase64(req.headers.info);
 
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password) && !isNull(newPassword)) {
         user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 });
-
         if (user && (await bcrypt.compare(password, user.password))) {
           const encryptedPassword = await bcrypt.hash(newPassword, 10);
           const result: any = await this.model.findOneAndUpdate({ id: user.id }, { password: encryptedPassword }, { _id: 0, __v: 0, _status: 0 });

@@ -74,6 +74,7 @@ const setRoutes = (app: Application): void => {
 
   // Login || Logout
   router.route('/login').get(userCtrl.login);
+  router.route('/loginrt').get(userCtrl.loginRT);
   router.route('/logout').get(userCtrl.logout);
 
   // Apply the routes to our application with the prefix /api

@@ -331,6 +331,58 @@ class UserCtrl extends BaseCtrl {
     };
   }
 
+  loginRT = async (req: Request, res: Response) => {
+    try {
+      const { refreshToken } = decodeBase64(req.headers.info);
+      let user: any = undefined;
+
+      if (refreshToken) {
+        user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0 }));
+
+        if (user) {
+          const token = generalToken(user.id, user.userName);
+
+          user.token = token;
+          user.password = undefined;
+
+          return res.status(200).json({
+            mgs: 'Login success!',
+            data: user,
+            success: true
+          });
+        }
+      }
+
+      if (!user) {
+        return res.status(400).send({
+          mgs: 'Data invalid!',
+          success: false
+        });
+      }
+
+      return res.status(400).send({
+        mgs: 'Invalid credentials!',
+        data: user,
+        success: false,
+        error: {
+          status: 409,
+          code: 4002
+        }
+      });
+    } catch (err: any) {
+      return res.status(400).send({
+        mgs: 'Login error!',
+        success: false,
+        error: {
+          error: err,
+          mgs: err.message,
+          status: 409,
+          code: 5000
+        }
+      });
+    };
+  }
+
   logout = async (req: Request, res: Response) => {
     try {
       const { userName, password, refreshToken } = decodeBase64(req.headers.info);

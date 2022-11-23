@@ -65,12 +65,12 @@ const setRoutes = (app: Application): void => {
   router.route('/role/:id').delete(roleCtrl.delete);
 
   // // Receiver
-  // router.route('/receivers').get(receiverCtrl.getAll);
-  // router.route('/receivers/count').get(receiverCtrl.count);
-  // router.route('/receiver/:id').get(receiverCtrl.get);
-  // router.route('/receiver').post(receiverCtrl.insert);
-  // router.route('/receiver/:id').put(receiverCtrl.update);
-  // router.route('/receiver/:id').delete(receiverCtrl.delete);
+  router.route('/receivers').get(receiverCtrl.getAll);
+  router.route('/receivers/count').get(receiverCtrl.count);
+  router.route('/receiver/:id').get(receiverCtrl.get);
+  router.route('/receiver').post(receiverCtrl.createReceiver);
+  router.route('/receiver/:id').put(receiverCtrl.updateReceiver);
+  router.route('/receiver/:id').delete(receiverCtrl.delete);
 
   // Login || Logout
   router.route('/login').get(userCtrl.login);

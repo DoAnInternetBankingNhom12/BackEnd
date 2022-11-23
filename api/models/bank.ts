@@ -3,8 +3,8 @@ import { Schema, Document, model } from 'mongoose';
 const bankSchema = new Schema<Bank>({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true, unique: true },
-  phoneNumbers: { type: [String], required: true },
-  addresses: { type: [String], required: true },
+  phoneNumbers: { type: [String]},
+  addresses: { type: [String]},
   createTime: Number,
   updateTime: Number,
   _status: Boolean

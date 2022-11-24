@@ -118,7 +118,7 @@ class CustomerCtrl extends BaseCtrl {
   updateCustomer = async (req: Request, res: Response) => {
     try {
       const idExist = await this.model.findOne({ id: req.params.id }).exec();
-      
+
       if (!idExist) {
         return res.status(400).json({
           mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
@@ -133,7 +133,7 @@ class CustomerCtrl extends BaseCtrl {
 
       if (!isNull(req.body.idUser)) {
         const idUserExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
-  
+
         if (!idUserExist) {
           return res.status(400).json({
             msg: `ID user is not exist!`,
@@ -216,6 +216,45 @@ class CustomerCtrl extends BaseCtrl {
     }
   };
 
+  // Recharge
+  recharge = async (req: Request, res: Response) => {
+    try {
+      const { paymentAccount, amountMoney, idUser } = req.body;
+      const employee = await this.modelEmployee.findOne({ idUser: idUser, _status: true });
+
+      if (employee && employee.accountType === 'employee') {
+        const customer = await this.model.findOne({ paymentAccount: paymentAccount});
+        if (isNull(customer)) {
+          return res.status(400).json({
+            mgs: `Not exist ${this.table} id ${req.params.id}!`,
+            success: false
+          });
+        }
+
+        const newAccountBalance = customer?.accountBalance + amountMoney;
+
+        await this.model.findOneAndUpdate({ paymentAccount }, { accountBalance: newAccountBalance }, { _status: true });
+
+        return res.status(200).json({
+          mgs: `Recharge ${this.table} payment account ${paymentAccount} success!`,
+          success: true
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Not exist employee user id ${idUser} to recharge!`,
+        success: false
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Recharge ${this.table} payment account ${req.body.paymentAccount} error!`,
+        data: req.body,
+        success: false,
+        error: err
+      });
+    }
+  };
+
   private setDataDefault = async (obj: any) => {
     const id = await this.generateId();
     obj.id = id;
@@ -223,7 +262,7 @@ class CustomerCtrl extends BaseCtrl {
     obj.updateTime = moment().unix();
     obj._status = true;
 
-    const objData = obj; 
+    const objData = obj;
     objData.accountBalance = 50000;
     objData.paymentAccount = await this.getRDPaymentAccountNB();
     return objData;

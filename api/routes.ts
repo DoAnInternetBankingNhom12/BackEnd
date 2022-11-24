@@ -45,6 +45,7 @@ const setRoutes = (app: Application): void => {
   router.route('/customers/count').get(customerCtrl.count);
   router.route('/customer/:id').get(customerCtrl.get);
   router.route('/customer').post(customerCtrl.createCustomer);
+  router.route('/customer/recharge').post(customerCtrl.recharge);
   router.route('/customer/:id').put(customerCtrl.updateCustomer);
   router.route('/customer/:id').delete(customerCtrl.deleteCustomer);
 

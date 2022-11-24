@@ -49,34 +49,34 @@ abstract class BaseCtrl {
     }
   };
 
-    // Get by id
-    get = async (req: Request, res: Response) => {
-      try {
-        const obj = await this.model.findOne({ id: req.params.id }, { _id: 0, __v: 0, _status: 0 });
-        if (isNull(obj)) {
-          return res.status(400).json({
-            mgs: `Get ${this.table} id ${req.body.id} not exist!`,
-            success: false
-          });
-        }
-  
-        return res.status(200).json({
-          data: obj,
-          success: true
-        });
-      } catch (err: any) {
+  // Get by id
+  get = async (req: Request, res: Response) => {
+    try {
+      const obj = await this.model.findOne({ id: req.params.id }, { _id: 0, __v: 0, _status: 0 });
+      if (isNull(obj)) {
         return res.status(400).json({
-          mgs: `Get ${this.table} id ${req.body.id} error!`,
-          data: req.params.id,
-          success: false,
-          error: {
-            mgs: err.message,
-            status: 400,
-            code: 5000
-          }
+          mgs: `Get ${this.table} id ${req.body.id} not exist!`,
+          success: false
         });
       }
-    };
+
+      return res.status(200).json({
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
 
   // Count all
   count = async (req: Request, res: Response) => {
@@ -118,7 +118,6 @@ abstract class BaseCtrl {
         success: true
       });
     } catch (err: any) {
-
       if (err && err.code === 11000) {
         return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,

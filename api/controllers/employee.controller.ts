@@ -25,7 +25,7 @@ class EmployeeCtrl extends BaseCtrl {
 
       if (!idUserExist) {
         return res.status(400).json({
-          msg: `ID user is not exist!`,
+          msg: `User ID is not exist!`,
           success: false
         });
       }
@@ -33,7 +33,7 @@ class EmployeeCtrl extends BaseCtrl {
       const idExist = await this.modelCustommer.findOne({ idUser: req.body.idUser }).exec();
       if (idExist) {
         return res.status(400).json({
-          msg: `ID user is exist in customer!`,
+          msg: `User ID is exist in customer!`,
           success: false
         });
       }
@@ -41,7 +41,7 @@ class EmployeeCtrl extends BaseCtrl {
       const type = ['admin', 'employee'];
       if (!isNull(req.body.accountType) && !type.includes(req.body.accountType)) {
         return res.status(400).json({
-          msg: `accountType employee is not admin or employee!`,
+          msg: `AccountType employee is not admin or employee!`,
           success: false
         });
       }

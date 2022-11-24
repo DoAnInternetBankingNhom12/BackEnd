@@ -22,10 +22,9 @@ class CustomerCtrl extends BaseCtrl {
   createCustomer = async (req: Request, res: Response) => {
     try {
       const idUserExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
-
       if (!idUserExist) {
         return res.status(400).json({
-          msg: `ID user is not exist!`,
+          msg: `User ID is not exist!`,
           success: false
         });
       }
@@ -33,7 +32,7 @@ class CustomerCtrl extends BaseCtrl {
       const idExist = await this.modelEmployee.findOne({ idUser: req.body.idUser }).exec();
       if (idExist) {
         return res.status(400).json({
-          msg: `ID user is exist in employee!`,
+          msg: `User ID is exist in employee!`,
           success: false
         });
       }
@@ -49,7 +48,6 @@ class CustomerCtrl extends BaseCtrl {
         success: true
       });
     } catch (err: any) {
-
       if (err && err.code === 11000) {
         return res.status(400).json({
           msg: `${this.table} ${Object.keys(err.keyValue)} ${Object.values(err.keyValue)} is exist!`,

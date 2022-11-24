@@ -452,9 +452,7 @@ class UserCtrl extends BaseCtrl {
 
   changePassword = async (req: Request, res: Response) => {
     try {
-      console.log('go here');
       const { userName, password, newPassword } = decodeBase64(req.headers.info);
-
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password) && !isNull(newPassword)) {

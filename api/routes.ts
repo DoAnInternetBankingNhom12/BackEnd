@@ -7,6 +7,7 @@ import CustomerCtrl from './controllers/customer.controller';
 import EmployeeCtrl from './controllers/employee.controller';
 import RoleCtrl from './controllers/role.controller';
 import ReceiverCtrl from './controllers/receiver.controller';
+import TransactionCtrl from './controllers/transaction.controller';
 
 // Middlewares
 import auth from './middleware/auth.middleware';
@@ -19,6 +20,7 @@ const setRoutes = (app: Application): void => {
   const employeeCtrl = new EmployeeCtrl();
   const roleCtrl = new RoleCtrl();
   const receiverCtrl = new ReceiverCtrl();
+  const transactionCtrl = new TransactionCtrl();
 
   // User
   router.route('/users').get(userCtrl.getAll);
@@ -65,13 +67,21 @@ const setRoutes = (app: Application): void => {
   router.route('/role/:id').put(roleCtrl.update);
   router.route('/role/:id').delete(roleCtrl.delete);
 
-  // // Receiver
+  // Receiver
   router.route('/receivers').get(receiverCtrl.getAll);
   router.route('/receivers/count').get(receiverCtrl.count);
   router.route('/receiver/:id').get(receiverCtrl.get);
   router.route('/receiver').post(receiverCtrl.createReceiver);
   router.route('/receiver/:id').put(receiverCtrl.updateReceiver);
   router.route('/receiver/:id').delete(receiverCtrl.delete);
+
+  // Transaction
+  router.route('/transactions').get(transactionCtrl.getAll);
+  router.route('/transactions/count').get(transactionCtrl.count);
+  router.route('/transaction').get(transactionCtrl.getByUserId);
+  router.route('/transaction').post(transactionCtrl.insert);
+  router.route('/transaction/:id').put(transactionCtrl.update);
+  router.route('/transaction/:id').delete(transactionCtrl.delete);
 
   // Login || Logout
   router.route('/login').get(userCtrl.login);

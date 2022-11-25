@@ -78,7 +78,7 @@ const setRoutes = (app: Application): void => {
   // Transaction
   router.route('/transactions').get(transactionCtrl.getAll);
   router.route('/transactions/count').get(transactionCtrl.count);
-  router.route('/transaction').get(transactionCtrl.getByUserId);
+  router.route('/transaction').get(transactionCtrl.findTransaction);
   router.route('/transaction').post(transactionCtrl.insert);
   router.route('/transaction/:id').put(transactionCtrl.update);
   router.route('/transaction/:id').delete(transactionCtrl.delete);

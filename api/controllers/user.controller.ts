@@ -211,8 +211,8 @@ class UserCtrl extends BaseCtrl {
       if (!isNull(isExistUser)) {
         req.body.updateTime = moment().unix();
         await this.model.findOneAndUpdate({ id: req.params.id }, { updateTime: req.body.updateTime, _status: false });
-        await this.modelEmployee.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
-        await this.modelCustommer.findOneAndUpdate({ idUser: req.params.id }, { updateTime: req.body.updateTime, _status: false });
+        await this.modelEmployee.findOneAndUpdate({ userId: req.params.id }, { updateTime: req.body.updateTime, _status: false });
+        await this.modelCustommer.findOneAndUpdate({ userId: req.params.id }, { updateTime: req.body.updateTime, _status: false });
 
         return res.status(200).json({
           mgs: `Delete ${this.table} id ${req.params.id} success!`,
@@ -263,8 +263,8 @@ class UserCtrl extends BaseCtrl {
       const { userName, password, refreshToken } = decodeBase64(req.headers.info);
       let user: any = undefined;
 
-      if (userName && password) {
-        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0, password: 0 }));
+      if (!isNull(userName) && !isNull(password)) {
+        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0}));
 
         if (user && (await bcrypt.compare(password, user.password))) {
           const token = generalToken(user.id, userName);
@@ -280,7 +280,7 @@ class UserCtrl extends BaseCtrl {
         }
       }
 
-      if (refreshToken) {
+      if (!isNull(refreshToken)) {
         user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0 }));
 
         if (user) {

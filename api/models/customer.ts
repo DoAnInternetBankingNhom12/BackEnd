@@ -2,7 +2,7 @@ import { Schema, Document, model } from "mongoose";
 
 const customerSchema = new Schema<Customer>({
     id: { type: String, required: true, unique: true },
-    idUser: { type: String, required: true, unique: true },
+    userId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     accountBalance: { type: Number, required: true, default:50000 },
     paymentAccount: { type: String, required: true },
@@ -13,7 +13,7 @@ const customerSchema = new Schema<Customer>({
 
   export interface Customer extends Document {
     id: string,
-    idUser: string,
+    userId: string,
     name: string,
     accountBalance: number,
     paymentAccount: string,

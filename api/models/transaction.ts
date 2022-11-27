@@ -2,9 +2,9 @@ import { Schema, Document, model } from 'mongoose';
 
 const transactionSchema = new Schema<Transaction>({
   id: { type: String, required: true, unique: true },
-  idUser: { type: String, required: true },
-  idReceiver: { type: String, required: true },
-  idReceivingBank: { type: String, required: true },
+  userId: { type: String, required: true },
+  receiverId: { type: String, required: true },
+  receivingBankId: { type: String, required: true },
   amountOwed: { type: Number, required: true },
   description: { type: String },
   status: { type: String, required: true},
@@ -12,13 +12,13 @@ const transactionSchema = new Schema<Transaction>({
   createTime: Number,
   updateTime: Number,
   _status: Boolean
-}, { collection: 'transaction_history' });
+}, { collection: 'transaction' });
 
 export interface Transaction extends Document {
   id: string,
-  idUser: string,
-  idReceiver: string,
-  idReceivingBank: string,
+  userId: string,
+  receiverId: string,
+  receivingBankId: string,
   amountOwed: number,
   description: string,
   status: string, // transferring: Đang chuyển tiền, completed: Chuyển tiền thành công, failed: Chuyển thất bại, not_yet_delivered: Chưa giao tiền, delivered: Đã giao tiền
@@ -28,6 +28,6 @@ export interface Transaction extends Document {
   _status: boolean
 };
 
-const Transaction = model<Transaction>('transaction_history', transactionSchema);
+const Transaction = model<Transaction>('transaction', transactionSchema);
 
 export default Transaction;

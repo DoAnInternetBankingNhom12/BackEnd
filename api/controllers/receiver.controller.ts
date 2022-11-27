@@ -31,8 +31,8 @@ class ReceiverCtrl extends BaseCtrl {
       req.body.updateTime = moment().unix();
       req.body._status = true;
 
-      if (!isNull(req.body.idUser)) {
-        const isExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
+      if (!isNull(req.body.userId)) {
+        const isExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
 
         if (!isExist) {
           return res.status(400).json({
@@ -95,8 +95,8 @@ class ReceiverCtrl extends BaseCtrl {
         req.body.updateTime = moment().unix();
         req.body._status = true;
 
-        if (!isNull(req.body.idUser)) {
-          const isExist = await this.modelUser.findOne({ id: req.body.idUser }).exec();
+        if (!isNull(req.body.userId)) {
+          const isExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
   
           if (!isExist) {
             return res.status(400).json({

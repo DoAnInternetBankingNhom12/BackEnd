@@ -31,7 +31,7 @@ export interface User extends Document {
 
 interface Customer {
   id: string,
-  idUser: string,
+  userId: string,
   name: string,
   accountBalance: number,
   paymentAccount: string,
@@ -39,7 +39,7 @@ interface Customer {
 
 interface Employee {
   id: string,
-  idCustomer: string,
+  userId: string,
   name: string,
   phoneNumbers: string,
   accountType: String,

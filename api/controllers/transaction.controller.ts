@@ -19,7 +19,6 @@ class TransactionCtrl extends BaseCtrl {
   findTransaction = async (req: Request, res: Response) => {
     try {
       const optionSearch = lodash.cloneDeep(req.query);
-      console.log(optionSearch);
       const obj = await this.model.find(optionSearch, { _id: 0, __v: 0, _status: 0 });
 
       if (isNull(obj)) {

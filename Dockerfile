@@ -8,6 +8,7 @@ RUN ls -a
 FROM node:14.20.0-alpine3.16
 WORKDIR /usr/src/app
 RUN ls -a
+COPY --from=temp /usr/src/app/package.json ./
 COPY --from=temp /usr/src/app/dist/server .
 RUN npm install
 RUN ls -a

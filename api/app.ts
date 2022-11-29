@@ -11,10 +11,16 @@ import setRoutes from './routes';
 
 import { encryptedData, decryptedData } from './utils/utils';
 
+const whitelist = process.env.WHITELIST?.split(',');
 const corsOptions = {
-  origin: 'http://localhost:4200',
-  optionsSuccessStatus: 200
-};
+  origin: function (origin: any, callback: any) {
+    if (whitelist?.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 
 const app = express();
 app.use(cors(corsOptions));

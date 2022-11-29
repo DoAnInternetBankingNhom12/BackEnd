@@ -23,8 +23,8 @@ const setRoutes = (app: Application): void => {
   const transactionCtrl = new TransactionCtrl();
 
   // User
-  router.route('/users').get(userCtrl.getAll);
-  router.route('/user/:id').get(userCtrl.get);
+  router.route('/users').get(userCtrl.getAllUser);
+  router.route('/user/:id').get(userCtrl.getUser);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/changepws').post(userCtrl.changePassword);
   router.route('/user').post(userCtrl.createUser);

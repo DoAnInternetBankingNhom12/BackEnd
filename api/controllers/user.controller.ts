@@ -24,6 +24,182 @@ class UserCtrl extends BaseCtrl {
   modelCustommer = Custommer;
   table = 'User';
 
+  // Get
+  getAllUser = async (req: Request, res: Response) => {
+    try {
+      const { inActive, isAll } = lodash.cloneDeep(req.body);
+
+      let status = true;
+
+      if (!isNull(inActive) && inActive === true) {
+        status = false;
+      }
+
+      let docs = undefined;
+
+      if (isAll) {
+        docs = await this.model.aggregate([
+          {
+            $unset: ["_id", "password", "_status", "__v"]
+          },
+          {
+            $lookup: {
+              from: 'customer',
+              localField: 'id',
+              foreignField: 'userId',
+              as: 'customer',
+              pipeline: [
+                { $project: { _id: 0, _status: 0, __v: 0 } }
+              ],
+            },
+          },
+          {
+            $set: {
+              customer: { $arrayElemAt: ["$customer", 0] }
+            }
+          },
+          {
+            $lookup: {
+              from: 'employee',
+              localField: 'id',
+              foreignField: 'userId',
+              as: 'employee',
+              pipeline: [
+                { $project: { _id: 0, _status: 0, __v: 0 } }
+              ],
+            }
+          },
+          {
+            $set: {
+              employee: { $arrayElemAt: ["$employee", 0] }
+            }
+          },
+        ]);
+
+        return res.status(200).json({
+          data: docs,
+          success: true
+        });
+      }
+
+      docs = await this.model.aggregate([
+        { $match: { _status: status } },
+        {
+          $unset: ["_id", "password", "_status", "__v"]
+        },
+        {
+          $lookup: {
+            from: 'customer',
+            localField: 'id',
+            foreignField: 'userId',
+            as: 'customer',
+            pipeline: [
+              { $project: { _id: 0, _status: 0, __v: 0 } }
+            ],
+          },
+        },
+        {
+          $set: {
+            customer: { $arrayElemAt: ["$customer", 0] }
+          }
+        },
+        {
+          $lookup: {
+            from: 'employee',
+            localField: 'id',
+            foreignField: 'userId',
+            as: 'employee',
+            pipeline: [
+              { $project: { _id: 0, _status: 0, __v: 0 } }
+            ],
+          }
+        },
+        {
+          $set: {
+            employee: { $arrayElemAt: ["$employee", 0] }
+          }
+        },
+      ]);
+
+      return res.status(200).json({
+        data: docs,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get all ${this.table} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  }
+
+  getUser = async (req: Request, res: Response) => {
+    try {
+      const searchId = lodash.cloneDeep(req.params.id);
+
+      if (isNull(searchId)) {
+      }
+      const docs = await this.model.aggregate([
+        { $match: { id: searchId } },
+        {
+          $unset: ["_id", "password", "_status", "__v"]
+        },
+        {
+          $lookup: {
+            from: 'customer',
+            localField: 'id',
+            foreignField: 'userId',
+            as: 'customer',
+            pipeline: [
+              { $project: { _id: 0, _status: 0, __v: 0 } }
+            ],
+          },
+        },
+        {
+          $set: {
+            customer: { $arrayElemAt: ["$customer", 0] }
+          }
+        },
+        {
+          $lookup: {
+            from: 'employee',
+            localField: 'id',
+            foreignField: 'userId',
+            as: 'employee',
+            pipeline: [
+              { $project: { _id: 0, _status: 0, __v: 0 } }
+            ],
+          }
+        },
+        {
+          $set: {
+            employee: { $arrayElemAt: ["$employee", 0] }
+          }
+        },
+      ]);
+
+      return res.status(200).json({
+        data: docs,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get all ${this.table} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  }
+
   // Create
   createUser = async (req: Request, res: Response) => {
     try {
@@ -207,7 +383,7 @@ class UserCtrl extends BaseCtrl {
   deleteUser = async (req: Request, res: Response) => {
     try {
       const isExistUser = await this.model.findOne({ id: req.params.id }).exec();
-      
+
       if (!isNull(isExistUser)) {
         req.body.updateTime = moment().unix();
         await this.model.findOneAndUpdate({ id: req.params.id }, { updateTime: req.body.updateTime, _status: false });
@@ -264,7 +440,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password)) {
-        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0}));
+        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
 
         if (user && (await bcrypt.compare(password, user.password))) {
           const token = generalToken(user.id, userName);

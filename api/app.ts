@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(morgan('dev'));
-app.set('port', (process.env.PORT || 3000));
+app.set('port', 3000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

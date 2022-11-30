@@ -12,6 +12,10 @@ import TransactionCtrl from './controllers/transaction.controller';
 // Middlewares
 import auth from './middleware/auth.middleware';
 
+// Services
+import sentMail from './services/mail.service';
+import { User } from 'interfaces/user.interface';
+
 const setRoutes = (app: Application): void => {
   const router = Router();
   const userCtrl = new UserCtrl();
@@ -21,6 +25,13 @@ const setRoutes = (app: Application): void => {
   const roleCtrl = new RoleCtrl();
   const receiverCtrl = new ReceiverCtrl();
   const transactionCtrl = new TransactionCtrl();
+  // const user: User = {
+  //   id: 'user0',
+  //   userName: 'Rokia',
+  //   email: 'hahoanglong7@gmail.com'
+  // };
+  // const code = '333333';
+  // sentMail(user, code);
 
   // User
   router.route('/users').get(userCtrl.getAllUser);

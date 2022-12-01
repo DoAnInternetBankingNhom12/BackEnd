@@ -22,6 +22,7 @@ export function sendMail(user: User, OTP: string) {
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log('Email error', error);
         resolve({
           success: false,
           err: error

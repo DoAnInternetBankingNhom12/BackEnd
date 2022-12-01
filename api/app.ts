@@ -13,21 +13,21 @@ import setRoutes from './routes';
 import { encryptedData, decryptedData } from './utils/utils';
 
 const whitelist = process.env.WHITELIST?.split(',');
-const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    if (whitelist?.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
+// const corsOptions = {
+//   origin: function (origin: any, callback: any) {
+//     if (whitelist?.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
 
 // For Test Dev
-// const corsOptions = {
-//   origin: '*',
-//   optionsSuccessStatus: 200
-// }
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
+}
 
 const app = express();
 app.use(cors(corsOptions));

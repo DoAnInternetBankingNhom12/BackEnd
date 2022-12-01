@@ -11,10 +11,7 @@ import TransactionCtrl from './controllers/transaction.controller';
 
 // Middlewares
 import auth from './middleware/auth.middleware';
-
-// Services
-import sentMail from './services/mail.service';
-import { User } from 'interfaces/user.interface';
+import otp from './middleware/otp.middleware';
 
 const setRoutes = (app: Application): void => {
   const router = Router();
@@ -25,13 +22,6 @@ const setRoutes = (app: Application): void => {
   const roleCtrl = new RoleCtrl();
   const receiverCtrl = new ReceiverCtrl();
   const transactionCtrl = new TransactionCtrl();
-  // const user: User = {
-  //   id: 'user0',
-  //   userName: 'Rokia',
-  //   email: 'hahoanglong7@gmail.com'
-  // };
-  // const code = '333333';
-  // sentMail(user, code);
 
   // User
   router.route('/users').get(userCtrl.getAllUser);
@@ -98,6 +88,9 @@ const setRoutes = (app: Application): void => {
   router.route('/login').get(userCtrl.login);
   router.route('/loginrt').get(userCtrl.loginRT);
   router.route('/logout').get(userCtrl.logout);
+
+  // OTP
+  router.route('/otp').get(userCtrl.sendOtp);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

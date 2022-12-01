@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import {} from './services/cache.service';
 dotenv.config();
 
 // Modules
@@ -22,6 +23,12 @@ const corsOptions = {
   }
 }
 
+// For Test Dev
+// const corsOptions = {
+//   origin: '*',
+//   optionsSuccessStatus: 200
+// }
+
 const app = express();
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
@@ -41,7 +48,6 @@ const main = async (): Promise<any> => {
     // const dataDecrypted = decryptedData(dataEncrypted);
     // console.log('dataEncrypted', dataEncrypted);
     // console.log('dataDecrypted', dataDecrypted);
-
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {
     console.error(err);

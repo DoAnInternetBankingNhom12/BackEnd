@@ -443,7 +443,7 @@ class UserCtrl extends BaseCtrl {
         user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
 
         if (user && (await bcrypt.compare(password, user.password))) {
-          const token = generalToken(user.id, userName);
+          const token = generalToken(user.id, userName, user.email);
 
           user.token = token;
           user.password = undefined;
@@ -460,7 +460,7 @@ class UserCtrl extends BaseCtrl {
         user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0 }));
 
         if (user) {
-          const token = generalToken(user.id, userName);
+          const token = generalToken(user.id, userName, user.email);
 
           user.token = token;
           user.password = undefined;
@@ -516,7 +516,7 @@ class UserCtrl extends BaseCtrl {
         user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0, password: 0 }));
 
         if (user) {
-          const token = generalToken(user.id, user.userName);
+          const token = generalToken(user.id, user.userName, user.email);
 
           user.token = token;
           user.password = undefined;
@@ -671,12 +671,12 @@ class UserCtrl extends BaseCtrl {
   }
 }
 
-function generalToken(id: string, userName: string) {
+function generalToken(id: string, userName: string, email: string) {
   return jwt.sign(
-    { user_id: id, userName },
+    { userId: id, userName, email },
     process.env.TOKEN_JWT_KEY as string,
     {
-      expiresIn: '2m',
+      expiresIn: '5m',
     }
   );
 };

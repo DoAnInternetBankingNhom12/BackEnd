@@ -1,5 +1,6 @@
 import * as NodeCache from 'node-cache';
-const cache = new NodeCache( { stdTTL: 300 } )
+const cache = new NodeCache( { stdTTL: 300 } ); // 5m
+// const cache = new NodeCache( { stdTTL: 10 } ); // 10s
 
 
 export function setCache(key: string, value: any) {
@@ -14,6 +15,10 @@ export function getTtl(key: string) {
   return cache.getTtl(key);
 }
 
-export function getAllKeys() {
+export function getKeys() {
   return cache.keys();
+}
+
+export function deleteCache(key: string) {
+  cache.del(key);
 }

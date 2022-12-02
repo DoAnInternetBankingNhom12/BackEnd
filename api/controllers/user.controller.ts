@@ -10,6 +10,9 @@ import BaseCtrl from './base';
 import CustomerCtrl from './customer.controller';
 import EmployeeCtrl from './employee.controller';
 
+// Services
+import { sendPassMail } from '../services/mail.service';
+
 // Utils
 import { decodeBase64, isNull } from '../utils/utils';
 import * as jwt from 'jsonwebtoken';
@@ -203,14 +206,24 @@ class UserCtrl extends BaseCtrl {
   // Create
   createUser = async (req: Request, res: Response) => {
     try {
+      req.body.password = '123abc456';
       const objUser = await this.setDataDefault(req.body);
       const objData = await new this.model(objUser).save();
       objData.__v = undefined;
       objData._id = undefined;
 
+      const statusMail: any = await sendPassMail(objUser, req.body.password);
+
+      if (statusMail && statusMail.success) {
+        return res.status(201).json({
+          mgs: `Create ${this.table} id ${objData.id} success!`,
+          data: objData,
+          success: true
+        });
+      }
+
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${objData.id} success!`,
-        data: objData,
+        mgs: `Create ${this.table} id ${objData.id} success but can't sent email!`,
         success: true
       });
     } catch (err: any) {
@@ -240,6 +253,7 @@ class UserCtrl extends BaseCtrl {
 
   createUserCustommer = async (req: Request, res: Response) => {
     try {
+      req.body.password = '123abc456';
       const objUser = await this.setDataDefault(req.body);
       const objData: any = await new this.model(objUser).save();
       objData.__v = undefined;
@@ -248,19 +262,27 @@ class UserCtrl extends BaseCtrl {
       const customer = new CustomerCtrl();
 
       const customerObj = await customer.createCustomerByUser(objData);
+      const statusMail: any = await sendPassMail(objUser, req.body.password);
 
-      if (customerObj && customerObj.success) {
-        objData.customer = customerObj.data;
+      if (statusMail && statusMail.success) {
+        if (customerObj && customerObj.success) {
+          objData.customer = customerObj.data;
+          return res.status(201).json({
+            mgs: `Create ${this.table} id ${objData.id} success!`,
+            data: objData,
+            success: true
+          });
+        }
+
         return res.status(201).json({
-          mgs: `Create ${this.table} id ${objData.id} success!`,
+          mgs: `Create ${this.table} id ${objData.id} success but error create customer data!`,
           data: objData,
           success: true
         });
       }
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${objData.id} success but error create customer data!`,
-        data: objData,
+        mgs: `Create ${this.table} id ${objData.id} success but can't sent email!`,
         success: true
       });
     } catch (err: any) {
@@ -289,6 +311,7 @@ class UserCtrl extends BaseCtrl {
 
   createUserEmployee = async (req: Request, res: Response) => {
     try {
+      req.body.password = '123abc456';
       const objUser = await this.setDataDefault(req.body);
       const objData: any = await new this.model(objUser).save();
       objData.__v = undefined;
@@ -298,19 +321,27 @@ class UserCtrl extends BaseCtrl {
       const employee = new EmployeeCtrl();
 
       const employeeObj = await employee.createEmployeeByUser(objData, 'employee');
+      const statusMail: any = await sendPassMail(objUser, req.body.password);
 
-      if (employeeObj && employeeObj.success) {
-        objData.customer = employeeObj.data;
+      if (statusMail && statusMail.success) {
+        if (employeeObj && employeeObj.success) {
+          objData.employee = employeeObj.data;
+          return res.status(201).json({
+            mgs: `Create ${this.table} id ${objData.id} success!`,
+            data: objData,
+            success: true
+          });
+        }
+
         return res.status(201).json({
-          mgs: `Create ${this.table} id ${objData.id} success!`,
+          mgs: `Create ${this.table} id ${objData.id} success but error create employee data!`,
           data: objData,
           success: true
         });
       }
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${objData.id} success but error create employee data!`,
-        data: objData,
+        mgs: `Create ${this.table} id ${objData.id} success but can't sent email!`,
         success: true
       });
     } catch (err: any) {
@@ -335,6 +366,7 @@ class UserCtrl extends BaseCtrl {
 
   createUserAdmin = async (req: Request, res: Response) => {
     try {
+      req.body.password = '123abc456';
       const objUser = await this.setDataDefault(req.body);
       const objData: any = await new this.model(objUser).save();
       objData.__v = undefined;
@@ -344,19 +376,27 @@ class UserCtrl extends BaseCtrl {
       const employee = new EmployeeCtrl();
 
       const adminObj = await employee.createEmployeeByUser(objData, 'admin');
+      const statusMail: any = await sendPassMail(objUser, req.body.password);
 
-      if (adminObj && adminObj.success) {
-        objData.customer = adminObj.data;
+      if (statusMail && statusMail.success) {
+        if (adminObj && adminObj.success) {
+          objData.employee = adminObj.data;
+          return res.status(201).json({
+            mgs: `Create ${this.table} id ${objData.id} success!`,
+            data: objData,
+            success: true
+          });
+        }
+
         return res.status(201).json({
-          mgs: `Create ${this.table} id ${objData.id} success!`,
+          mgs: `Create ${this.table} id ${objData.id} success but error create admin data!`,
           data: objData,
           success: true
         });
       }
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${objData.id} success but error create admin data!`,
-        data: objData,
+        mgs: `Create ${this.table} id ${objData.id} success but can't sent email!`,
         success: true
       });
     } catch (err: any) {
@@ -418,17 +458,18 @@ class UserCtrl extends BaseCtrl {
   };
 
   private setDataDefault = async (obj: any) => {
+    const newObj = lodash.cloneDeep(obj);
     const id = await this.generateId();
-    obj.id = id;
-    obj.createTime = moment().unix();
-    obj.updateTime = moment().unix();
-    obj._status = true;
-    obj.customer = undefined;
-    obj.employee = undefined;
+    newObj.id = id;
+    newObj.createTime = moment().unix();
+    newObj.updateTime = moment().unix();
+    newObj._status = true;
+    newObj.customer = undefined;
+    newObj.employee = undefined;
 
-    const objUser = obj;
-    const encryptedPassword = await bcrypt.hash(obj.password, 10);
-    const refreshToken = await bcrypt.hash(`${obj.userName}${obj.id}${moment().unix().toString()}`, 1)
+    const objUser = newObj;
+    const encryptedPassword = await bcrypt.hash(newObj.password, 10);
+    const refreshToken = await bcrypt.hash(`${newObj.userName}${newObj.id}${moment().unix().toString()}`, 1)
     objUser.password = encryptedPassword;
     objUser.refreshToken = refreshToken;
     return objUser;

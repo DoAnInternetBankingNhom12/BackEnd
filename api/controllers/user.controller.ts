@@ -486,7 +486,6 @@ class UserCtrl extends BaseCtrl {
 
       return res.status(400).send({
         mgs: 'Invalid credentials!',
-        data: user,
         success: false,
         error: {
           status: 409,
@@ -538,23 +537,13 @@ class UserCtrl extends BaseCtrl {
 
       return res.status(400).send({
         mgs: 'Invalid credentials!',
-        data: user,
-        success: false,
-        error: {
-          status: 409,
-          code: 4002
-        }
+        success: false
       });
     } catch (err: any) {
       return res.status(400).send({
         mgs: 'Login error!',
         success: false,
-        error: {
-          error: err,
-          mgs: err.message,
-          status: 409,
-          code: 5000
-        }
+        error: err
       });
     };
   }
@@ -661,6 +650,50 @@ class UserCtrl extends BaseCtrl {
     catch (err: any) {
       return res.status(400).send({
         mgs: 'Change password error!',
+        success: false,
+        error: {
+          error: err,
+          mgs: err.message,
+        }
+      });
+    }
+  }
+
+  forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const { userName, newPassword } = decodeBase64(req.headers.info);
+      let user: any = undefined;
+
+      if (!isNull(userName) && !isNull(newPassword)) {
+        user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0, password: 0 });
+        if (user) {
+          const encryptedPassword = await bcrypt.hash(newPassword, 10);
+          const result: any = await this.model.findOneAndUpdate({ id: user.id }, { password: encryptedPassword }, { _id: 0, __v: 0, _status: 0 });
+
+          if (result) {
+            result.password = undefined;
+            return res.status(200).json({
+              mgs: 'Forgot password success!',
+              data: result,
+              success: true
+            });
+          }
+
+          return res.status(400).send({
+            mgs: 'Forgot password error!',
+            success: false,
+          });
+        }
+      }
+
+      return res.status(400).send({
+        mgs: 'Data invalid error!',
+        success: false,
+      });
+    }
+    catch (err: any) {
+      return res.status(400).send({
+        mgs: 'Forgot password error!',
         success: false,
         error: {
           error: err,

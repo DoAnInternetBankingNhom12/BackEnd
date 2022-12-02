@@ -26,10 +26,11 @@ const setRoutes = (app: Application): void => {
   const otpCtrl = new OTPCtrl();
 
   // User
-  router.route('/users').get(otp,userCtrl.getAllUser);
+  router.route('/users').get(userCtrl.getAllUser);
   router.route('/user/:id').get(userCtrl.getUser);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/changepws').post(userCtrl.changePassword);
+  router.route('/user/forgotpws').post(otp, userCtrl.forgotPassword);
   router.route('/user').post(userCtrl.createUser);
   router.route('/user/customer').post(userCtrl.createUserCustommer);
   router.route('/user/employee').post(userCtrl.createUserEmployee);

@@ -6,7 +6,7 @@ import { verifyOTP } from '../services/otp.service';
 // Utils
 import { isNull } from '../utils/utils';
 
-const verifyOtp = (req: Request, res: Response, next: any) => {
+const verifyOtp = async (req: Request, res: Response, next: any) => {
   try {
     const OTP: any = req.headers?.otp as String;
 
@@ -18,8 +18,7 @@ const verifyOtp = (req: Request, res: Response, next: any) => {
         });
     }
 
-    const status = verifyOTP(OTP);
-
+    const status = await verifyOTP(OTP);
     if (!status) {
       return res.status(403).json(
         {

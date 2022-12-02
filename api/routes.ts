@@ -8,6 +8,7 @@ import EmployeeCtrl from './controllers/employee.controller';
 import RoleCtrl from './controllers/role.controller';
 import ReceiverCtrl from './controllers/receiver.controller';
 import TransactionCtrl from './controllers/transaction.controller';
+import OTPCtrl from './controllers/otp.controller';
 
 // Middlewares
 import auth from './middleware/auth.middleware';
@@ -22,9 +23,10 @@ const setRoutes = (app: Application): void => {
   const roleCtrl = new RoleCtrl();
   const receiverCtrl = new ReceiverCtrl();
   const transactionCtrl = new TransactionCtrl();
+  const otpCtrl = new OTPCtrl();
 
   // User
-  router.route('/users').get(userCtrl.getAllUser);
+  router.route('/users').get(otp,userCtrl.getAllUser);
   router.route('/user/:id').get(userCtrl.getUser);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/changepws').post(userCtrl.changePassword);
@@ -90,7 +92,7 @@ const setRoutes = (app: Application): void => {
   router.route('/logout').get(userCtrl.logout);
 
   // OTP
-  router.route('/otp').get(userCtrl.sendOtp);
+  router.route('/otp').get(otpCtrl.sendOtp);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

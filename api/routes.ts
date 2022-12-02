@@ -93,6 +93,7 @@ const setRoutes = (app: Application): void => {
 
   // OTP
   router.route('/otp').get(otpCtrl.sendOtp);
+  router.route('/otp/:userName').get(otpCtrl.sendOtpByUserName);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

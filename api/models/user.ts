@@ -4,7 +4,7 @@ import * as moment from 'moment';
 const userSchema = new Schema<User>({
   id: { type: String, required: true, unique: true },
   userName: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true, match: /.+\@.+\..+/, },
+  email: { type: String, required: true, match: /.+\@.+\..+/, },
   password: { type: String, required: true },
   refreshToken: String,
   token: String,

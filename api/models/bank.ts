@@ -7,7 +7,7 @@ const bankSchema = new Schema<Bank>({
   addresses: { type: [String]},
   createTime: Number,
   updateTime: Number,
-  _status: Boolean
+  _status: { type: Boolean, required: true}
 }, { collection: 'bank' });
 
 export interface Bank extends Document {

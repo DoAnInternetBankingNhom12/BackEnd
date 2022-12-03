@@ -8,7 +8,7 @@ const customerSchema = new Schema<Customer>({
     paymentAccount: { type: String, required: true },
     createTime: Number,
     updateTime: Number,
-    _status: Boolean
+    _status: { type: Boolean, required: true}
   }, { collection: 'customer' });
 
   export interface Customer extends Document {

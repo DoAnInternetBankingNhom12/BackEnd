@@ -8,7 +8,7 @@ const employeeSchema = new Schema<Employee>({
     accountType: { type: String, required: true },
     createTime: Number,
     updateTime: Number,
-    _status: Boolean
+    _status: { type: Boolean, required: true}
 }, { collection: 'employee' });
 
 export interface Employee extends Document {

@@ -6,7 +6,7 @@ const roleSchema = new Schema<Role>({
   description: String,
   createTime: Number,
   updateTime: Number,
-  _status: Boolean
+  _status: { type: Boolean, required: true}
 }, { collection: 'role' });
 
 export interface Role extends Document {

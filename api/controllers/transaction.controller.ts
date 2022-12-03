@@ -4,7 +4,10 @@ import { Request, Response } from 'express';
 import BaseCtrl from './base';
 
 // Models
-import Transaction from '../models/transaction';
+import TransactionModel from '../models/transaction';
+
+// Interfaces
+import { Transaction } from '../interfaces/transaction.interface';
 
 // Utils
 import * as moment from 'moment';
@@ -12,7 +15,7 @@ import * as lodash from 'lodash';
 import { isNull } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
-  model = Transaction;
+  model = TransactionModel;
   table = 'Transaction';
 
   // Find
@@ -45,6 +48,35 @@ class TransactionCtrl extends BaseCtrl {
       });
     }
   };
+
+  internalBank = async (req: Request, res: Response) => {
+    try {
+      const tempData = lodash.cloneDeep(req.body);
+      const id = await this.generateId();
+      tempData.id = id;
+      tempData.createTime = moment().unix();
+      tempData.updateTime = moment().unix();
+      tempData._status = true;
+
+      const obj: any = await new this.model(tempData).save();
+      obj.__v = undefined;
+      obj._status = undefined;
+
+      return res.status(200).json({
+        success: true
+      });
+    } catch (err: any) {
+      console.log(err);
+      return res.status(400).json({
+        success: false,
+        error: err
+      });
+    }
+  };
+
+  // checkDataTransaction(data: Transaction) {
+
+  // }
 }
 
 export default TransactionCtrl;

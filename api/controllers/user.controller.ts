@@ -41,43 +41,7 @@ class UserCtrl extends BaseCtrl {
       let docs = undefined;
 
       if (isAll) {
-        docs = await this.model.aggregate([
-          {
-            $unset: ["_id", "password", "_status", "__v"]
-          },
-          {
-            $lookup: {
-              from: 'customer',
-              localField: 'id',
-              foreignField: 'userId',
-              as: 'customer',
-              pipeline: [
-                { $project: { _id: 0, _status: 0, __v: 0 } }
-              ],
-            },
-          },
-          {
-            $set: {
-              customer: { $arrayElemAt: ["$customer", 0] }
-            }
-          },
-          {
-            $lookup: {
-              from: 'employee',
-              localField: 'id',
-              foreignField: 'userId',
-              as: 'employee',
-              pipeline: [
-                { $project: { _id: 0, _status: 0, __v: 0 } }
-              ],
-            }
-          },
-          {
-            $set: {
-              employee: { $arrayElemAt: ["$employee", 0] }
-            }
-          },
-        ]);
+        docs = await this.model.aggregate(getPipeLineGetUser());
 
         return res.status(200).json({
           data: docs,
@@ -85,59 +49,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      docs = await this.model.aggregate([
-        { $match: { _status: status } },
-        {
-          $unset: ['_id', 'password', '_status', '__v']
-        },
-        {
-          $lookup: {
-            from: 'customer',
-            localField: 'id',
-            foreignField: 'userId',
-            as: 'customer',
-            pipeline: [
-              { $project: { _id: 0, _status: 0, __v: 0 } }
-            ],
-          },
-        },
-        {
-          $set: {
-            customer: { $arrayElemAt: ['$customer', 0] }
-          }
-        },
-        {
-          $lookup: {
-            from: 'employee',
-            localField: 'id',
-            foreignField: 'userId',
-            as: 'employee',
-            pipeline: [
-              { $project: { _id: 0, _status: 0, __v: 0 } }
-            ],
-          }
-        },
-        {
-          $set: {
-            employee: { $arrayElemAt: ['$employee', 0] },
-          }
-        },
-        {
-          $set:
-          {
-            role: {
-              $switch: {
-                branches: [
-                  { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
-                  { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
-                  { case: { $ne: ['$customer', undefined] }, then: 'customer' }
-                ],
-                default: ''
-              }
-            }
-          }
-        },
-      ]);
+      docs = await this.model.aggregate(getPipeLineGetUser(0, status));
 
       return res.status(200).json({
         data: docs,
@@ -161,60 +73,13 @@ class UserCtrl extends BaseCtrl {
       const searchId = lodash.cloneDeep(req.params.id);
 
       if (isNull(searchId)) {
+        return res.status(400).json({
+          mgs: `No user id to get!`,
+          success: false
+        });
       }
-      const docs = await this.model.aggregate([
-        { $match: { id: searchId } },
-        {
-          $unset: ["_id", "password", "_status", "__v"]
-        },
-        {
-          $lookup: {
-            from: 'customer',
-            localField: 'id',
-            foreignField: 'userId',
-            as: 'customer',
-            pipeline: [
-              { $project: { _id: 0, _status: 0, __v: 0 } }
-            ],
-          },
-        },
-        {
-          $set: {
-            customer: { $arrayElemAt: ["$customer", 0] }
-          }
-        },
-        {
-          $lookup: {
-            from: 'employee',
-            localField: 'id',
-            foreignField: 'userId',
-            as: 'employee',
-            pipeline: [
-              { $project: { _id: 0, _status: 0, __v: 0 } }
-            ],
-          }
-        },
-        {
-          $set: {
-            employee: { $arrayElemAt: ["$employee", 0] }
-          }
-        },
-        {
-          $set:
-          {
-            role: {
-              $switch: {
-                branches: [
-                  { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
-                  { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
-                  { case: { $ne: ['$customer', undefined] }, then: 'customer' }
-                ],
-                default: ''
-              }
-            }
-          }
-        },
-      ]);
+
+      const docs = await this.model.aggregate(getPipeLineGetUser(0, undefined, searchId));
 
       return res.status(200).json({
         data: docs,
@@ -511,10 +376,10 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password)) {
-        user = lodash.cloneDeep(await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 }));
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser(1, undefined, undefined, userName, undefined)))[0];
 
         if (user && (await bcrypt.compare(password, user.password))) {
-          const token = generalToken(user.id, userName, user.email);
+          const token = generalToken(user.id, userName, user.email, user.role);
 
           user.token = token;
           user.password = undefined;
@@ -528,10 +393,10 @@ class UserCtrl extends BaseCtrl {
       }
 
       if (!isNull(refreshToken)) {
-        user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0 }));
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser(1, undefined, undefined, undefined, refreshToken)))[0];
 
         if (user) {
-          const token = generalToken(user.id, userName, user.email);
+          const token = generalToken(user.id, userName, user.email, user.role);
 
           user.token = token;
           user.password = undefined;
@@ -583,10 +448,10 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (refreshToken) {
-        user = lodash.cloneDeep(await this.model.findOne({ refreshToken }, { _status: 0, __v: 0, _id: 0, password: 0 }));
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser(1, undefined, undefined, undefined, refreshToken)))[0];
 
         if (user) {
-          const token = generalToken(user.id, user.userName, user.email);
+          const token = generalToken(user.id, user.userName, user.email, user.role);
 
           user.token = token;
           user.password = undefined;
@@ -775,9 +640,9 @@ class UserCtrl extends BaseCtrl {
   }
 }
 
-function generalToken(id: string, userName: string, email: string) {
+function generalToken(id: string, userName: string, email: string, role: string) {
   return jwt.sign(
-    { userId: id, userName, email },
+    { userId: id, userName, email, role },
     process.env.TOKEN_JWT_KEY as string,
     {
       expiresIn: '5m',
@@ -785,6 +650,76 @@ function generalToken(id: string, userName: string, email: string) {
   );
 };
 
+function getPipeLineGetUser(showPass = 0, status?: boolean, id?: string, userName?: string, refreshToken?: string) {
+  const option: any = {};
 
+  status ? option._status = status : '';
+  id ? option.id = id : '';
+  userName ? option.userName = userName : '';
+  refreshToken ? option.refreshToken = refreshToken : '';
+
+  const unset = ['_id', '_status', '__v'];
+  if (showPass === 0) {
+    unset.push('password')
+  }
+
+  const pipeLine: any[] = [
+    {
+      $match: option
+    },
+    {
+      $unset: unset
+    },
+    {
+      $lookup: {
+        from: 'customer',
+        localField: 'id',
+        foreignField: 'userId',
+        as: 'customer',
+        pipeline: [
+          { $project: { _id: 0, _status: 0, __v: 0 } }
+        ],
+      },
+    },
+    {
+      $set: {
+        customer: { $arrayElemAt: ['$customer', 0] }
+      }
+    },
+    {
+      $lookup: {
+        from: 'employee',
+        localField: 'id',
+        foreignField: 'userId',
+        as: 'employee',
+        pipeline: [
+          { $project: { _id: 0, _status: 0, __v: 0 } }
+        ],
+      }
+    },
+    {
+      $set: {
+        employee: { $arrayElemAt: ['$employee', 0] },
+      }
+    },
+    {
+      $set:
+      {
+        role: {
+          $switch: {
+            branches: [
+              { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
+              { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
+              { case: { $ne: ['$customer', undefined] }, then: 'customer' }
+            ],
+            default: ''
+          }
+        }
+      }
+    },
+  ];
+
+  return pipeLine;
+}
 
 export default UserCtrl;

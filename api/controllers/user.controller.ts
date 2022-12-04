@@ -88,7 +88,7 @@ class UserCtrl extends BaseCtrl {
       docs = await this.model.aggregate([
         { $match: { _status: status } },
         {
-          $unset: ["_id", "password", "_status", "__v"]
+          $unset: ['_id', 'password', '_status', '__v']
         },
         {
           $lookup: {
@@ -103,7 +103,7 @@ class UserCtrl extends BaseCtrl {
         },
         {
           $set: {
-            customer: { $arrayElemAt: ["$customer", 0] }
+            customer: { $arrayElemAt: ['$customer', 0] }
           }
         },
         {
@@ -119,7 +119,22 @@ class UserCtrl extends BaseCtrl {
         },
         {
           $set: {
-            employee: { $arrayElemAt: ["$employee", 0] }
+            employee: { $arrayElemAt: ['$employee', 0] },
+          }
+        },
+        {
+          $set:
+          {
+            role: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
+                  { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
+                  { case: { $ne: ['$customer', undefined] }, then: 'customer' }
+                ],
+                default: ''
+              }
+            }
           }
         },
       ]);
@@ -182,6 +197,21 @@ class UserCtrl extends BaseCtrl {
         {
           $set: {
             employee: { $arrayElemAt: ["$employee", 0] }
+          }
+        },
+        {
+          $set:
+          {
+            role: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
+                  { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
+                  { case: { $ne: ['$customer', undefined] }, then: 'customer' }
+                ],
+                default: ''
+              }
+            }
           }
         },
       ]);

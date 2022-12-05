@@ -98,6 +98,36 @@ class UserCtrl extends BaseCtrl {
     }
   }
 
+  getUserInfo = async (req: Request, res: Response) => {
+    try {
+      const searchId = lodash.cloneDeep(req.body.user.userId);
+
+      if (isNull(searchId)) {
+        return res.status(400).json({
+          mgs: `No user id to get!`,
+          success: false
+        });
+      }
+
+      const docs = await this.model.aggregate(getPipeLineGetUser(0, undefined, searchId));
+
+      return res.status(200).json({
+        data: docs,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get all ${this.table} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  }
+
   // Create
   createUser = async (req: Request, res: Response) => {
     try {

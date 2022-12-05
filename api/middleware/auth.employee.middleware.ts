@@ -13,8 +13,6 @@ const verifyTokenEmployee = (req: any, res: any, next: any) => {
 
     const token_key = process.env.TOKEN_JWT_KEY as string;
     const user: any = jwt.verify(token, token_key);
-
-    console.log((user.role === 'employee' || user.role === 'admin'));
     
     if (user && (user.role === 'employee' || user.role === 'admin')) {
       req.body.user = user;

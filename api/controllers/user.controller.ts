@@ -112,7 +112,7 @@ class UserCtrl extends BaseCtrl {
       const docs = await this.model.aggregate(getPipeLineGetUser(['password'], undefined, searchId));
 
       return res.status(200).json({
-        data: docs,
+        data: docs[0],
         success: true
       });
     } catch (err: any) {
@@ -408,19 +408,32 @@ class UserCtrl extends BaseCtrl {
       if (!isNull(userName) && !isNull(password)) {
         user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, userName, undefined)))[0];
 
-        if (user && (await bcrypt.compare(password, user.password))) {
-          const token = generalToken(user.id, userName, user.email, user.role);
-
-          user.token = token;
-          user.password = undefined;
-
-          return res.status(200).json({
-            mgs: 'Login success!',
-            data: user,
-            success: true
+        if (user) {
+          if((await bcrypt.compare(password, user.password))) {
+            const token = generalToken(user.id, userName, user.email, user.role);
+  
+            user.token = token;
+            user.password = undefined;
+  
+            return res.status(200).json({
+              mgs: 'Login success!',
+              data: user,
+              success: true
+            });
+          } else {
+            return res.status(400).json({
+              mgs: 'Wrong password!',
+              success: false
+            });
+          }
+        } else {
+          return res.status(400).send({
+            mgs: 'Account does not exist! Maybe wrong username!',
+            success: false
           });
         }
       }
+
 
       if (!isNull(refreshToken)) {
         user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, undefined, refreshToken)))[0];
@@ -436,38 +449,30 @@ class UserCtrl extends BaseCtrl {
             data: user,
             success: true
           });
+        } else {
+          return res.status(400).json({
+            mgs: 'Refresh token invalid!',
+            success: false
+          });
         }
       }
 
       if (!user) {
         return res.status(400).send({
           mgs: 'Data invalid!',
-          data: {
-            userName,
-            password
-          },
           success: false
         });
       }
 
-      return res.status(400).send({
+      return res.status(409).send({
         mgs: 'Invalid credentials!',
-        success: false,
-        error: {
-          status: 409,
-          code: 4002
-        }
+        success: false
       });
     } catch (err: any) {
-      return res.status(400).send({
+      return res.status(409).send({
         mgs: 'Login error!',
         success: false,
-        error: {
-          error: err,
-          mgs: err.message,
-          status: 409,
-          code: 5000
-        }
+        error: err
       });
     };
   }
@@ -477,7 +482,7 @@ class UserCtrl extends BaseCtrl {
       const { refreshToken } = decodeBase64(req.headers.info);
       let user: any = undefined;
 
-      if (refreshToken) {
+      if (!isNull(refreshToken)) {
         user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, undefined, refreshToken)))[0];
 
         if (user) {
@@ -488,8 +493,15 @@ class UserCtrl extends BaseCtrl {
 
           return res.status(200).json({
             mgs: 'Login success!',
-            data: user,
+            data: {
+              token
+            },
             success: true
+          });
+        } else {
+          return res.status(400).json({
+            mgs: 'Refresh token invalid!',
+            success: false
           });
         }
       }

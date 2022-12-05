@@ -91,9 +91,9 @@ const setRoutes = (app: Application): void => {
   router.route('/transaction/:id').delete(transactionCtrl.delete);
 
   // Login || Logout
-  router.route('/login').get(userCtrl.login);
-  router.route('/loginrt').get(userCtrl.loginRT);
-  router.route('/logout').get(userCtrl.logout);
+  router.route('/login').post(userCtrl.login);
+  router.route('/loginrt').post(userCtrl.loginRT);
+  router.route('/logout').post(userCtrl.logout);
 
   // OTP
   router.route('/otp').get(auth, otpCtrl.sendOtp);

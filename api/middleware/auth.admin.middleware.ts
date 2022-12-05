@@ -16,14 +16,13 @@ const verifyTokenAdmin = (req: any, res: any, next: any) => {
     
     if (user && user.role === 'admin') {
       req.body.user = user;
-      return next();
+    } else {
+      return res.status(401).json({
+        mgs: 'Account does not have access!'
+      });
     }
-
-    return res.status(401).json({
-      mgs: 'Account does not have access!'
-    });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(403).json({
       mgs: 'Invalid token!'
     });
   }

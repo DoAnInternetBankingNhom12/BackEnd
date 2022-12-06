@@ -42,72 +42,28 @@ export function decodeBase64(value: any) {
     return JSON.parse(jsonString);
 }
 
-export function getPipeLineGetUser(unset: string[] = [], status?: boolean, id?: string, userName?: string, refreshToken?: string) {
-    const option: any = {};
-
-    status ? option._status = status : '';
-    id ? option.id = id : '';
-    userName ? option.userName = userName : '';
-    refreshToken ? option.refreshToken = refreshToken : '';
+export function getPipeLineGet(unset: string[] = [], optionSearch: any = undefined, lookups: any[] = [], sets: any[] = []) {
     unset.push('_id');
     unset.push('_status');
     unset.push('__v');
 
-    const pipeLine: any[] = [
-        {
-            $match: option
-        },
-        {
-            $unset: unset
-        },
-        {
-            $lookup: {
-                from: 'customer',
-                localField: 'id',
-                foreignField: 'userId',
-                as: 'customer',
-                pipeline: [
-                    { $project: { _id: 0, _status: 0, __v: 0 } }
-                ],
-            },
-        },
-        {
-            $set: {
-                customer: { $arrayElemAt: ['$customer', 0] }
-            }
-        },
-        {
-            $lookup: {
-                from: 'employee',
-                localField: 'id',
-                foreignField: 'userId',
-                as: 'employee',
-                pipeline: [
-                    { $project: { _id: 0, _status: 0, __v: 0 } }
-                ],
-            }
-        },
-        {
-            $set: {
-                employee: { $arrayElemAt: ['$employee', 0] },
-            }
-        },
-        {
-            $set:
-            {
-                role: {
-                    $switch: {
-                        branches: [
-                            { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
-                            { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
-                            { case: { $ne: ['$customer', undefined] }, then: 'customer' }
-                        ],
-                        default: ''
-                    }
-                }
-            }
-        },
-    ];
+    const pipeLine: any[] = [];
+
+    if (optionSearch) {
+        pipeLine.push({
+            $match: optionSearch
+        });
+    }
+
+    pipeLine.push({ $unset: unset });
+
+    for (const lookup of lookups) {
+        pipeLine.push({ $lookup: lookup });
+    }
+
+    for (const set of sets) {
+        pipeLine.push({ $set: set });
+    }
 
     return pipeLine;
 }

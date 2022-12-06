@@ -22,6 +22,41 @@ class ReceiverCtrl extends BaseCtrl {
   modelBank = Bank;
   table = 'Receiver';
 
+  getReceiverByToken = async (req: Request, res: Response) => {
+    try {
+      const user  = lodash.cloneDeep(req.body.user);
+      
+      if (!user || !user.userId) {
+        return res.status(200).json({
+          mgs: `No information to get my receiver!`,
+          success: false
+        });
+      }
+  
+      const data = await this.model.find({userId: user.userId}, { _id: 0, __v: 0, _status: 0 });
+  
+      if (!data || data.length === 0){
+        return res.status(200).json({
+          mgs: `Get receivers success but is empty!`,
+          data: [],
+          success: true
+        });
+      }
+  
+      return res.status(200).json({
+        mgs: `Get receivers success!`,
+        data,
+        success: true
+      });
+    } catch(err: any) {
+      return res.status(200).json({
+        mgs: `Get receivers error!`,
+        error: err,
+        success: false
+      });
+    }
+  }
+
   // Insert
   createReceiver = async (req: Request, res: Response) => {
     try {

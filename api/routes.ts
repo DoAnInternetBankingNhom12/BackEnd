@@ -76,6 +76,7 @@ const setRoutes = (app: Application): void => {
 
   // Receiver
   router.route('/receivers').get(auth, receiverCtrl.getAll);
+  router.route('/myreceiver').get(auth, receiverCtrl.getReceiverByToken);
   router.route('/receivers/count').get(auth, receiverCtrl.count);
   router.route('/receiver/:id').get(auth, receiverCtrl.get);
   router.route('/receiver').post(auth, receiverCtrl.createReceiver);

@@ -18,7 +18,7 @@ import * as moment from 'moment';
 import * as lodash from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { decodeBase64, isNull, getPipeLineGetUser } from '../utils/utils';
+import { decodeBase64, isNull, getPipeLineGet } from '../utils/utils';
 
 
 class UserCtrl extends BaseCtrl {
@@ -26,6 +26,48 @@ class UserCtrl extends BaseCtrl {
   modelEmployee = Employee;
   modelCustommer = Custommer;
   table = 'User';
+
+  lookups = [
+    {
+      from: 'customer',
+      localField: 'id',
+      foreignField: 'userId',
+      as: 'customer',
+      pipeline: [
+        { $project: { _id: 0, _status: 0, __v: 0 } }
+      ],
+    },
+    {
+      from: 'employee',
+      localField: 'id',
+      foreignField: 'userId',
+      as: 'employee',
+      pipeline: [
+        { $project: { _id: 0, _status: 0, __v: 0 } }
+      ],
+    }
+  ];
+
+  sets = [
+    {
+      customer: { $arrayElemAt: ['$customer', 0] }
+    },
+    {
+      employee: { $arrayElemAt: ['$employee', 0] },
+    },
+    {
+      role: {
+        $switch: {
+          branches: [
+            { case: { $eq: ['$employee.accountType', 'admin'] }, then: 'admin' },
+            { case: { $eq: ['$employee.accountType', 'employee'] }, then: 'employee' },
+            { case: { $ne: ['$customer', undefined] }, then: 'customer' }
+          ],
+          default: ''
+        }
+      }
+    }
+  ];
 
   // Get
   getAllUser = async (req: Request, res: Response) => {
@@ -41,7 +83,7 @@ class UserCtrl extends BaseCtrl {
       let docs = undefined;
 
       if (isAll) {
-        docs = await this.model.aggregate(getPipeLineGetUser());
+        docs = await this.model.aggregate(getPipeLineGet(['password'], undefined, this.lookups, this.sets));
 
         return res.status(200).json({
           data: docs,
@@ -49,7 +91,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      docs = await this.model.aggregate(getPipeLineGetUser(['password'], status));
+      docs = await this.model.aggregate(getPipeLineGet(['password'], { _status: status }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs,
@@ -79,7 +121,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const docs = await this.model.aggregate(getPipeLineGetUser(['password'], undefined, searchId));
+      const docs = await this.model.aggregate(getPipeLineGet(['password'], { id: searchId }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs,
@@ -109,7 +151,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const docs = await this.model.aggregate(getPipeLineGetUser(['password'], undefined, searchId));
+      const docs = await this.model.aggregate(getPipeLineGet(['password'], { id: searchId }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs[0],
@@ -406,15 +448,15 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, userName, undefined)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { userName: userName }, this.lookups, this.sets)))[0];
 
         if (user) {
-          if((await bcrypt.compare(password, user.password))) {
+          if ((await bcrypt.compare(password, user.password))) {
             const token = generalToken(user.id, userName, user.email, user.role);
-  
+
             user.token = token;
             user.password = undefined;
-  
+
             return res.status(200).json({
               mgs: 'Login success!',
               data: user,
@@ -436,7 +478,8 @@ class UserCtrl extends BaseCtrl {
 
 
       if (!isNull(refreshToken)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, undefined, refreshToken)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken }, this.lookups, this.sets)))[0];
+
 
         if (user) {
           const token = generalToken(user.id, userName, user.email, user.role);
@@ -483,7 +526,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(refreshToken)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGetUser([], undefined, undefined, undefined, refreshToken)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken }, this.lookups, this.sets)))[0];
 
         if (user) {
           const token = generalToken(user.id, user.userName, user.email, user.role);

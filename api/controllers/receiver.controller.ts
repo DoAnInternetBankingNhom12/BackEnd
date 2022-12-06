@@ -11,9 +11,7 @@ import BaseCtrl from './base';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
-import { decodeBase64, isNull } from '../utils/utils';
+import { isNull, getPipeLineGet } from '../utils/utils';
 
 
 class ReceiverCtrl extends BaseCtrl {
@@ -22,33 +20,51 @@ class ReceiverCtrl extends BaseCtrl {
   modelBank = Bank;
   table = 'Receiver';
 
+  lookups = [
+    {
+      from: 'bank',
+      localField: 'bankId',
+      foreignField: 'id',
+      as: 'bankName',
+      pipeline: [
+        { $project: { _id: 0, _status: 0, __v: 0, phoneNumbers: 0, addresses: 0, createTime: 0, updateTime: 0, id: 0 } }
+      ],
+    }
+  ];
+
+  sets = [
+    {
+      bankName: { $arrayElemAt: ['$bankName.name', 0] }
+    },
+  ];
+
   getReceiverByToken = async (req: Request, res: Response) => {
     try {
-      const user  = lodash.cloneDeep(req.body.user);
-      
+      const user = lodash.cloneDeep(req.body.user);
+
       if (!user || !user.userId) {
         return res.status(200).json({
           mgs: `No information to get my receiver!`,
           success: false
         });
       }
-  
-      const data = await this.model.find({userId: user.userId}, { _id: 0, __v: 0, _status: 0 });
-  
-      if (!data || data.length === 0){
+
+      const data = await this.model.aggregate(getPipeLineGet([], { userId: user.userId }, this.lookups, this.sets))
+
+      if (!data || data.length === 0) {
         return res.status(200).json({
           mgs: `Get receivers success but is empty!`,
           data: [],
           success: true
         });
       }
-  
+
       return res.status(200).json({
         mgs: `Get receivers success!`,
         data,
         success: true
       });
-    } catch(err: any) {
+    } catch (err: any) {
       return res.status(200).json({
         mgs: `Get receivers error!`,
         error: err,
@@ -132,7 +148,7 @@ class ReceiverCtrl extends BaseCtrl {
 
         if (!isNull(req.body.userId)) {
           const isExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
-  
+
           if (!isExist) {
             return res.status(400).json({
               mgs: `User ID does not exist!`,
@@ -140,10 +156,10 @@ class ReceiverCtrl extends BaseCtrl {
             });
           }
         }
-  
+
         if (!isNull(req.body.idBank)) {
           const isExist = await this.modelBank.findOne({ id: req.body.idBank }).exec();
-  
+
           if (!isExist) {
             return res.status(400).json({
               mgs: `Bank ID does not exist!`,

@@ -157,61 +157,46 @@ class ReceiverCtrl extends BaseCtrl {
   // Update
   updateReceiver = async (req: Request, res: Response) => {
     try {
-      const idExist = await this.model.findOne({ id: req.params.id }).exec();
+      const isExist = await this.model.findOne({ id: req.params.id, userId: req.body.user.userId  }).exec();
+      const obj: any = {};
 
-      if (idExist) {
-        req.body.updateTime = moment().unix();
-        req.body._status = true;
+      if (isExist) {
+        const tempData = lodash.cloneDeep(req.body);
+        tempData.updateTime = moment().unix();
+        tempData._status = true;
 
-        if (!isNull(req.body.userId)) {
-          const isExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
-
-          if (!isExist) {
-            return res.status(400).json({
-              mgs: `User ID does not exist!`,
-              success: false
-            });
-          }
+        const bankType = await this.getTypeBank(tempData.bankId);
+        if (!bankType) {
+          return res.status(400).json({
+            mgs: `No bank type data to update receiver!`,
+            success: false
+          });
         }
+        
+        obj.bankId = tempData.bankId;
+        obj.remittanceType = bankType;
 
-        if (!isNull(req.body.idBank)) {
-          const isExist = await this.modelBank.findOne({ id: req.body.idBank }).exec();
-
-          if (!isExist) {
-            return res.status(400).json({
-              mgs: `Bank ID does not exist!`,
-              success: false
-            });
-          }
+        if(!isNull(tempData.reminiscentName)) {
+          obj.reminiscentName = tempData.reminiscentName;
         }
-
-        await this.model.findOneAndUpdate({ id: req.params.id }, req.body, { _id: 0, __v: 0, _status: 0 });
+        
+        await this.model.findOneAndUpdate({ id: req.params.id }, obj, { _id: 0, __v: 0, _status: 0 });
 
         return res.status(200).json({
-          data: req.body,
+          mgs: `Update ${this.table} id ${req.params.id} success!`,
           success: true
         });
       }
 
       return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
-        data: req.body,
-        success: false,
-        error: {
-          status: 200,
-          code: 5002
-        }
+        success: false
       });
     } catch (err: any) {
       return res.status(400).json({
         mgs: `Update ${this.table} id ${req.params.id} error!`,
-        data: req.body,
         success: false,
-        error: {
-          mgs: err.message,
-          status: 400,
-          code: 5000
-        }
+        error: err
       });
     }
   };
@@ -232,10 +217,8 @@ class ReceiverCtrl extends BaseCtrl {
 
   private async getCustomer(property: string, value: any) {
     try {
-      const option = {};
-      Object.defineProperty(option, `${property}`, {
-        value: value,
-      });
+      const option: any = {};
+      option[`${property}`] = value;
 
       const customer = await this.modelCustomer.findOne(option);
       

@@ -29,7 +29,8 @@ const setRoutes = (app: Application): void => {
 
   // User
   router.route('/users').get(authEmployee, userCtrl.getAllUser);
-  router.route('/user/:id').get(auth, userCtrl.getUser);
+  router.route('/user/:id').get(authEmployee, userCtrl.getUser);
+  router.route('/userpaynumber/:paymentAccount').get(authEmployee, userCtrl.getUserByPayNumber);
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
   router.route('/users/count').get(authEmployee, userCtrl.count);
   router.route('/user/changepws').post(auth, userCtrl.changePassword);

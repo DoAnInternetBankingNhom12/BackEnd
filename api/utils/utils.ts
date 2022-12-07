@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 
 export function isNull(value: any) {
-    return value === null || value === undefined || value === '' || value === NaN;
+    return value === null || value === undefined || value === '' || value === NaN || Object.keys(value).length === 0 || value.length === 0;
 }
 
 export function decryptedData(encryptedData: any) {
@@ -49,12 +49,6 @@ export function getPipeLineGet(unset: string[] = [], optionSearch: any = undefin
 
     const pipeLine: any[] = [];
 
-    if (optionSearch) {
-        pipeLine.push({
-            $match: optionSearch
-        });
-    }
-
     pipeLine.push({ $unset: unset });
 
     for (const lookup of lookups) {
@@ -63,6 +57,12 @@ export function getPipeLineGet(unset: string[] = [], optionSearch: any = undefin
 
     for (const set of sets) {
         pipeLine.push({ $set: set });
+    }
+
+    if (optionSearch) {
+        pipeLine.push({
+            $match: optionSearch
+        });
     }
 
     return pipeLine;

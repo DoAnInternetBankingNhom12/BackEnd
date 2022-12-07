@@ -1,9 +1,9 @@
-FROM node:14.20.0-alpine3.16 AS temp
+FROM node:16.18.1-alpine AS temp
 WORKDIR /usr/src/app
 COPY . .
 RUN npm install
 RUN npm run build
-FROM node:14.20.0-alpine3.16
+FROM node:16.18.1-alpine
 WORKDIR /usr/src/app
 COPY --from=temp /usr/src/app/package.json ./
 COPY --from=temp /usr/src/app/dist/server .

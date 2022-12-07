@@ -140,6 +140,80 @@ class UserCtrl extends BaseCtrl {
     }
   }
 
+  getUserByPayNumber = async (req: Request, res: Response) => {
+    try {
+      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);
+
+      if (isNull(paymentAccount)) {
+        return res.status(400).json({
+          mgs: `No user id to get!`,
+          success: false
+        });
+      }
+
+      const lookups = [
+        {
+          from: 'customer',
+          localField: 'id',
+          foreignField: 'userId',
+          as: 'customer',
+          pipeline: [
+            { $project: { _id: 0, _status: 0, __v: 0, accountBalance: 0 } },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$paymentAccount', paymentAccount] },
+                  ]
+                }
+              }
+            }
+          ],
+        }
+      ];
+
+      const sets = [
+        {
+          customer: { $arrayElemAt: ['$customer', 0] }
+        },
+        {
+          role: {
+            $switch: {
+              branches: [
+                { case: { $ne: ['$customer', undefined] }, then: 'customer' }
+              ],
+              default: ''
+            }
+          }
+        }
+      ];
+
+      const docs = await this.model.aggregate(getPipeLineGet(['password'], { customer: { $exists: true } }, lookups, sets));
+      
+      if (isNull(docs)) {
+        return res.status(400).json({
+          mgs: 'Payment account not exist!',
+          success: false
+        });
+      }
+
+      return res.status(200).json({
+        data: docs[0],
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get user ${this.table} error!`,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  }
+
   getUserInfo = async (req: Request, res: Response) => {
     try {
       const searchId = lodash.cloneDeep(req.body.user.userId);

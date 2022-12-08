@@ -49,21 +49,22 @@ export function getPipeLineGet(unset: string[] = [], optionSearch: any = undefin
 
     const pipeLine: any[] = [];
 
-    pipeLine.push({ $unset: unset });
-
-    for (const lookup of lookups) {
-        pipeLine.push({ $lookup: lookup });
-    }
-
-    for (const set of sets) {
-        pipeLine.push({ $set: set });
-    }
-
+    
     if (optionSearch) {
         pipeLine.push({
             $match: optionSearch
         });
     }
+    
+    for (const lookup of lookups) {
+        pipeLine.push({ $lookup: lookup });
+    }
+    
+    for (const set of sets) {
+        pipeLine.push({ $set: set });
+    }
+
+    pipeLine.push({ $unset: unset });
 
     return pipeLine;
 }

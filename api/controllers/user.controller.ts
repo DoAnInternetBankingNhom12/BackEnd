@@ -83,7 +83,7 @@ class UserCtrl extends BaseCtrl {
       let docs = undefined;
 
       if (isAll) {
-        docs = await this.model.aggregate(getPipeLineGet(['password'], undefined, this.lookups, this.sets));
+        docs = await this.model.aggregate(getPipeLineGet(['password'], {}, this.lookups, this.sets));
 
         return res.status(200).json({
           data: docs,

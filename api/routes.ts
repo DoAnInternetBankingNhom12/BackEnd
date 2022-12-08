@@ -30,7 +30,7 @@ const setRoutes = (app: Application): void => {
   // User
   router.route('/users').get(authEmployee, userCtrl.getAllUser);
   router.route('/user/:id').get(authEmployee, userCtrl.getUser);
-  router.route('/userpaynumber/:paymentAccount').get(authEmployee, userCtrl.getUserByPayNumber);
+  router.route('/userpaynumber/:paymentAccount').get(auth, userCtrl.getUserByPayNumber);
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
   router.route('/users/count').get(authEmployee, userCtrl.count);
   router.route('/user/changepws').post(auth, userCtrl.changePassword);
@@ -85,12 +85,12 @@ const setRoutes = (app: Application): void => {
   router.route('/receiver/:id').delete(auth, receiverCtrl.delete);
 
   // Transaction
-  router.route('/transactions').get(transactionCtrl.getAll);
-  router.route('/transactions/count').get(transactionCtrl.count);
-  router.route('/transaction').get(transactionCtrl.findTransaction);
-  router.route('/transaction').post(transactionCtrl.insert);
-  router.route('/transaction/:id').put(transactionCtrl.update);
-  router.route('/transaction/:id').delete(transactionCtrl.delete);
+  router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
+  router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
+  router.route('/transaction').get(authEmployee, transactionCtrl.findTransaction);
+  router.route('/transaction').post(auth, transactionCtrl.internalBank);
+  router.route('/transaction/:id').put(authAdmin, transactionCtrl.update);
+  router.route('/transaction/:id').delete(authAdmin, transactionCtrl.delete);
 
   // Login || Logout
   router.route('/login').post(userCtrl.login);

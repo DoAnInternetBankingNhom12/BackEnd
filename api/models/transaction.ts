@@ -3,7 +3,6 @@ import { Schema, Document, model } from 'mongoose';
 const transactionSchema = new Schema<Transaction>({
   id: { type: String, required: true, unique: true },
   sendPayAccount: { type: String, required: true },
-  sendBankId: { type: String, required: true },
   receiverPayAccount: { type: String, required: true },
   receiverBankId: { type: String, required: true },
   payAccountFee: { type: String, required: true },
@@ -21,7 +20,6 @@ const transactionSchema = new Schema<Transaction>({
 export interface Transaction extends Document {
   id: string,
   sendPayAccount: string,
-  sendBankId: string,
   receiverPayAccount: string,
   receiverBankId: string,
   payAccountFee: string,

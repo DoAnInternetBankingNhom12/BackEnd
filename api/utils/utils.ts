@@ -47,21 +47,20 @@ export function getPipeLineGet(unset: string[] = [], optionSearch: any = undefin
     unset.push('_status');
     unset.push('__v');
 
-    const pipeLine: any[] = [];
+    const pipeLine: any[] = [];    
 
-    
-    if (optionSearch) {
-        pipeLine.push({
-            $match: optionSearch
-        });
-    }
-    
     for (const lookup of lookups) {
         pipeLine.push({ $lookup: lookup });
     }
     
     for (const set of sets) {
         pipeLine.push({ $set: set });
+    }
+    
+    if (optionSearch) {
+        pipeLine.push({
+            $match: optionSearch
+        });
     }
 
     pipeLine.push({ $unset: unset });

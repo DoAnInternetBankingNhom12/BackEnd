@@ -89,9 +89,17 @@ class ReceiverCtrl extends BaseCtrl {
 
       const tempData = lodash.cloneDeep(req.body);
       delete tempData.user;
-      const exist = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount }).exec();
+      const existIsDelete = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount, _status: false }).exec();
+      const exist = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount, _status: true }).exec();
 
       if (exist) {
+        return res.status(400).json({
+          mgs: `Receiver is exist by numberAccount ${tempData.numberAccount}!`,
+          success: false
+        });
+      }
+
+      if (existIsDelete) {
         const objUpdate: any = {};
         const bankType = await this.getTypeBank(tempData.bankId);
 
@@ -102,14 +110,15 @@ class ReceiverCtrl extends BaseCtrl {
           });
         }
 
+        if (!isNull(tempData.reminiscentName)) {
+          objUpdate.reminiscentName = tempData.reminiscentName;
+        }
+
         objUpdate.bankId = tempData.bankId;
         objUpdate.remittanceType = bankType;
         objUpdate.updateTime = moment().unix();
         objUpdate._status = true;
 
-        if (!isNull(tempData.reminiscentName)) {
-          objUpdate.reminiscentName = tempData.reminiscentName;
-        }
 
         const dataUpdate: any = await this.model.findOneAndUpdate({ numberAccount: tempData.numberAccount }, objUpdate);
         dataUpdate.__v = undefined;
@@ -147,6 +156,10 @@ class ReceiverCtrl extends BaseCtrl {
       tempData.createTime = moment().unix();
       tempData.updateTime = moment().unix();
       tempData._status = true;
+
+      if (isNull(tempData.reminiscentName)) {
+        tempData.reminiscentName = customer.name;
+      }
 
       const obj: any = await new this.model(tempData).save();
       obj.__v = undefined;

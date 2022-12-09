@@ -5,6 +5,10 @@ import BaseCtrl from './base';
 
 // Models
 import TransactionModel from '../models/transaction';
+import Receiver from '../models/receiver';
+import Customer from '../models/customer';
+import User from '../models/user';
+import Bank from '../models/bank';
 
 // Interfaces
 import { Transaction } from '../interfaces/transaction.interface';
@@ -12,10 +16,14 @@ import { Transaction } from '../interfaces/transaction.interface';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull } from '../utils/utils';
+import { getPipeLineGet, isNull } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
   model = TransactionModel;
+  modelCustommer = Customer;
+  modelUser = User;
+  modelReceiver = Receiver;
+  modelBank = Bank;
   table = 'Transaction';
 
   // Find
@@ -51,32 +59,165 @@ class TransactionCtrl extends BaseCtrl {
 
   internalBank = async (req: Request, res: Response) => {
     try {
+      const user = lodash.cloneDeep(req.body.user);
       const tempData = lodash.cloneDeep(req.body);
       const id = await this.generateId();
       tempData.id = id;
       tempData.createTime = moment().unix();
       tempData.updateTime = moment().unix();
+      tempData.statusTransaction = 'completed';
       tempData._status = true;
+      tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
+      tempData.statusMoney = 'delivered';
+      delete tempData.user;
 
-      const obj: any = await new this.model(tempData).save();
-      obj.__v = undefined;
-      obj._status = undefined;
+      const bankInfo: any = await this.modelBank.findOne({type: 'internal'});
+      if (isNull(bankInfo)) {
+        return res.status(400).json({
+          mgs: `No bank data!`,
+          success: false
+        });
+      }
 
+      tempData.sendBankId = bankInfo.id
+      const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId });
+      if (isNull(sentUserData)) {
+        return res.status(400).json({
+          mgs: `Account sent isn't exist!`,
+          success: false
+        });
+      }
+
+      tempData.sendPayAccount = sentUserData.paymentAccount;
+      tempData.sendPayAccount = sentUserData.paymentAccount;
+      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount });
+      if (isNull(receiverData)) {
+        return res.status(400).json({
+          mgs: `Account receiver isn't exist!`,
+          success: false
+        });
+      }
+
+      tempData.receiverBankId = receiverData.bankId;
+      const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
+      const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
+
+      if (!statusCheck) {
+        return res.status(400).json({
+          mgs: `Account balance is not enough to make a transaction!`,
+          success: false
+        });
+      }
+
+      const accSentRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true }));
+      const accReceiverRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }));
+      const hasSentTransactionFee = (tempData.sendPayAccount === tempData.payAccountFee);
+      const statusDeduct = await this.deductMoneyAccount(tempData.sendPayAccount, amountOwedTotal, hasSentTransactionFee ? tempData.transactionFee : 0);
+
+      if (!statusDeduct) {
+        const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
+        tempData.statusTransaction = 'failed';
+        tempData.statusMoney = 'not_delivered';
+        await new this.model(tempData).save();
+        return res.status(400).json({
+          mgs: `Transaction failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          success: false
+        });
+      }
+
+      const hasReceiverTransactionFee = (tempData.receiverPayAccount === tempData.payAccountFee);
+      const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0);
+
+      if (!statusAdd) {
+        const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
+        tempData.statusTransaction = 'failed';
+        tempData.statusMoney = 'not_delivered';
+        await new this.model(tempData).save();
+        return res.status(400).json({
+          mgs: `Transaction failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          success: false
+        });
+      }
+
+      await new this.model(tempData).save();
       return res.status(200).json({
+        mgs: `Transaction success!`,
         success: true
       });
     } catch (err: any) {
       console.log(err);
       return res.status(400).json({
+        mgs: `Transaction failed!`,
         success: false,
         error: err
       });
     }
   };
 
-  // checkDataTransaction(data: Transaction) {
+  private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
+    try {
+      const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, } },]);
+      if (isNull(data)) return false;
+      return true;
+    } catch (err: any) {
+      console.log('err', err);
+      return false;
+    }
+  }
 
-  // }
+  private async deductMoneyAccount(paymentAccount: string, money: number, transactionFee: number = 0) {
+    try {
+      const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
+      if (isNull(account)) return false;
+
+      money = Math.abs(money);
+      transactionFee = Math.abs(transactionFee);
+      const newAmountOwed: number = account.accountBalance - money - transactionFee;
+      await this.modelCustommer.findOneAndUpdate({ paymentAccount: paymentAccount }, { accountBalance: newAmountOwed }, { _id: 0, __v: 0, _status: 0 });
+      return true;
+    } catch (err: any) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  private async addMoneyAccountInternal(paymentAccount: string, money: number, transactionFee: number = 0) {
+    try {
+      const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
+      if (isNull(account)) return false;
+
+      money = Math.abs(money);
+      transactionFee = Math.abs(transactionFee);
+      const newAmountOwed: number = account.accountBalance + money - transactionFee;
+      await this.modelCustommer.findOneAndUpdate({ paymentAccount: paymentAccount }, { accountBalance: newAmountOwed }, { _id: 0, __v: 0, _status: 0 });
+      return true;
+    } catch (err: any) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  private async restoreData(infoAccSent?: any, infoAccReceiver?: any) {
+    try {
+      if (isNull(infoAccSent) && isNull(infoAccSent)) return true;
+
+      const accountSent: any = await this.modelCustommer.findOne({ paymentAccount: infoAccSent.paymentAccount, _status: true });
+      const accountReceiver: any = await this.modelCustommer.findOne({ paymentAccount: infoAccReceiver.paymentAccount, _status: true });
+      if (!isNull(accountSent)) {
+        await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccSent.paymentAccount }, infoAccSent);
+      }
+
+      if (!isNull(accountReceiver)) {
+        await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccReceiver.paymentAccount }, infoAccReceiver);
+      }
+
+      return true;
+    } catch (err: any) {
+      console.log(err);
+      return false;
+    }
+  }
+
 }
 
 export default TransactionCtrl;

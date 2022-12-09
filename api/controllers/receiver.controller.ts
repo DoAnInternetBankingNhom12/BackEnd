@@ -86,15 +86,39 @@ class ReceiverCtrl extends BaseCtrl {
           success: false
         });
       }
-      
+
       const tempData = lodash.cloneDeep(req.body);
       delete tempData.user;
+      const exist = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount }).exec();
 
-      const exist = await this.model.findOne({userId: user.userId, numberAccount: tempData.numberAccount}).exec();
       if (exist) {
-        return res.status(400).json({
-          mgs: `Receiver is exist by numberAccount ${tempData.numberAccount}!`,
-          success: false
+        const objUpdate: any = {};
+        const bankType = await this.getTypeBank(tempData.bankId);
+
+        if (!bankType) {
+          return res.status(400).json({
+            mgs: `No bank data to create receiver!`,
+            success: false
+          });
+        }
+
+        objUpdate.bankId = tempData.bankId;
+        objUpdate.remittanceType = bankType;
+        objUpdate.updateTime = moment().unix();
+        objUpdate._status = true;
+
+        if (!isNull(tempData.reminiscentName)) {
+          objUpdate.reminiscentName = tempData.reminiscentName;
+        }
+
+        const dataUpdate: any = await this.model.findOneAndUpdate({ numberAccount: tempData.numberAccount }, objUpdate);
+        dataUpdate.__v = undefined;
+        dataUpdate._status = undefined;
+
+        return res.status(201).json({
+          mgs: `Create ${this.table} numberAccount ${tempData.numberAccount} success!`,
+          data: dataUpdate,
+          success: true
         });
       }
 
@@ -129,7 +153,7 @@ class ReceiverCtrl extends BaseCtrl {
       obj._status = undefined;
 
       return res.status(201).json({
-        mgs: `Create ${this.table} id ${obj.id} success!`,
+        mgs: `Create ${this.table} numberAccount ${obj.numberAccount} success!`,
         data: obj,
         success: true
       });
@@ -157,7 +181,7 @@ class ReceiverCtrl extends BaseCtrl {
   // Update
   updateReceiver = async (req: Request, res: Response) => {
     try {
-      const isExist = await this.model.findOne({ id: req.params.id, userId: req.body.user.userId  }).exec();
+      const isExist = await this.model.findOne({ id: req.params.id, userId: req.body.user.userId }).exec();
       const obj: any = {};
 
       if (isExist) {
@@ -168,19 +192,19 @@ class ReceiverCtrl extends BaseCtrl {
         const bankType = await this.getTypeBank(tempData.bankId);
         if (!bankType) {
           return res.status(400).json({
-            mgs: `No bank type data to update receiver!`,
+            mgs: `No bank data to update receiver!`,
             success: false
           });
         }
-        
+
         obj.bankId = tempData.bankId;
         obj.remittanceType = bankType;
 
-        if(!isNull(tempData.reminiscentName)) {
+        if (!isNull(tempData.reminiscentName)) {
           obj.reminiscentName = tempData.reminiscentName;
         }
-        
-        await this.model.findOneAndUpdate({ id: req.params.id }, obj, { _id: 0, __v: 0, _status: 0 });
+
+        await this.model.findOneAndUpdate({ id: req.params.id }, obj);
 
         return res.status(200).json({
           mgs: `Update ${this.table} id ${req.params.id} success!`,
@@ -203,8 +227,8 @@ class ReceiverCtrl extends BaseCtrl {
 
   private async getTypeBank(bankId: string) {
     try {
-      const bank = await this.modelBank.findOne({id: bankId});
-      
+      const bank = await this.modelBank.findOne({ id: bankId });
+
       if (!bank || !bank.type) {
         return undefined
       }
@@ -221,7 +245,7 @@ class ReceiverCtrl extends BaseCtrl {
       option[`${property}`] = value;
 
       const customer = await this.modelCustomer.findOne(option);
-      
+
       if (!customer) {
         return undefined
       }

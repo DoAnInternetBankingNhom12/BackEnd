@@ -51,7 +51,7 @@ class ReceiverCtrl extends BaseCtrl {
         });
       }
 
-      const data = await this.model.aggregate(getPipeLineGet([], { userId: user.userId }, this.lookups, this.sets))
+      const data = await this.model.aggregate(getPipeLineGet([], { userId: user.userId, _status: true }, this.lookups, this.sets))
 
       if (!data || data.length === 0) {
         return res.status(200).json({

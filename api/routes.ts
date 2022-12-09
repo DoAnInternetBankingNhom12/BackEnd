@@ -28,9 +28,8 @@ const setRoutes = (app: Application): void => {
   const otpCtrl = new OTPCtrl();
 
   // User
-  router.route('/users').get(authEmployee, userCtrl.getAllUser);
+  router.route('/users').get(userCtrl.getAllUser);
   router.route('/user/:id').get(authEmployee, userCtrl.getUser);
-  router.route('/userpaynumber/:paymentAccount').get(auth, userCtrl.getUserByPayNumber);
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
   router.route('/users/count').get(authEmployee, userCtrl.count);
   router.route('/user/changepws').post(auth, userCtrl.changePassword);
@@ -54,6 +53,7 @@ const setRoutes = (app: Application): void => {
   router.route('/customers').get(authEmployee, customerCtrl.getAll);
   router.route('/customers/count').get(authEmployee, customerCtrl.count);
   router.route('/customer/:id').get(authEmployee, customerCtrl.get);
+  router.route('/customerpaynumber/:paymentAccount').get(auth, customerCtrl.getCustomerByPayNumber);
   router.route('/customer').post(authEmployee, customerCtrl.createCustomer);
   router.route('/customer/recharge').post(authEmployee, customerCtrl.recharge);
   router.route('/customer/:id').put(authEmployee, customerCtrl.updateCustomer);

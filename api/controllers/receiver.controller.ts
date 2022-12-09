@@ -112,7 +112,18 @@ class ReceiverCtrl extends BaseCtrl {
 
         if (!isNull(tempData.reminiscentName)) {
           objUpdate.reminiscentName = tempData.reminiscentName;
+        } else {
+          const customer = await this.getCustomer('paymentAccount', tempData.numberAccount);
+          if (!customer) {
+            return res.status(400).json({
+              mgs: `No customer name data to generate receiver!`,
+              success: false
+            });
+          }
+
+          objUpdate.reminiscentName = customer.name;
         }
+
 
         objUpdate.bankId = tempData.bankId;
         objUpdate.remittanceType = bankType;
@@ -123,6 +134,7 @@ class ReceiverCtrl extends BaseCtrl {
         const dataUpdate: any = await this.model.findOneAndUpdate({ numberAccount: tempData.numberAccount }, objUpdate);
         dataUpdate.__v = undefined;
         dataUpdate._status = undefined;
+        dataUpdate.reminiscentName = objUpdate.reminiscentName;
 
         return res.status(201).json({
           mgs: `Create ${this.table} numberAccount ${tempData.numberAccount} success!`,

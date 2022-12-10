@@ -146,7 +146,7 @@ class ReceiverCtrl extends BaseCtrl {
       const bankType = await this.getTypeBank(tempData.bankId);
       if (!bankType) {
         return res.status(400).json({
-          mgs: `No bank type data to generate receiver!`,
+          mgs: `No bank data to create receiver!`,
           success: false
         });
       }
@@ -155,7 +155,7 @@ class ReceiverCtrl extends BaseCtrl {
 
       if (!customer) {
         return res.status(400).json({
-          mgs: `No customer name data to generate receiver!`,
+          mgs: `No customer data to create receiver!`,
           success: false
         });
       }

@@ -43,11 +43,11 @@ const setRoutes = (app: Application): void => {
 
   // Bank
   router.route('/banks').get(bankCtrl.getAll);
-  router.route('/banks/count').get(bankCtrl.count);
-  router.route('/bank/:id').get(bankCtrl.get);
-  router.route('/bank').post(bankCtrl.insert);
-  router.route('/bank/:id').put(bankCtrl.update);
-  router.route('/bank/:id').delete(bankCtrl.delete);
+  router.route('/banks/count').get(authAdmin, bankCtrl.count);
+  router.route('/bank/:id').get(authAdmin, bankCtrl.get);
+  router.route('/bank').post(authAdmin, bankCtrl.insert);
+  router.route('/bank/:id').put(authAdmin, bankCtrl.update);
+  router.route('/bank/:id').delete(authAdmin, bankCtrl.delete);
 
   // Customer
   router.route('/customers').get(customerCtrl.getAll);

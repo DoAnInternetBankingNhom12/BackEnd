@@ -28,61 +28,61 @@ const setRoutes = (app: Application): void => {
   const otpCtrl = new OTPCtrl();
 
   // User
-  router.route('/users').get(userCtrl.getAllUser);
-  router.route('/user/:id').get(userCtrl.getUser);
+  router.route('/users').get(auth, userCtrl.getAllUser);
+  router.route('/user/:id').get(auth, userCtrl.getUser);
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
-  router.route('/users/count').get(userCtrl.count);
-  router.route('/user/changepws').post(userCtrl.changePassword);
-  router.route('/user/forgotpws').post(otp, userCtrl.forgotPassword);
-  router.route('/user').post(userCtrl.createUser);
-  router.route('/user/customer').post(userCtrl.createUserCustommer);
-  router.route('/user/employee').post(userCtrl.createUserEmployee);
-  router.route('/user/admin').post(userCtrl.createUserAdmin);
-  router.route('/user/:id').put(userCtrl.update);
-  router.route('/user/:id').delete(userCtrl.deleteUser);
+  router.route('/users/count').get(auth, userCtrl.count);
+  router.route('/user/changepws').post(auth, userCtrl.changePassword);
+  router.route('/user/forgotpws').post(auth, otp, userCtrl.forgotPassword);
+  router.route('/user').post(auth, userCtrl.createUser);
+  router.route('/user/customer').post(auth, userCtrl.createUserCustommer);
+  router.route('/user/employee').post(auth, userCtrl.createUserEmployee);
+  router.route('/user/admin').post(auth, userCtrl.createUserAdmin);
+  router.route('/user/:id').put(auth, userCtrl.update);
+  router.route('/user/:id').delete(auth, userCtrl.deleteUser);
 
   // Bank
-  router.route('/banks').get(bankCtrl.getAll);
-  router.route('/banks/count').get(bankCtrl.count);
-  router.route('/bank/:id').get(bankCtrl.get);
-  router.route('/bank').post(bankCtrl.insert);
-  router.route('/bank/:id').put(bankCtrl.update);
-  router.route('/bank/:id').delete(bankCtrl.delete);
+  router.route('/banks').get(auth, bankCtrl.getAll);
+  router.route('/banks/count').get(auth, bankCtrl.count);
+  router.route('/bank/:id').get(auth, bankCtrl.get);
+  router.route('/bank').post(auth, bankCtrl.insert);
+  router.route('/bank/:id').put(auth, bankCtrl.update);
+  router.route('/bank/:id').delete(auth, bankCtrl.delete);
 
   // Customer
-  router.route('/customers').get(customerCtrl.getAll);
-  router.route('/customers/count').get(customerCtrl.count);
-  router.route('/customer/:id').get(customerCtrl.get);
+  router.route('/customers').get(auth, customerCtrl.getAll);
+  router.route('/customers/count').get(auth, customerCtrl.count);
+  router.route('/customer/:id').get(auth, customerCtrl.get);
   router.route('/customerpaynumber/:paymentAccount').get(auth, customerCtrl.getCustomerByPayNumber);
-  router.route('/customer').post(customerCtrl.createCustomer);
-  router.route('/customer/recharge').post(customerCtrl.recharge);
-  router.route('/customer/:id').put(customerCtrl.updateCustomer);
-  router.route('/customer/:id').delete(customerCtrl.deleteCustomer);
+  router.route('/customer').post(auth, customerCtrl.createCustomer);
+  router.route('/customer/recharge').post(auth, customerCtrl.recharge);
+  router.route('/customer/:id').put(auth, customerCtrl.updateCustomer);
+  router.route('/customer/:id').delete(auth, customerCtrl.deleteCustomer);
 
   // Employee
-  router.route('/employees').get(employeeCtrl.getAll);
-  router.route('/employees/count').get(employeeCtrl.count);
-  router.route('/employee/:id').get(employeeCtrl.get);
-  router.route('/employee').post(employeeCtrl.createEmployee);
-  router.route('/employee/:id').put(employeeCtrl.updateEmployee);
-  router.route('/employee/:id').delete(employeeCtrl.deleteEmployee);
+  router.route('/employees').get(auth, employeeCtrl.getAll);
+  router.route('/employees/count').get(auth, employeeCtrl.count);
+  router.route('/employee/:id').get(auth, employeeCtrl.get);
+  router.route('/employee').post(auth, employeeCtrl.createEmployee);
+  router.route('/employee/:id').put(auth, employeeCtrl.updateEmployee);
+  router.route('/employee/:id').delete(auth, employeeCtrl.deleteEmployee);
 
   // Role
-  router.route('/roles').get(roleCtrl.getAll);
-  router.route('/roles/count').get(roleCtrl.count);
-  router.route('/role/:id').get(roleCtrl.get);
-  router.route('/role').post(roleCtrl.insert);
-  router.route('/role/:id').put(roleCtrl.update);
-  router.route('/role/:id').delete(roleCtrl.delete);
+  router.route('/roles').get(auth, roleCtrl.getAll);
+  router.route('/roles/count').get(auth, roleCtrl.count);
+  router.route('/role/:id').get(auth, roleCtrl.get);
+  router.route('/role').post(auth, roleCtrl.insert);
+  router.route('/role/:id').put(auth, roleCtrl.update);
+  router.route('/role/:id').delete(auth, roleCtrl.delete);
 
   // Receiver
-  router.route('/receivers').get(receiverCtrl.getAll);
+  router.route('/receivers').get(auth, receiverCtrl.getAll);
   router.route('/myreceiver').get(auth, receiverCtrl.getReceiverByToken);
-  router.route('/receivers/count').get(receiverCtrl.count);
-  router.route('/receiver/:id').get(receiverCtrl.get);
+  router.route('/receivers/count').get(auth, receiverCtrl.count);
+  router.route('/receiver/:id').get(auth, receiverCtrl.get);
   router.route('/receiver').post(auth, receiverCtrl.createReceiver);
   router.route('/receiver/:id').put(auth, receiverCtrl.updateReceiver);
-  router.route('/receiver/:id').delete(receiverCtrl.delete);
+  router.route('/receiver/:id').delete(auth, receiverCtrl.delete);
 
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);

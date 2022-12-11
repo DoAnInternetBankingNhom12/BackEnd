@@ -69,6 +69,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData._status = true;
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'delivered';
+      tempData.typeTransaction = 'internal';
       delete tempData.user;
 
       const bankInfo: any = await this.modelBank.findOne({type: 'internal'});

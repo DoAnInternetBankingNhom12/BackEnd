@@ -12,6 +12,7 @@ import EmployeeCtrl from './employee.controller';
 
 // Services
 import { sendPassMail } from '../services/mail.service';
+// import { sendMgsInList, sendObjInList } from '../services/ws.service';
 
 // Utils
 import * as moment from 'moment';
@@ -151,7 +152,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const docs = await this.model.aggregate(getPipeLineGet(['password'], { id: searchId }, this.lookups, this.sets));
+      const docs = await this.model.aggregate(getPipeLineGet(['password', 'refreshToken'], { id: searchId }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs[0],
@@ -456,6 +457,15 @@ class UserCtrl extends BaseCtrl {
 
             user.token = token;
             user.password = undefined;
+
+            // // Test WS
+            // const objMgs = {
+            //   mgs: `User ${userName} is login now!`,
+            //   time: moment().format('DD/MM/YYYY hh:mm:ss a')
+            // };
+
+            // sendObjInList(objMgs, [user.id]);
+            // // Test WS
 
             return res.status(200).json({
               mgs: 'Login success!',

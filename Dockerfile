@@ -9,4 +9,5 @@ COPY --from=temp /usr/src/app/package.json ./
 COPY --from=temp /usr/src/app/dist/server .
 RUN npm install
 EXPOSE 3000
+EXPOSE 36236
 CMD [ "node", "app.js" ]

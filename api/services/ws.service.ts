@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'http';
+import { Notify } from 'interfaces/notify.interface';
 import { WebSocketServer, WebSocket } from 'ws';
 
 const WS_PORT = 36236;
@@ -7,7 +8,6 @@ const socketServer = new WebSocketServer({
 });
 
 socketServer.on('connection', function (client: any, req: IncomingMessage) {
-  console.log('Client connects successfully!');
   client.send('Client connects successfully!');
   client.on('message', function message(data: any) {
     if (!(client.isFisrtMgs)) {
@@ -17,31 +17,37 @@ socketServer.on('connection', function (client: any, req: IncomingMessage) {
       if (payNumber) client.payNumber = payNumber as string;
     }
   });
+  setTimeout(() => {
+    socketServer.clients.forEach((item: any) => {
+      console.log('client.userId', item.userId);
+      console.log('client.readyState', item.readyState);
+    });
+  }, 500);
+
+  setTimeout(() => {
+    console.log('socketServer.clients', socketServer.clients);
+
+    socketServer.clients.forEach((item: any) => {
+      console.log('client.userId', item.userId);
+      console.log('client.readyState', item.readyState);
+    });
+  }, 5000);
 })
 console.log(`WebSocket Server is running at ws://localhost:${WS_PORT}`);
 
-export function broadcastAll(message: string) {
+export function broadcastObjAll(obj: Notify) {
+  const objString = JSON.stringify(obj);
   socketServer.clients.forEach((client: any) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(message);
+      client.send(objString);
     }
   });
 }
 
-export function sendMgsInList(message: string, userIds: string[]) {
-  for (const userId of userIds) {
-    socketServer.clients.forEach((client: any) => {
-      const userIdClient = client.userId.toString('utf8');
-      if (client.readyState === WebSocket.OPEN && userId === userIdClient) {
-        client.send(message);
-      }
-    });
-  }
-}
-
-export function sendObjInList(obj: Object, userIds: string[]) {
+export function sendObjInList(obj: Notify, userIds: string[]) {
   const objString = JSON.stringify(obj);
   for (const userId of userIds) {
+    console.log('userId', userId);
     socketServer.clients.forEach((client: any) => {
       const userIdClient = client.userId.toString('utf8');
       if (client.readyState === WebSocket.OPEN && userId === userIdClient) {

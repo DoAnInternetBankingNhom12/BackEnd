@@ -3,10 +3,7 @@ dotenv.config();
 
 // Services
 import { } from './services/cache.service';
-import ws, { broadcastAll, sendMgsInList } from './services/ws.service.js';
-import ls from './services/ws.listen.service';
-import ls1 from './services/ws.listen1.service';
-import ls2 from './services/ws.listen2.service';
+import ws from './services/ws.service.js';
 
 // Modules
 import * as express from 'express';
@@ -51,9 +48,6 @@ const main = async (): Promise<any> => {
     await setMongo();
     setRoutes(app);
     ws; // Run websocket
-    // ls;
-    // ls1;
-    // ls2;
     // const dataEncrypted = encryptedData('hola');
     // const dataDecrypted = decryptedData(dataEncrypted);
     // console.log('dataEncrypted', dataEncrypted);

@@ -15,6 +15,7 @@ import auth from './middleware/auth.customer.middleware';
 import authEmployee from './middleware/auth.employee.middleware';
 import authAdmin from './middleware/auth.admin.middleware';
 import otp from './middleware/otp.middleware';
+// import test from './middleware/test.middleware';
 
 const setRoutes = (app: Application): void => {
   const router = Router();

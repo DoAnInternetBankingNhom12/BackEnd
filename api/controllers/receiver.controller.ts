@@ -9,6 +9,13 @@ import Bank from '../models/bank';
 // Controllers
 import BaseCtrl from './base';
 
+// Services
+import { sendObjInList } from '../services/ws.service';
+
+// Interfaces
+import { Notify } from '../interfaces/notify.interface';
+
+
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
@@ -135,7 +142,13 @@ class ReceiverCtrl extends BaseCtrl {
         dataUpdate.__v = undefined;
         dataUpdate._status = undefined;
         dataUpdate.reminiscentName = objUpdate.reminiscentName;
-
+        const objSent: Notify = {
+          type: 'create',
+          table: this.table.toLocaleLowerCase(),
+          msg: `Data receiver ${dataUpdate.userId} has changed!`
+        };
+  
+        sendObjInList(objSent, [dataUpdate.userId]);
         return res.status(201).json({
           mgs: `Create ${this.table} numberAccount ${tempData.numberAccount} success!`,
           data: dataUpdate,
@@ -176,7 +189,13 @@ class ReceiverCtrl extends BaseCtrl {
       const obj: any = await new this.model(tempData).save();
       obj.__v = undefined;
       obj._status = undefined;
+      const objSent: Notify = {
+        type: 'create',
+        table: this.table.toLocaleLowerCase(),
+        msg: `Data receiver ${obj.userId} has changed!`
+      };
 
+      sendObjInList(objSent, [obj.userId]);
       return res.status(201).json({
         mgs: `Create ${this.table} numberAccount ${obj.numberAccount} success!`,
         data: obj,
@@ -229,8 +248,14 @@ class ReceiverCtrl extends BaseCtrl {
           obj.reminiscentName = tempData.reminiscentName;
         }
 
-        await this.model.findOneAndUpdate({ id: req.params.id }, obj);
-
+        const dataUpdate: any = await this.model.findOneAndUpdate({ id: req.params.id }, obj);
+        const objSent: Notify = {
+          type: 'update',
+          table: this.table.toLocaleLowerCase(),
+          msg: `Data receiver ${obj.userId} has changed!`
+        };
+  
+        sendObjInList(objSent, [dataUpdate.userId]);
         return res.status(200).json({
           mgs: `Update ${this.table} id ${req.params.id} success!`,
           success: true

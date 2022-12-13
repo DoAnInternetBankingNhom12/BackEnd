@@ -122,7 +122,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const docs = await this.model.aggregate(getPipeLineGet(['password'], { id: searchId }, this.lookups, this.sets));
+      const docs = await this.model.aggregate(getPipeLineGet(['password'], { id: searchId, _status: true }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs,
@@ -152,7 +152,7 @@ class UserCtrl extends BaseCtrl {
         });
       }
 
-      const docs = await this.model.aggregate(getPipeLineGet(['password', 'refreshToken'], { id: searchId }, this.lookups, this.sets));
+      const docs = await this.model.aggregate(getPipeLineGet(['password', 'refreshToken'], { id: searchId, _status: true }, this.lookups, this.sets));
 
       return res.status(200).json({
         data: docs[0],
@@ -160,7 +160,7 @@ class UserCtrl extends BaseCtrl {
       });
     } catch (err: any) {
       return res.status(400).json({
-        mgs: `Get all ${this.table} error!`,
+        mgs: `Get user info error! Maybe account does not exist or has been deleted!`,
         success: false,
         error: {
           mgs: err.message,
@@ -390,7 +390,7 @@ class UserCtrl extends BaseCtrl {
   // Delete
   deleteUser = async (req: Request, res: Response) => {
     try {
-      const isExistUser = await this.model.findOne({ id: req.params.id }).exec();
+      const isExistUser = await this.model.findOne({ id: req.params.id, _status: true }).exec();
 
       if (!isNull(isExistUser)) {
         req.body.updateTime = moment().unix();
@@ -449,7 +449,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { userName: userName }, this.lookups, this.sets)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { userName: userName, _status: true }, this.lookups, this.sets)))[0];
 
         if (user) {
           if ((await bcrypt.compare(password, user.password))) {
@@ -457,15 +457,6 @@ class UserCtrl extends BaseCtrl {
 
             user.token = token;
             user.password = undefined;
-
-            // // Test WS
-            // const objMgs = {
-            //   mgs: `User ${userName} is login now!`,
-            //   time: moment().format('DD/MM/YYYY hh:mm:ss a')
-            // };
-
-            // sendObjInList(objMgs, [user.id]);
-            // // Test WS
 
             return res.status(200).json({
               mgs: 'Login success!',
@@ -480,7 +471,7 @@ class UserCtrl extends BaseCtrl {
           }
         } else {
           return res.status(400).send({
-            mgs: 'Account does not exist! Maybe wrong username!',
+            mgs: 'Wrong username! Maybe account does not exist or has been deleted!',
             success: false
           });
         }
@@ -488,7 +479,7 @@ class UserCtrl extends BaseCtrl {
 
 
       if (!isNull(refreshToken)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken }, this.lookups, this.sets)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken, _status: true }, this.lookups, this.sets)))[0];
 
 
         if (user) {
@@ -504,7 +495,7 @@ class UserCtrl extends BaseCtrl {
           });
         } else {
           return res.status(400).json({
-            mgs: 'Refresh token invalid!',
+            mgs: 'Refresh token invalid! Maybe Account does not exist or has been deleted!',
             success: false
           });
         }
@@ -536,7 +527,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(refreshToken)) {
-        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken }, this.lookups, this.sets)))[0];
+        user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken, _status: true }, this.lookups, this.sets)))[0];
 
         if (user) {
           const token = generalToken(user.id, user.userName, user.email, user.role);
@@ -553,7 +544,7 @@ class UserCtrl extends BaseCtrl {
           });
         } else {
           return res.status(400).json({
-            mgs: 'Refresh token invalid!',
+            mgs: 'Refresh token invalid! Maybe Account does not exist or has been deleted!',
             success: false
           });
         }
@@ -652,7 +643,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(password) && !isNull(newPassword)) {
-        user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0 });
+        user = await this.model.findOne({ userName, _status: true }, { _status: 0, __v: 0, _id: 0 });
         if (user && (await bcrypt.compare(password, user.password))) {
           const encryptedPassword = await bcrypt.hash(newPassword, 10);
           const result: any = await this.model.findOneAndUpdate({ id: user.id }, { password: encryptedPassword }, { _id: 0, __v: 0, _status: 0 });
@@ -696,7 +687,7 @@ class UserCtrl extends BaseCtrl {
       let user: any = undefined;
 
       if (!isNull(userName) && !isNull(newPassword)) {
-        user = await this.model.findOne({ userName }, { _status: 0, __v: 0, _id: 0, password: 0 });
+        user = await this.model.findOne({ userName, _status: true }, { _status: 0, __v: 0, _id: 0, password: 0 });
         if (user) {
           const encryptedPassword = await bcrypt.hash(newPassword, 10);
           const result: any = await this.model.findOneAndUpdate({ id: user.id }, { password: encryptedPassword }, { _id: 0, __v: 0, _status: 0 });

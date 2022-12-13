@@ -5,7 +5,6 @@ import UserCtrl from './controllers/user.controller';
 import BankCtrl from './controllers/bank.controller';
 import CustomerCtrl from './controllers/customer.controller';
 import EmployeeCtrl from './controllers/employee.controller';
-import RoleCtrl from './controllers/role.controller';
 import ReceiverCtrl from './controllers/receiver.controller';
 import TransactionCtrl from './controllers/transaction.controller';
 import OTPCtrl from './controllers/otp.controller';
@@ -23,7 +22,6 @@ const setRoutes = (app: Application): void => {
   const bankCtrl = new BankCtrl();
   const customerCtrl = new CustomerCtrl();
   const employeeCtrl = new EmployeeCtrl();
-  const roleCtrl = new RoleCtrl();
   const receiverCtrl = new ReceiverCtrl();
   const transactionCtrl = new TransactionCtrl();
   const otpCtrl = new OTPCtrl();
@@ -67,14 +65,6 @@ const setRoutes = (app: Application): void => {
   router.route('/employee').post(auth, employeeCtrl.createEmployee);
   router.route('/employee/:id').put(auth, employeeCtrl.updateEmployee);
   router.route('/employee/:id').delete(auth, employeeCtrl.deleteEmployee);
-
-  // Role
-  router.route('/roles').get(auth, roleCtrl.getAll);
-  router.route('/roles/count').get(auth, roleCtrl.count);
-  router.route('/role/:id').get(auth, roleCtrl.get);
-  router.route('/role').post(auth, roleCtrl.insert);
-  router.route('/role/:id').put(auth, roleCtrl.update);
-  router.route('/role/:id').delete(auth, roleCtrl.delete);
 
   // Receiver
   router.route('/receivers').get(auth, receiverCtrl.getAll);

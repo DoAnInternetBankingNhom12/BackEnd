@@ -63,7 +63,7 @@ class CustomerCtrl extends BaseCtrl {
   // Create
   createCustomer = async (req: Request, res: Response) => {
     try {
-      const userIdExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
+      const userIdExist = await this.modelUser.findOne({ id: req.body.userId, _status: true }).exec();
       if (!userIdExist) {
         return res.status(400).json({
           msg: `User ID is not exist!`,
@@ -71,7 +71,7 @@ class CustomerCtrl extends BaseCtrl {
         });
       }
 
-      const idExist = await this.modelEmployee.findOne({ userId: req.body.userId }).exec();
+      const idExist = await this.modelEmployee.findOne({ userId: req.body.userId, _status: true }).exec();
       if (idExist) {
         return res.status(400).json({
           msg: `User ID is exist in employee!`,
@@ -173,7 +173,7 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       if (!isNull(req.body.userId)) {
-        const userIdExist = await this.modelUser.findOne({ id: req.body.userId }).exec();
+        const userIdExist = await this.modelUser.findOne({ id: req.body.userId, _status: true }).exec();
 
         if (!userIdExist) {
           return res.status(400).json({
@@ -182,7 +182,7 @@ class CustomerCtrl extends BaseCtrl {
           });
         }
 
-        const idExist = await this.modelEmployee.findOne({ userId: req.body.userId }).exec();
+        const idExist = await this.modelEmployee.findOne({ userId: req.body.userId, _status: true }).exec();
         if (idExist) {
           return res.status(400).json({
             msg: `ID user is exist in employee!`,

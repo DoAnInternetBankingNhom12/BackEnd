@@ -13,7 +13,9 @@ import * as cors from 'cors';
 import setMongo from './databases/mogodb';
 import setRoutes from './routes';
 
-import { encryptedData, decryptedData } from './utils/utils';
+// import * as crypto from 'crypto';
+// import * as moment from 'moment';
+// import { encryptedData } from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -48,10 +50,17 @@ const main = async (): Promise<any> => {
     await setMongo();
     setRoutes(app);
     ws; // Run websocket
-    // const dataEncrypted = encryptedData('hola');
-    // const dataDecrypted = decryptedData(dataEncrypted);
-    // console.log('dataEncrypted', dataEncrypted);
-    // console.log('dataDecrypted', dataDecrypted);
+    // const time = moment().unix();
+    // const hmac = crypto.createHmac('sha256', 'nhom12ibFTP');
+    // const hashCreateToken = hmac.update(`nhom12ibFTP${'/api/getInfo/463029405607'}${time}`).digest('hex');
+    // const objToken = {
+    //   time,
+    //   bankName: 'FTP',
+    // };
+    // const newToken = encryptedData(objToken);
+    // console.log('newToken', newToken);
+    // console.log('token', hashCreateToken);
+    // console.log('time', time);
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {
     console.error(err);

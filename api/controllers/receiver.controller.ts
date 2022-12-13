@@ -147,7 +147,7 @@ class ReceiverCtrl extends BaseCtrl {
           table: this.table.toLocaleLowerCase(),
           msg: `Data receiver ${dataUpdate.userId} has changed!`
         };
-  
+
         sendObjInList(objSent, [dataUpdate.userId]);
         return res.status(201).json({
           mgs: `Create ${this.table} numberAccount ${tempData.numberAccount} success!`,
@@ -254,7 +254,7 @@ class ReceiverCtrl extends BaseCtrl {
           table: this.table.toLocaleLowerCase(),
           msg: `Data receiver ${obj.userId} has changed!`
         };
-  
+
         sendObjInList(objSent, [dataUpdate.userId]);
         return res.status(200).json({
           mgs: `Update ${this.table} id ${req.params.id} success!`,
@@ -277,7 +277,7 @@ class ReceiverCtrl extends BaseCtrl {
 
   private async getTypeBank(bankId: string) {
     try {
-      const bank = await this.modelBank.findOne({ id: bankId });
+      const bank = await this.modelBank.findOne({ id: bankId, _status: true });
 
       if (!bank || !bank.type) {
         return undefined
@@ -291,7 +291,7 @@ class ReceiverCtrl extends BaseCtrl {
 
   private async getCustomer(property: string, value: any) {
     try {
-      const option: any = {};
+      const option: any = { _status: true };
       option[`${property}`] = value;
 
       const customer = await this.modelCustomer.findOne(option);

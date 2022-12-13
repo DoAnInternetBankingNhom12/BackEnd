@@ -59,10 +59,10 @@ abstract class BaseCtrl {
   // Get by id
   get = async (req: Request, res: Response) => {
     try {
-      const obj = await this.model.findOne({ id: req.params.id }, { _id: 0, __v: 0, _status: 0 });
+      const obj = await this.model.findOne({ id: req.params.id, _status: true }, { _id: 0, __v: 0, _status: 0 });
       if (isNull(obj)) {
         return res.status(400).json({
-          mgs: `Get ${this.table} id ${req.body.id} not exist!`,
+          mgs: `Get ${this.table} id ${req.body.id} not exist! Maybe ${this.table} has been deleted!`,
           success: false
         });
       }
@@ -146,11 +146,7 @@ abstract class BaseCtrl {
       return res.status(400).json({
         mgs: `Create ${this.table} id ${req.body.id} error!`,
         success: false,
-        error: {
-          mgs: err.message,
-          status: 400,
-          code: 5000
-        }
+        error: err
       });
     }
   };
@@ -159,12 +155,14 @@ abstract class BaseCtrl {
   update = async (req: Request, res: Response) => {
     try {
       const idExist = await this.model.findOne({ id: req.params.id }).exec();
+      const tempData = lodash.cloneDeep(req.body);
+      delete tempData.user;
 
       if (idExist) {
-        req.body.updateTime = moment().unix();
-        req.body._status = true;
+        tempData.updateTime = moment().unix();
+        tempData._status = true;
 
-        await this.model.findOneAndUpdate({ id: req.params.id }, req.body, { _id: 0, __v: 0, _status: 0 });
+        await this.model.findOneAndUpdate({ id: req.params.id }, tempData, { _id: 0, __v: 0, _status: 0 });
         
         const objSent: Notify = {
           type: 'update',
@@ -173,30 +171,21 @@ abstract class BaseCtrl {
         };
         broadcastObjAll(objSent);
         return res.status(200).json({
-          data: req.body,
+          mgs: `Update user id ${req.params.id} success!`,
           success: true
         });
       }
 
       return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
-        data: req.body,
+        data: tempData,
         success: false,
-        error: {
-          status: 200,
-          code: 5002
-        }
       });
     } catch (err: any) {
       return res.status(400).json({
         mgs: `Update ${this.table} id ${req.params.id} error!`,
-        data: req.body,
         success: false,
-        error: {
-          mgs: err.message,
-          status: 400,
-          code: 5000
-        }
+        error: err
       });
     }
   };
@@ -222,22 +211,13 @@ abstract class BaseCtrl {
 
       return res.status(400).json({
         mgs: `Not exist ${this.table} id ${req.params.id} to delete!`,
-        success: false,
-        error: {
-          status: 200,
-          code: 5002
-        }
+        success: false
       });
     } catch (err: any) {
       return res.status(400).json({
         mgs: `Delete ${this.table} id ${req.params.id} error!`,
-        data: req.body,
         success: false,
-        error: {
-          mgs: err.message,
-          status: 400,
-          code: 5000
-        }
+        error: err
       });
     }
   };

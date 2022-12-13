@@ -72,7 +72,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.typeTransaction = 'internal';
       delete tempData.user;
 
-      const bankInfo: any = await this.modelBank.findOne({type: 'internal'});
+      const bankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
       if (isNull(bankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
@@ -81,7 +81,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       tempData.sendBankId = bankInfo.id
-      const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId });
+      const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
       if (isNull(sentUserData)) {
         return res.status(400).json({
           mgs: `Account sent isn't exist!`,
@@ -91,7 +91,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendPayAccount = sentUserData.paymentAccount;
-      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount });
+      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
       if (isNull(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
@@ -157,7 +157,7 @@ class TransactionCtrl extends BaseCtrl {
 
   private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
     try {
-      const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, } },]);
+      const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, _status: true } },]);
       if (isNull(data)) return false;
       return true;
     } catch (err: any) {

@@ -266,20 +266,20 @@ class CustomerCtrl extends BaseCtrl {
   // Recharge
   recharge = async (req: Request, res: Response) => {
     try {
-      const { paymentAccount, amountMoney, userId } = req.body;
-      const employee = await this.modelEmployee.findOne({ userId: userId, _status: true });
+      const { paymentAccount, amountMoney } = lodash.cloneDeep(req.body);
+      const user = lodash.cloneDeep(req.body.user)
 
+      const employee = await this.modelEmployee.findOne({ userId: user.userId, '_status': true });
       if (employee && employee.accountType === 'employee') {
-        const customer = await this.model.findOne({ paymentAccount: paymentAccount});
+        const customer = await this.model.findOne({ paymentAccount: paymentAccount, _status: true });
         if (isNull(customer)) {
           return res.status(400).json({
-            mgs: `Not exist ${this.table} id ${req.params.id}!`,
+            mgs: `Payment account does not exist!`,
             success: false
           });
         }
 
         const newAccountBalance = customer?.accountBalance + amountMoney;
-
         const objData: any = await this.model.findOneAndUpdate({ paymentAccount }, { accountBalance: newAccountBalance }, { _status: true });
         const objSent: Notify = {
           type: 'update',
@@ -295,7 +295,7 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       return res.status(400).json({
-        mgs: `Not exist employee user id ${userId} to recharge!`,
+        mgs: `The account does not have employee permissions!`,
         success: false
       });
     } catch (err: any) {

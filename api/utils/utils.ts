@@ -4,7 +4,8 @@ export function isNull(value: any) {
     return value === null || value === undefined || value === '' || value === NaN || Object.keys(value).length === 0 || value.length === 0;
 }
 
-export function decryptedData(encryptedData: any) {
+export function decryptedData(encryptedData: string) {
+    const dataBuff = Buffer.from(encryptedData, 'base64');
     let privateKeyString = process.env.RSA_PRIVATE_KEY as string;
     let privateKey = crypto.createPrivateKey(privateKeyString);
 
@@ -14,13 +15,14 @@ export function decryptedData(encryptedData: any) {
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: "sha256",
         },
-        encryptedData
+        dataBuff
     );
 
-    return decryptedData.toString();
+    return JSON.parse(decryptedData.toString());
 }
 
-export function encryptedData(data: any) {
+export function encryptedData(data: Object) {
+    const objString = JSON.stringify(data);
     let publicKeyString = process.env.RSA_PUBLIC_KEY as string;
     let publicKey = crypto.createPublicKey(publicKeyString)
 
@@ -31,9 +33,8 @@ export function encryptedData(data: any) {
             oaepHash: "sha256",
         },
         // We convert the data string to a buffer using `Buffer.from`
-        Buffer.from(data)
-    );
-
+        Buffer.from(objString)
+    ).toString('base64');
     return encryptedData;
 }
 

@@ -14,8 +14,8 @@ import OTPCtrl from './controllers/otp.controller';
 import auth from './middleware/auth.customer.middleware';
 import authEmployee from './middleware/auth.employee.middleware';
 import authAdmin from './middleware/auth.admin.middleware';
+import authSK from './middleware/authSK.middleware';
 import otp from './middleware/otp.middleware';
-// import test from './middleware/test.middleware';
 
 const setRoutes = (app: Application): void => {
   const router = Router();
@@ -101,6 +101,9 @@ const setRoutes = (app: Application): void => {
   // OTP
   router.route('/otp').get(auth, otpCtrl.sendOtp);
   router.route('/otp/:userName').get(otpCtrl.sendOtpByUserName);
+
+  // Public Api
+  router.route('/getInfo/:paymentAccount').get(authSK, customerCtrl.getCustomerByPayNumber);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

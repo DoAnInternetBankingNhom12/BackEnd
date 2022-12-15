@@ -95,7 +95,7 @@ const setRoutes = (app: Application): void => {
 
   // Public Api
   router.route('/getInfo/:paymentAccount').get(authSK, customerCtrl.getCustomerByPayNumber);
-  router.route('/addmoney').post(authSK, transactionCtrl.externalBank);
+  // router.route('/addmoney').post(authSK, transactionCtrl.externalBank);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

@@ -18,7 +18,7 @@ import setRoutes from './routes';
 
 // import * as crypto from 'crypto';
 // import * as moment from 'moment';
-// import { encryptedData } from './utils/utils';
+// import { myEncryptedData } from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -66,11 +66,12 @@ const main = async (): Promise<any> => {
     // const time = moment().unix();
     // const hmac = crypto.createHmac('sha256', 'nhom12ibFTP');
     // const hashCreateToken = hmac.update(`nhom12ibFTP${'/api/getInfo/463029405607'}${time}`).digest('hex');
+    // // const hashCreateToken = hmac.update(`nhom12ibFTP${'/api/external/transaction'}${time}`).digest('hex');
     // const objToken = {
     //   time,
-    //   bankName: 'FTP',
+    //   bankId: 'bank1'
     // };
-    // const newToken = encryptedData(objToken);
+    // const newToken = myEncryptedData(objToken);
     // console.log('newToken', newToken);
     // console.log('token', hashCreateToken);
     // console.log('time', time);

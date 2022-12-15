@@ -21,7 +21,7 @@ export function decryptedData(encryptedData: string) {
     return JSON.parse(decryptedData.toString());
 }
 
-export function encryptedData(data: Object) {
+export function myEncryptedData(data: Object) {
     const objString = JSON.stringify(data);
     let publicKeyString = process.env.RSA_PUBLIC_KEY as string;
     let publicKey = crypto.createPublicKey(publicKeyString)
@@ -32,7 +32,22 @@ export function encryptedData(data: Object) {
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: "sha256",
         },
-        // We convert the data string to a buffer using `Buffer.from`
+        Buffer.from(objString)
+    ).toString('base64');
+    return encryptedData;
+}
+
+export function encryptedData(data: Object, bankId: string) {
+    const objString = JSON.stringify(data);
+    let publicKeyString = process.env[`${bankId}`] as string;
+    let publicKey = crypto.createPublicKey(publicKeyString)
+
+    const encryptedData = crypto.publicEncrypt(
+        {
+            key: publicKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: "sha256",
+        },
         Buffer.from(objString)
     ).toString('base64');
     return encryptedData;

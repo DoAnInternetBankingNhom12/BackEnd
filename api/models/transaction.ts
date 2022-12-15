@@ -28,7 +28,7 @@ export interface Transaction extends Document {
   transactionFee: number,
   amountOwed: number,
   description: string,
-  statusTransaction: string, // transferring: Đang chuyển tiền, completed: Chuyển tiền thành công, failed: Chuyển thất bại.
+  statusTransaction: string, // completed: Chuyển tiền thành công, failed: Chuyển thất bại.
   statusMoney: string, // not_delivered: Chưa giao tiền, delivered: Đã giao tiền
   typeTransaction: string // internal: Trong ngân hàng, external: Ngoài ngân hàng
   createTime: number,

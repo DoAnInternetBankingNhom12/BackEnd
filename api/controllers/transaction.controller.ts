@@ -121,7 +121,7 @@ class TransactionCtrl extends BaseCtrl {
         tempData.statusMoney = 'not_delivered';
         await new this.model(tempData).save();
         return res.status(400).json({
-          mgs: `Transaction failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          mgs: `Transaction internal failed and restore ${statusRestore ? 'success' : 'failed'}!`,
           success: false
         });
       }
@@ -135,20 +135,122 @@ class TransactionCtrl extends BaseCtrl {
         tempData.statusMoney = 'not_delivered';
         await new this.model(tempData).save();
         return res.status(400).json({
-          mgs: `Transaction failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          mgs: `Transaction internal failed and restore ${statusRestore ? 'success' : 'failed'}!`,
           success: false
         });
       }
 
       await new this.model(tempData).save();
       return res.status(200).json({
-        mgs: `Transaction success!`,
+        mgs: `Transaction internal success!`,
         success: true
       });
     } catch (err: any) {
       console.log(err);
       return res.status(400).json({
-        mgs: `Transaction failed!`,
+        mgs: `Transaction internal failed!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
+  externalBank = async (req: Request, res: Response) => {
+    try {
+      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
+      const tempData = lodash.cloneDeep(req.body);
+      const id = await this.generateId();
+      tempData.id = id;
+      tempData.createTime = moment().unix();
+      tempData.updateTime = moment().unix();
+      tempData.statusTransaction = 'completed';
+      tempData._status = true;
+      tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
+      tempData.statusMoney = 'delivered';
+      tempData.typeTransaction = 'internal';
+      delete tempData.user;
+
+      const myBankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+      if (isNull(myBankInfo)) {
+        return res.status(400).json({
+          mgs: `No bank data!`,
+          success: false
+        });
+      }
+
+      tempData.sendBankId = myBankInfo.id;
+      const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true });
+      if (isNull(sentUserData)) {
+        return res.status(400).json({
+          mgs: `Account sent isn't exist!`,
+          success: false
+        });
+      }
+
+      tempData.sendPayAccount = sentUserData.paymentAccount;
+      // Here for test
+      // Check data receiver exist in may data.
+      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true }); // Just test
+      if (isNull(receiverData)) {
+        // Here Partner bank's API get user info by paynumber and check
+        return res.status(400).json({
+          mgs: `Account receiver isn't exist!`,
+          success: false
+        });
+      }
+
+      tempData.receiverBankId = partnerBankInfo.id;
+      const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
+      const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
+
+      if (!statusCheck) {
+        return res.status(400).json({
+          mgs: `Account balance is not enough to make a transaction!`,
+          success: false
+        });
+      }
+
+      const accSentRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true }));
+      const accReceiverRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }));
+      const hasSentTransactionFee = (tempData.sendPayAccount === tempData.payAccountFee);
+      const statusDeduct = await this.deductMoneyAccount(tempData.sendPayAccount, amountOwedTotal, hasSentTransactionFee ? tempData.transactionFee : 0);
+
+      if (!statusDeduct) {
+        const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
+        tempData.statusTransaction = 'failed';
+        tempData.statusMoney = 'not_delivered';
+        await new this.model(tempData).save();
+        return res.status(400).json({
+          mgs: `Transaction external failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          success: false
+        });
+      }
+
+      const hasReceiverTransactionFee = (tempData.receiverPayAccount === tempData.payAccountFee);
+      // Here Partner bank's API add money
+      const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0); // Just test
+
+      if (!statusAdd) {
+        const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
+        tempData.statusTransaction = 'failed';
+        tempData.statusMoney = 'not_delivered';
+        await new this.model(tempData).save();
+        return res.status(400).json({
+          mgs: `Transaction external failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          success: false
+        });
+      }
+
+      await new this.model(tempData).save();
+
+      return res.status(200).json({
+        mgs: `Transaction external success!`,
+        success: true
+      });
+    } catch (err: any) {
+      console.log(err);
+      return res.status(400).json({
+        mgs: `Transaction external failed!`,
         success: false,
         error: err
       });

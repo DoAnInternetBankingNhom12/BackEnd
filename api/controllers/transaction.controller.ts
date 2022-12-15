@@ -257,6 +257,44 @@ class TransactionCtrl extends BaseCtrl {
     }
   };
 
+  addMoneyPartner = async (req: Request, res: Response) => {
+    try {
+      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
+      const tempData = lodash.cloneDeep(req.body);
+
+      return res.status(200).json({
+        mgs: `Transaction external success!`,
+        success: true
+      });
+    } catch (err: any) {
+      console.log(err);
+      return res.status(400).json({
+        mgs: `Transaction external failed!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
+  deductMoneyPartner = async (req: Request, res: Response) => {
+    try {
+      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
+      const tempData = lodash.cloneDeep(req.body);
+
+      return res.status(200).json({
+        mgs: `Transaction external success!`,
+        success: true
+      });
+    } catch (err: any) {
+      console.log(err);
+      return res.status(400).json({
+        mgs: `Transaction external failed!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
   private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
     try {
       const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, _status: true } },]);

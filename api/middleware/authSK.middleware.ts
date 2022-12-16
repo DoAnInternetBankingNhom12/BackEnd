@@ -36,7 +36,8 @@ const verifySK = async (req: Request, res: Response, next: any) => {
     });
   }
 
-  const diffTimeMinutes = moment().diff(moment.unix(time), 'minutes');
+  const timeClone = lodash.cloneDeep(time);
+  const diffTimeMinutes = moment().diff(moment.unix(timeClone), 'minutes');
   if (diffTimeMinutes >= 15) {
     return res.status(401).json({
       status: false,
@@ -73,9 +74,9 @@ const verifySK = async (req: Request, res: Response, next: any) => {
   return next();
 };
 
-function generalStringToken(key: string, url: string, objTransaction: any, time : number) {
-  let tokenString = `${key}-${url}-`;
-  if (objTransaction.sendAccountName) tokenString += objTransaction.sendAccountName + '-';
+function generalStringToken(key: string, url: string, objTransaction: any, time: number) {
+  let tokenString = `${key}-${url}`;
+  if (objTransaction.sendAccountName) tokenString += '-' + objTransaction.sendAccountName + '-';
   if (objTransaction.sendPayAccount) tokenString += objTransaction.sendPayAccount + '-';
   if (objTransaction.receiverPayAccount) tokenString += objTransaction.receiverPayAccount + '-';
   if (objTransaction.amountOwed) tokenString += objTransaction.amountOwed + '-';

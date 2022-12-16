@@ -69,7 +69,7 @@ const main = async (): Promise<any> => {
     //   time,
     //   bankId: 'bank1'
     // };
-    
+
     // const objData = {
     //   sendPayAccount: '34637636346',
     //   sendAccountName: 'Khach Hang 1',

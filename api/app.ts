@@ -45,7 +45,6 @@ app.use((req, res, next) => {
 });
 const myStream = {
   write: (text: string) => {
-    console.log('myStream text',text);
     logger.info(text);
   }
 };
@@ -64,17 +63,28 @@ const main = async (): Promise<any> => {
     setRoutes(app);
     ws; // Run websocket
     // const time = moment().unix();
-    // const hmac = crypto.createHmac('sha256', 'nhom12ibFTP');
-    // const hashCreateToken = hmac.update(`nhom12ibFTP${'/api/getInfo/463029405607'}${time}`).digest('hex');
-    // // const hashCreateToken = hmac.update(`nhom12ibFTP${'/api/external/transaction'}${time}`).digest('hex');
+    // const hmac1 = crypto.createHmac('sha256', 'nhom12ibFTP');
+    // const hmac2 = crypto.createHmac('sha256', 'nhom12ibFTP');
     // const objToken = {
     //   time,
     //   bankId: 'bank1'
     // };
+    
+    // const objData = {
+    //   sendPayAccount: '34637636346',
+    //   sendAccountName: 'Khach Hang 1',
+    //   receiverPayAccount: '493747116445',
+    //   payAccountFee: '493747116445',
+    //   transactionFee: 5000,
+    //   amountOwed: 500000,
+    //   description: '',
+    // };
+    // const hashCreateTokenInfo = hmac1.update(`nhom12ibFTP${'/api/getInfo/463029405607'}${time}`).digest('hex');
+    // const hashCreateTokenTransaction = hmac2.update(`nhom12ibFTP-${'/api/transaction/addmoney'}-${objData.sendAccountName}-${objData.sendPayAccount}-${objData.receiverPayAccount}-${objData.amountOwed}-${objData.payAccountFee}-${objData.transactionFee}-${time}`).digest('hex');
     // const newToken = myEncryptedData(objToken);
     // console.log('newToken', newToken);
-    // console.log('token', hashCreateToken);
-    // console.log('time', time);
+    // console.log('token info', hashCreateTokenInfo);
+    // console.log('token transaction', hashCreateTokenTransaction);
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {
     console.error(err);

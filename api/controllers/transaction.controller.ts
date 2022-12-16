@@ -276,8 +276,6 @@ class TransactionCtrl extends BaseCtrl {
     try {
       const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
       const tempData = lodash.cloneDeep(req.body);
-      console.log('addMoneyPartner partnerBankInfo', partnerBankInfo);
-      console.log('addMoneyPartner tempData', tempData);
       const id = await this.generateId();
       tempData.id = id;
       tempData.createTime = moment().unix();
@@ -316,7 +314,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.receiverBankId = bankInfo.id;
       tempData.receiverBankName = bankInfo.name;
-      tempData.receiverAccountName = customerData.reminiscentName;
+      tempData.receiverAccountName = customerData.name;
       const amountOwedTotal = tempData.amountOwed + (tempData.receiverPayAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
 
       const accReceiverRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }));

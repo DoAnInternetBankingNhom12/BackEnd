@@ -11,11 +11,12 @@ import * as lodash from 'lodash';
 
 const verifySK = async (req: Request, res: Response, next: any) => {
   const model = Bank;
-  const tokenSK: string = req.headers['tokensk'] as string;
+  const tokenSK: string = lodash.cloneDeep(req.headers['tokensk'] as string);
   const objEncode: any = decryptedData(tokenSK);
-  const token = req.headers['token'];
+  const token = lodash.cloneDeep(req.headers['token']);
   const time = objEncode.time;
   const bankInfo: any = await model.findOne({ id: objEncode.bankId, _status: true }, { _id: 0, __v: 0, _status: 0 });
+  const objBody = lodash.cloneDeep(req.body);
 
   if (isNull(bankInfo)) {
     return res.status(401).json({
@@ -40,7 +41,7 @@ const verifySK = async (req: Request, res: Response, next: any) => {
     return res.status(401).json({
       status: false,
       errors: {
-        mgs: "Token Expiration!"
+        mgs: "Token expiration!"
       }
     });
   }
@@ -49,7 +50,7 @@ const verifySK = async (req: Request, res: Response, next: any) => {
     return res.status(401).json({
       status: false,
       errors: {
-        mgs: "No tokens!"
+        mgs: "No token field!"
       }
     });
   }
@@ -57,7 +58,7 @@ const verifySK = async (req: Request, res: Response, next: any) => {
   const key = process.env.SECRET_KEY as string;
   const url = lodash.cloneDeep(req.originalUrl);
   const hmac = crypto.createHmac('sha256', key);
-  const hashCreateToken = hmac.update(`${key}${url}${time}`).digest('hex');
+  const hashCreateToken = hmac.update(generalStringToken(key, url, objBody, time)).digest('hex');
   req.body.bankInfo = bankInfo;
 
   if (hashCreateToken !== token) {
@@ -71,5 +72,17 @@ const verifySK = async (req: Request, res: Response, next: any) => {
 
   return next();
 };
+
+function generalStringToken(key: string, url: string, objTransaction: any, time : number) {
+  let tokenString = `${key}-${url}-`;
+  if (objTransaction.sendAccountName) tokenString += objTransaction.sendAccountName + '-';
+  if (objTransaction.sendPayAccount) tokenString += objTransaction.sendPayAccount + '-';
+  if (objTransaction.receiverPayAccount) tokenString += objTransaction.receiverPayAccount + '-';
+  if (objTransaction.amountOwed) tokenString += objTransaction.amountOwed + '-';
+  if (objTransaction.payAccountFee) tokenString += objTransaction.payAccountFee + '-';
+  if (objTransaction.transactionFee) tokenString += objTransaction.transactionFee;
+  tokenString += `-${time}`;
+  return tokenString;
+}
 
 export default verifySK;

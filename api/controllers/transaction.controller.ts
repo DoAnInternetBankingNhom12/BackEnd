@@ -80,7 +80,8 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
-      tempData.sendBankId = bankInfo.id
+      tempData.sendBankId = bankInfo.id;
+      tempData.sendBankName = bankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
       if (isNull(sentUserData)) {
         return res.status(400).json({
@@ -90,7 +91,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
-      tempData.sendPayAccount = sentUserData.paymentAccount;
+      tempData.sendAccountName = sentUserData.name;
       const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
       if (isNull(receiverData)) {
         return res.status(400).json({
@@ -99,7 +100,9 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
-      tempData.receiverBankId = receiverData.bankId;
+      tempData.receiverBankId = bankInfo.id;
+      tempData.receiverBankName = bankInfo.name;
+      tempData.receiverAccountName = receiverData.reminiscentName;
       const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 
@@ -157,7 +160,6 @@ class TransactionCtrl extends BaseCtrl {
 
   externalBank = async (req: Request, res: Response) => {
     try {
-      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
       const tempData = lodash.cloneDeep(req.body);
       const id = await this.generateId();
       tempData.id = id;
@@ -167,9 +169,9 @@ class TransactionCtrl extends BaseCtrl {
       tempData._status = true;
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'delivered';
-      tempData.typeTransaction = 'internal';
+      tempData.typeTransaction = 'external';
       delete tempData.user;
-
+      
       const myBankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
       if (isNull(myBankInfo)) {
         return res.status(400).json({
@@ -179,6 +181,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       tempData.sendBankId = myBankInfo.id;
+      tempData.sendBankName = myBankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true });
       if (isNull(sentUserData)) {
         return res.status(400).json({
@@ -188,6 +191,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
+      tempData.sendAccountName = sentUserData.name;
       // Here for test
       // Check data receiver exist in may data.
       const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true }); // Just test
@@ -199,7 +203,18 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
+      const partnerBankInfo: any = await this.modelBank.findOne({id: receiverData.bankId, _status: true});
+      if (isNull(partnerBankInfo)) {
+        return res.status(400).json({
+          mgs: `No partner bank data!`,
+          success: false
+        });
+      }
+
+
       tempData.receiverBankId = partnerBankInfo.id;
+      tempData.receiverBankName = partnerBankInfo.name;
+      tempData.receiverAccountName = receiverData.reminiscentName;
       const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 
@@ -261,34 +276,73 @@ class TransactionCtrl extends BaseCtrl {
     try {
       const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
       const tempData = lodash.cloneDeep(req.body);
+      console.log('addMoneyPartner partnerBankInfo', partnerBankInfo);
+      console.log('addMoneyPartner tempData', tempData);
+      const id = await this.generateId();
+      tempData.id = id;
+      tempData.createTime = moment().unix();
+      tempData.updateTime = moment().unix();
+      tempData.statusTransaction = 'completed';
+      tempData._status = true;
+      tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
+      tempData.statusMoney = 'not_delivered';
+      tempData.typeTransaction = 'external';
+      delete tempData.user;
 
+      const bankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+      if (isNull(bankInfo)) {
+        return res.status(400).json({
+          mgs: `No bank data!`,
+          success: false
+        });
+      }
+
+      tempData.sendBankId = partnerBankInfo.id;
+      tempData.sendBankName = partnerBankInfo.name;
+      if (isNull(tempData.sendPayAccount) || isNull(tempData.sendAccountName)) {
+        return res.status(400).json({
+          mgs: `Account sent isn't exist!`,
+          success: false
+        });
+      }
+
+      const customerData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
+      if (isNull(customerData)) {
+        return res.status(400).json({
+          mgs: `Account receiver isn't exist!`,
+          success: false
+        });
+      }
+
+      tempData.receiverBankId = bankInfo.id;
+      tempData.receiverBankName = bankInfo.name;
+      tempData.receiverAccountName = customerData.reminiscentName;
+      const amountOwedTotal = tempData.amountOwed + (tempData.receiverPayAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
+
+      const accReceiverRestore = lodash.cloneDeep(await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }));
+      const hasReceiverTransactionFee = (tempData.receiverPayAccount === tempData.payAccountFee);
+      const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0);
+
+      if (!statusAdd) {
+        const statusRestore = await this.restoreData(undefined, accReceiverRestore);
+        tempData.statusTransaction = 'failed';
+        tempData.statusMoney = 'not_delivered';
+        await new this.model(tempData).save();
+        return res.status(400).json({
+          mgs: `Transaction add money failed and restore ${statusRestore ? 'success' : 'failed'}!`,
+          success: false
+        });
+      }
+
+      await new this.model(tempData).save();
       return res.status(200).json({
-        mgs: `Transaction external success!`,
+        mgs: `Transaction add money success!`,
         success: true
       });
     } catch (err: any) {
       console.log(err);
       return res.status(400).json({
-        mgs: `Transaction external failed!`,
-        success: false,
-        error: err
-      });
-    }
-  };
-
-  deductMoneyPartner = async (req: Request, res: Response) => {
-    try {
-      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
-      const tempData = lodash.cloneDeep(req.body);
-
-      return res.status(200).json({
-        mgs: `Transaction external success!`,
-        success: true
-      });
-    } catch (err: any) {
-      console.log(err);
-      return res.status(400).json({
-        mgs: `Transaction external failed!`,
+        mgs: `Transaction add money failed!`,
         success: false,
         error: err
       });
@@ -342,14 +396,18 @@ class TransactionCtrl extends BaseCtrl {
     try {
       if (isNull(infoAccSent) && isNull(infoAccSent)) return true;
 
-      const accountSent: any = await this.modelCustommer.findOne({ paymentAccount: infoAccSent.paymentAccount, _status: true });
-      const accountReceiver: any = await this.modelCustommer.findOne({ paymentAccount: infoAccReceiver.paymentAccount, _status: true });
-      if (!isNull(accountSent)) {
-        await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccSent.paymentAccount }, infoAccSent);
+      if (!isNull(infoAccSent)) {
+        const accountSent: any = await this.modelCustommer.findOne({ paymentAccount: infoAccSent.paymentAccount, _status: true });
+        if (!isNull(accountSent)) {
+          await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccSent.paymentAccount }, infoAccSent);
+        }
       }
 
-      if (!isNull(accountReceiver)) {
-        await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccReceiver.paymentAccount }, infoAccReceiver);
+      if (!isNull(infoAccSent)) {
+        const accountReceiver: any = await this.modelCustommer.findOne({ paymentAccount: infoAccReceiver.paymentAccount, _status: true });
+        if (!isNull(accountReceiver)) {
+          await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccReceiver.paymentAccount }, infoAccReceiver);
+        }
       }
 
       return true;
@@ -358,7 +416,6 @@ class TransactionCtrl extends BaseCtrl {
       return false;
     }
   }
-
 }
 
 export default TransactionCtrl;

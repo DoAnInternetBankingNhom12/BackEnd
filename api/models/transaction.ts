@@ -17,6 +17,7 @@ const transactionSchema = new Schema<Transaction>({
   statusTransaction: { type: String, required: true},
   statusMoney: { type: String, required: true},
   typeTransaction: { type: String, required: true},
+  signature: { type: String},
   createTime: Number,
   updateTime: Number,
   _status: { type: Boolean, required: true}
@@ -39,6 +40,7 @@ export interface Transaction extends Document {
   statusTransaction: string, // completed: Chuyển tiền thành công, failed: Chuyển thất bại.
   statusMoney: string, // not_delivered: Chưa giao tiền, delivered: Đã giao tiền
   typeTransaction: string // internal: Trong ngân hàng, external: Ngoài ngân hàng
+  signature: string // Nếu có chuổi signature thông tin giao dịch được xác nhận đối với liên ngân hàng còn nội bô không cần điền
   createTime: number,
   updateTime: number,
   _status: boolean

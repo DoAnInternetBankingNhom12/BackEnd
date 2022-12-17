@@ -17,7 +17,7 @@ const transactionSchema = new Schema<Transaction>({
   statusTransaction: { type: String, required: true},
   statusMoney: { type: String, required: true},
   typeTransaction: { type: String, required: true},
-  signature: { type: String},
+  signature: { type: String, default: ''},
   createTime: Number,
   updateTime: Number,
   _status: { type: Boolean, required: true}

@@ -18,7 +18,7 @@ import setRoutes from './routes';
 
 // import * as crypto from 'crypto';
 // import * as moment from 'moment';
-// import { myEncryptedData } from './utils/utils';
+// import { myEncryptedStingST } from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -63,13 +63,8 @@ const main = async (): Promise<any> => {
     setRoutes(app);
     ws; // Run websocket
     // const time = moment().unix();
-    // const hmac1 = crypto.createHmac('sha256', 'nhom12ibFTP');
-    // const hmac2 = crypto.createHmac('sha256', 'nhom12ibFTP');
-    // const objToken = {
-    //   time,
-    //   bankId: 'bank1'
-    // };
-
+    // const hmac1 = crypto.createHash('sha256');
+    // const hmac2 = crypto.createHash('sha256');
     // const objData = {
     //   sendPayAccount: '34637636346',
     //   sendAccountName: 'Khach Hang 1',
@@ -77,14 +72,30 @@ const main = async (): Promise<any> => {
     //   payAccountFee: '493747116445',
     //   transactionFee: 5000,
     //   amountOwed: 500000,
+    //   bankReferenceId: 'bank1',
     //   description: '',
     // };
-    // const hashCreateTokenInfo = hmac1.update(`nhom12ibFTP${'/api/getInfo/463029405607'}${time}`).digest('hex');
-    // const hashCreateTokenTransaction = hmac2.update(`nhom12ibFTP-${'/api/transaction/addmoney'}-${objData.sendAccountName}-${objData.sendPayAccount}-${objData.receiverPayAccount}-${objData.amountOwed}-${objData.payAccountFee}-${objData.transactionFee}-${time}`).digest('hex');
-    // const newToken = myEncryptedData(objToken);
-    // console.log('newToken', newToken);
+    // const key = process.env.SECRET_KEY as string;
+    // const hashCreateTokenInfo = hmac1.update(`${key}${'/api/getInfo/463029405607'}${time}`).digest('base64');
+    // const hashCreateTokenTransaction = hmac2.update(`${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`).digest('base64');
+    // const newToken = myEncryptedStingST();
+    
     // console.log('token info', hashCreateTokenInfo);
+    // console.log('newToken', newToken);
     // console.log('token transaction', hashCreateTokenTransaction);
+    // console.log('time', time);
+    // const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
+    //   {
+    //     modulusLength: 1024
+    //   });
+    //   console.log(publicKey.export({
+    //     type: "pkcs1",
+    //     format: "pem",
+    //   }));
+    //   console.log(privateKey.export({
+    //     type: "pkcs1",
+    //     format: "pem",
+    //   }));
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));
   } catch (err) {
     console.error(err);

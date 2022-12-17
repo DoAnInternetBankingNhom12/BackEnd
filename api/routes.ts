@@ -8,6 +8,7 @@ import EmployeeCtrl from './controllers/employee.controller';
 import ReceiverCtrl from './controllers/receiver.controller';
 import TransactionCtrl from './controllers/transaction.controller';
 import OTPCtrl from './controllers/otp.controller';
+import PartnerCtrl from './controllers/partner.controller';
 
 // Middlewares
 import auth from './middleware/auth.customer.middleware';
@@ -25,6 +26,7 @@ const setRoutes = (app: Application): void => {
   const receiverCtrl = new ReceiverCtrl();
   const transactionCtrl = new TransactionCtrl();
   const otpCtrl = new OTPCtrl();
+  const partnerCtrl = new PartnerCtrl();
 
   // User
   router.route('/users').get(auth, userCtrl.getAllUser);
@@ -79,7 +81,7 @@ const setRoutes = (app: Application): void => {
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
   router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
   router.route('/transaction').get(authEmployee, transactionCtrl.findTransaction);
-  router.route('/transaction/internal').post(auth, transactionCtrl.internalBank);
+  router.route('/transaction/internal').post(auth, otp, transactionCtrl.internalBank);
   // router.route('/transaction/external').post(auth, transactionCtrl.externalBank); // External done but has not api from Partner
   router.route('/transaction/:id').put(authAdmin, transactionCtrl.update);
   router.route('/transaction/:id').delete(authAdmin, transactionCtrl.delete);
@@ -96,6 +98,9 @@ const setRoutes = (app: Application): void => {
   // Public Api
   router.route('/getInfo/:paymentAccount').get(authSK, customerCtrl.getCustomerByPayNumber);
   router.route('/transaction/addmoney').post(authSK, transactionCtrl.addMoneyPartner);
+
+  // Partner getRecipient
+  router.route('/getInfoRecipient/:stk').get(auth, partnerCtrl.getRecipient);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

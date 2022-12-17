@@ -16,7 +16,7 @@ import { Transaction } from '../interfaces/transaction.interface';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { getPipeLineGet, isNull } from '../utils/utils';
+import { getPipeLineGet, isNull, verifyMySignature } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
   model = TransactionModel;
@@ -274,8 +274,8 @@ class TransactionCtrl extends BaseCtrl {
 
   addMoneyPartner = async (req: Request, res: Response) => {
     try {
-      const partnerBankInfo = lodash.cloneDeep(req.body.bankInfo);
       const tempData = lodash.cloneDeep(req.body);
+      const signature = lodash.cloneDeep(req.headers['signature'] as string)
       const id = await this.generateId();
       tempData.id = id;
       tempData.createTime = moment().unix();
@@ -285,10 +285,41 @@ class TransactionCtrl extends BaseCtrl {
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'not_delivered';
       tempData.typeTransaction = 'external';
-      delete tempData.user;
+      const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.bankReferenceId, _status: true }, { _id: 0, __v: 0, _status: 0 });
+      
+      if (isNull(partnerBankInfo)) {
+        return res.status(401).json({
+          status: false,
+          errors: {
+            mgs: "No data bank or no bankReferenceId body!"
+          }
+        });
+      }
 
-      const bankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
-      if (isNull(bankInfo)) {
+      if (!signature) {
+        return res.status(401).json({
+          status: false,
+          errors: {
+            mgs: "No signature field in headers!"
+          }
+        });
+      }
+
+      const isVeifyST = verifyMySignature(signature);
+      console.log(isVeifyST);
+      if (!isVeifyST) {
+        return res.status(401).json({
+          status: false,
+          errors: {
+            mgs: "Signature does not match!"
+          }
+        });
+      }
+
+      tempData.signature = signature;
+
+      const myBankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+      if (isNull(myBankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
           success: false
@@ -312,8 +343,8 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
-      tempData.receiverBankId = bankInfo.id;
-      tempData.receiverBankName = bankInfo.name;
+      tempData.receiverBankId = myBankInfo.id;
+      tempData.receiverBankName = myBankInfo.name;
       tempData.receiverAccountName = customerData.name;
       const amountOwedTotal = tempData.amountOwed + (tempData.receiverPayAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
 
@@ -332,6 +363,7 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
+      delete tempData.bankInfo;
       await new this.model(tempData).save();
       return res.status(200).json({
         mgs: `Transaction add money success!`,

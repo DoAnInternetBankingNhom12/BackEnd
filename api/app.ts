@@ -16,9 +16,9 @@ import * as cors from 'cors';
 import setMongo from './databases/mogodb';
 import setRoutes from './routes';
 
-// import * as crypto from 'crypto';
-// import * as moment from 'moment';
-// import { myEncryptedStingST, decryptedData, verifyMySignature, getTokenPartner, encryptedStringST} from './utils/utils';
+import * as crypto from 'crypto';
+import * as moment from 'moment';
+import { myEncryptedStingST, decryptedData, verifyMySignature, getTokenPartner, encryptedStringST} from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -62,40 +62,54 @@ const main = async (): Promise<any> => {
     await setMongo();
     setRoutes(app);
     ws; // Run websocket
-    // const key = process.env.SECRET_KEY as string;
-    // const time = moment().unix();
-    // const hmac1 = crypto.createHash('sha256');
-    // // const stringInfo = `${key}${'/api/getInfo/463029405607'}${time}`;
-    // const stringInfo = `${key}${'/api/getInfo/463029405607'}16711357956`;
-    // const hashCreateTokenInfo = hmac1.update(stringInfo).digest('base64');
-    // const hmac2 = crypto.createHash('sha256');
-    // console.log('String info', stringInfo);
-    // console.log('time', time);
-    // console.log('token info', hashCreateTokenInfo);
-    // const objData = {
-    //   sendPayAccount: '34637636346',
-    //   sendAccountName: 'Khach Hang 1',
-    //   receiverPayAccount: '493747116445',
-    //   payAccountFee: '493747116445',
-    //   transactionFee: 5000,
-    //   amountOwed: 500000,
-    //   bankReferenceId: 'bank1',
-    //   description: '',
-    // };
-    // const stringTransaction = `${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`;
-    // const hashCreateTokenTransaction = hmac2.update(stringTransaction).digest('base64');
-    // const signature = myEncryptedStingST();
+  //   const key = process.env.SECRET_KEY as string;
+  //   const time = moment().unix();
+  //   const hmac1 = crypto.createHash('sha256');
+  //   // const stringInfo = `${key}${'/api/getInfo/463029405607'}${time}`;
+  //   const stringInfo = `${key}${'/api/getInfo/463029405607'}16711357956`;
+  //   const hashCreateTokenInfo = hmac1.update(stringInfo).digest('base64');
+  //   const hmac2 = crypto.createHash('sha256');
+  //   console.log('String info', stringInfo);
+  //   console.log('time', time);
+  //   console.log('token info', hashCreateTokenInfo);
+  //   const objData = {
+  //     sendPayAccount: '34637636346',
+  //     sendAccountName: 'Khach Hang 1',
+  //     receiverPayAccount: '493747116445',
+  //     payAccountFee: '493747116445',
+  //     transactionFee: 5000,
+  //     amountOwed: 500000,
+  //     bankReferenceId: 'bank1',
+  //     description: '',
+  //   };
+
+  //   const objDataPartner = {
+  //     send_STK: '56656',
+  //     send_Money: 10,
+  //     receive_BankID: '2',
+  //     receive_STK: 'string',
+  //     content: 'string',
+  //     paymentFeeTypeID: 1,
+  //     transactionTypeID: 1,
+  //     bankReferenceId: 0,
+  //     rsa: 'string'
+  // }
+  //   const stringTransaction = `${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`;
+  //   const hashCreateTokenTransaction = hmac2.update(stringTransaction).digest('base64');
+  //   const signature = myEncryptedStingST();
     
-    // console.log('signature', signature);
-    // console.log('String transaction', stringTransaction);
-    // console.log('token transaction', hashCreateTokenTransaction);
-    // const chuKy = 'gjQlJVMhxvttdR6z7T98FcJaUfMTUZrbXSfpnsqiuPqpmevSMSG+9tw1m3Vog2d1CCbWWEhzQeQaS+jn1Gwthdt7HhxMAzSgiDSP5UQuFODS7wThy0Wbp0jhvpTGKrt8Dywj6zvRm5L9KKiYdgqiyC8WwXcpb5/UkjAX1TFOOGc=';
-    // console.log(verifyMySignature(chuKy));
-    // const tokenPartner = getTokenPartner(time.toString(), 'bank1');
-    // const stringSignaturePartner = '56656102';
-    // const signaturePartner = encryptedStringST(stringSignaturePartner, 'bank1');
-    // console.log('tokenPartner', tokenPartner);
-    // console.log('signaturePartner', signaturePartner);
+  //   console.log('signature', signature);
+  //   console.log('String transaction', stringTransaction);
+  //   console.log('token transaction', hashCreateTokenTransaction);
+  //   const chuKy = 'gjQlJVMhxvttdR6z7T98FcJaUfMTUZrbXSfpnsqiuPqpmevSMSG+9tw1m3Vog2d1CCbWWEhzQeQaS+jn1Gwthdt7HhxMAzSgiDSP5UQuFODS7wThy0Wbp0jhvpTGKrt8Dywj6zvRm5L9KKiYdgqiyC8WwXcpb5/UkjAX1TFOOGc=';
+  //   console.log(verifyMySignature(chuKy));
+  //   const timeString = time.toString();
+  //   console.log('timeString', timeString);
+  //   const tokenPartner = getTokenPartner(time.toString(), 'bank1');
+  //   const stringSignaturePartner = `${objDataPartner.send_STK}${objDataPartner.send_Money}${objDataPartner.receive_STK}`;
+  //   const signaturePartner = encryptedStringST(stringSignaturePartner, 'bank1');
+  //   console.log('tokenPartner', tokenPartner);
+  //   console.log('signaturePartner', signaturePartner);
     // const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
     //   {
     //     modulusLength: 1024

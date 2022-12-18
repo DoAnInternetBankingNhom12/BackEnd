@@ -18,7 +18,7 @@ import setRoutes from './routes';
 
 // import * as crypto from 'crypto';
 // import * as moment from 'moment';
-// import { myEncryptedStingST } from './utils/utils';
+// import { myEncryptedStingST, decryptedData, verifyMySignature} from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -62,9 +62,15 @@ const main = async (): Promise<any> => {
     await setMongo();
     setRoutes(app);
     ws; // Run websocket
+    // const key = process.env.SECRET_KEY as string;
     // const time = moment().unix();
     // const hmac1 = crypto.createHash('sha256');
+    // const stringInfo = `${key}${'/api/getInfo/463029405607'}${time}`;
+    // const hashCreateTokenInfo = hmac1.update(stringInfo).digest('base64');
     // const hmac2 = crypto.createHash('sha256');
+    // console.log('String info', stringInfo);
+    // console.log('time', time);
+    // console.log('token info', hashCreateTokenInfo);
     // const objData = {
     //   sendPayAccount: '34637636346',
     //   sendAccountName: 'Khach Hang 1',
@@ -75,25 +81,26 @@ const main = async (): Promise<any> => {
     //   bankReferenceId: 'bank1',
     //   description: '',
     // };
-    // const key = process.env.SECRET_KEY as string;
-    // const hashCreateTokenInfo = hmac1.update(`${key}${'/api/getInfo/463029405607'}${time}`).digest('base64');
-    // const hashCreateTokenTransaction = hmac2.update(`${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`).digest('base64');
-    // const newToken = myEncryptedStingST();
+    // const stringTransaction = `${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`;
+    // const hashCreateTokenTransaction = hmac2.update(stringTransaction).digest('base64');
+    // const signature = myEncryptedStingST();
     
-    // console.log('token info', hashCreateTokenInfo);
-    // console.log('newToken', newToken);
+    // console.log('signature', signature);
+    // console.log('String transaction', stringTransaction);
     // console.log('token transaction', hashCreateTokenTransaction);
-    // console.log('time', time);
+    // const chuKy = 'uOFLADqFRnKYcf650Yz0qw4agvlhjrjKIsS+cWpNB9IMJJ9cagOxOjKp7LsRoTGPA/Z1tTO46SJecmsUQVX2ywKgZgOrqCgBpDvApByuyLWs5thqO9TpOKbqQiaDa3NCmgWoUFz+L3p9uYEahXun225NHkkZ/I2k8OeloFgB3Gg=';
+    // console.log(verifyMySignature(chuKy));
+    // console.log('test', test);
     // const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
     //   {
     //     modulusLength: 1024
     //   });
     //   console.log(publicKey.export({
-    //     type: "pkcs1",
+    //     type: "spki",
     //     format: "pem",
     //   }));
     //   console.log(privateKey.export({
-    //     type: "pkcs1",
+    //     type: "pkcs8",
     //     format: "pem",
     //   }));
     app.listen(app.get('port'), () => console.log(`Api Nhom12IB listening on port ${app.get('port')}`));

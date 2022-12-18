@@ -10,13 +10,10 @@ import Customer from '../models/customer';
 import User from '../models/user';
 import Bank from '../models/bank';
 
-// Interfaces
-import { Transaction } from '../interfaces/transaction.interface';
-
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { getPipeLineGet, isNull, verifyMySignature } from '../utils/utils';
+import { isNull, verifyMySignature } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
   model = TransactionModel;
@@ -306,7 +303,6 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       const isVeifyST = verifyMySignature(signature);
-      console.log(isVeifyST);
       if (!isVeifyST) {
         return res.status(401).json({
           status: false,

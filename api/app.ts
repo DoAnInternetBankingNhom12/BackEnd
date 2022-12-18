@@ -18,7 +18,7 @@ import setRoutes from './routes';
 
 // import * as crypto from 'crypto';
 // import * as moment from 'moment';
-// import { myEncryptedStingST, decryptedData, verifyMySignature} from './utils/utils';
+// import { myEncryptedStingST, decryptedData, verifyMySignature, getTokenPartner, encryptedStringST} from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -65,7 +65,8 @@ const main = async (): Promise<any> => {
     // const key = process.env.SECRET_KEY as string;
     // const time = moment().unix();
     // const hmac1 = crypto.createHash('sha256');
-    // const stringInfo = `${key}${'/api/getInfo/463029405607'}${time}`;
+    // // const stringInfo = `${key}${'/api/getInfo/463029405607'}${time}`;
+    // const stringInfo = `${key}${'/api/getInfo/463029405607'}16711357956`;
     // const hashCreateTokenInfo = hmac1.update(stringInfo).digest('base64');
     // const hmac2 = crypto.createHash('sha256');
     // console.log('String info', stringInfo);
@@ -88,9 +89,13 @@ const main = async (): Promise<any> => {
     // console.log('signature', signature);
     // console.log('String transaction', stringTransaction);
     // console.log('token transaction', hashCreateTokenTransaction);
-    // const chuKy = 'uOFLADqFRnKYcf650Yz0qw4agvlhjrjKIsS+cWpNB9IMJJ9cagOxOjKp7LsRoTGPA/Z1tTO46SJecmsUQVX2ywKgZgOrqCgBpDvApByuyLWs5thqO9TpOKbqQiaDa3NCmgWoUFz+L3p9uYEahXun225NHkkZ/I2k8OeloFgB3Gg=';
+    // const chuKy = 'gjQlJVMhxvttdR6z7T98FcJaUfMTUZrbXSfpnsqiuPqpmevSMSG+9tw1m3Vog2d1CCbWWEhzQeQaS+jn1Gwthdt7HhxMAzSgiDSP5UQuFODS7wThy0Wbp0jhvpTGKrt8Dywj6zvRm5L9KKiYdgqiyC8WwXcpb5/UkjAX1TFOOGc=';
     // console.log(verifyMySignature(chuKy));
-    // console.log('test', test);
+    // const tokenPartner = getTokenPartner(time.toString(), 'bank1');
+    // const stringSignaturePartner = '56656102';
+    // const signaturePartner = encryptedStringST(stringSignaturePartner, 'bank1');
+    // console.log('tokenPartner', tokenPartner);
+    // console.log('signaturePartner', signaturePartner);
     // const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
     //   {
     //     modulusLength: 1024

@@ -6,6 +6,7 @@ export function isNull(value: any) {
 
 export function verifyMySignature(verifiableData: string) {
     const signature = process.env.SIGNATURE as string;
+    console.log(decryptedData(verifiableData));
     const isVerified = (decryptedData(verifiableData) === signature);
     return isVerified;
 }
@@ -20,7 +21,7 @@ export function decryptedData(encryptedData: string) {
             {
                 key: privateKey,
                 padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-                oaepHash: "sha256",
+                // oaepHash: "sha256",
             },
             dataBuff
         );
@@ -54,7 +55,7 @@ function encryptedRSA(text: string, key: any) {
         {
             key: key,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-            oaepHash: "sha256",
+            // oaepHash: "sha256",
         },
         Buffer.from(text)
     );

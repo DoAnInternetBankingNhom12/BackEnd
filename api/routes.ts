@@ -9,6 +9,7 @@ import ReceiverCtrl from './controllers/receiver.controller';
 import TransactionCtrl from './controllers/transaction.controller';
 import OTPCtrl from './controllers/otp.controller';
 import PartnerCtrl from './controllers/partner.controller';
+import DebtReminderCtrl from './controllers/debt_reminder.controller';
 
 // Middlewares
 import auth from './middleware/auth.customer.middleware';
@@ -27,6 +28,7 @@ const setRoutes = (app: Application): void => {
   const transactionCtrl = new TransactionCtrl();
   const otpCtrl = new OTPCtrl();
   const partnerCtrl = new PartnerCtrl();
+  const debtReminderCtrl = new DebtReminderCtrl();
 
   // User
   router.route('/users').get(auth, userCtrl.getAllUser);
@@ -77,6 +79,10 @@ const setRoutes = (app: Application): void => {
   router.route('/receiver/:id').put(auth, receiverCtrl.updateReceiver);
   router.route('/receiver/:id').delete(auth, receiverCtrl.delete);
 
+  //Debt Reminder createDebtReminder
+  router.route('/debtreminder').get(auth, debtReminderCtrl.getMyDebtReminder);
+  router.route('/debtreminder').post(auth, debtReminderCtrl.createDebtReminder);
+
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
   router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
@@ -101,7 +107,7 @@ const setRoutes = (app: Application): void => {
 
   // Partner getRecipient
   router.route('/getInfoRecipient/:stk').get(auth, partnerCtrl.getRecipient);
-  // router.route('/testTransaction').post(partnerCtrl.transactionPartner);
+  router.route('/testTransaction').post(partnerCtrl.transactionPartner);
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);

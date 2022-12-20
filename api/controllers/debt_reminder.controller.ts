@@ -11,7 +11,10 @@ import User from '../models/user';
 import Bank from '../models/bank';
 
 // Services
-import { sendObjInList } from '../services/ws.service';
+import { sendObjInListByPayNumber } from '../services/ws.service';
+
+// Interfaces
+import { Notify } from 'interfaces/notify.interface.js';
 
 // Utils
 import * as moment from 'moment';
@@ -37,7 +40,7 @@ class DebtReminderCtrl extends BaseCtrl {
         });
       }
 
-      const debtReminders = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }, { userId: user.userId }], _status: true }, { id: 0, _id: 0, __v: 0, _status: 0 });
+      const debtReminders = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }, { userId: user.userId }], _status: true }, { _id: 0, __v: 0, _status: 0 });
 
       if (isNull(debtReminders)) {
         return res.status(400).json({
@@ -106,8 +109,16 @@ class DebtReminderCtrl extends BaseCtrl {
         });
       }
 
-      tempData.receiverBankId = bankInfo.id;
-      tempData.receiverBankName = bankInfo.name;
+      const bankReceiverInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
+      if (isNull(bankReceiverInfo)) {
+        return res.status(400).json({
+          mgs: `No bank data!`,
+          success: false
+        });
+      }
+
+      tempData.receiverBankId = bankReceiverInfo.id;
+      tempData.receiverBankName = bankReceiverInfo.name;
       tempData.receiverAccountName = receiverData.reminiscentName;
 
       const statusCreate = await new this.model(tempData).save();
@@ -131,6 +142,104 @@ class DebtReminderCtrl extends BaseCtrl {
       });
     }
   }
+
+  // Update
+  updateDebtReminder = async (req: Request, res: Response) => {
+    try {
+      const data: any = await this.model.findOne({ id: req.params.id });
+      const tempData = lodash.cloneDeep(req.body);
+      delete tempData.user;
+
+      if (!isNull(data)) {
+        const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
+        if (isNull(receiverData)) {
+          return res.status(400).json({
+            mgs: `Account receiver isn't exist!`,
+            success: false
+          });
+        }
+  
+        const bankReceiverInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
+        if (isNull(bankReceiverInfo)) {
+          return res.status(400).json({
+            mgs: `No bank data!`,
+            success: false
+          });
+        }
+  
+        tempData.receiverBankId = bankReceiverInfo.id;
+        tempData.receiverBankName = bankReceiverInfo.name;
+        tempData.receiverAccountName = receiverData.reminiscentName;
+
+        const objUpdate = lodash.cloneDeep(this.getDataUpdate(tempData))
+
+        await this.model.findOneAndUpdate({ id: req.params.id }, objUpdate, { _id: 0, __v: 0, _status: 0 });
+
+        const objSent: Notify = {
+          type: 'update',
+          table: this.table.toLocaleLowerCase(),
+          msg: `Debt ${this.table} has change data!`
+        };
+
+        sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
+        return res.status(200).json({
+          mgs: `Update user id ${req.params.id} success!`,
+          success: true
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
+        data: tempData,
+        success: false,
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Update ${this.table} id ${req.params.id} error!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
+  private getDataUpdate(objData: any) {
+    const newObj = {
+      receiverPayAccount: objData?.receiverPayAccount,
+      receiverAccountName: objData?.receiverPayAccount,
+      receiverBankId: objData?.receiverBankId,
+      receiverBankName: objData?.receiverBankName,
+      payAccountFee: objData?.payAccountFee,
+      transactionFee: objData?.transactionFee,
+      amountOwed: objData?.amountOwed,
+      description: objData?.description,
+      noticeTime: objData?.noticeTime,
+      updateTime: moment().unix(),
+      _status: true,
+    };
+
+    return newObj;
+  }
+
+  // export interface DebtReminder extends Document {
+  //   id: string,
+  //   userId: string,
+  //   sendPayAccount: string,
+  //   sendAccountName: string,
+  //   sendBankId: string,
+  //   sendBankName: string,
+  //   receiverPayAccount: string,
+  //   receiverAccountName: string,
+  //   receiverBankId: string,
+  //   receiverBankName: string,
+  //   payAccountFee: string,
+  //   transactionFee: number,
+  //   amountOwed: number,
+  //   description: string,
+  //   noticeTime: number,
+  //   createTime: number,
+  //   updateTime: number,
+  //   _status: boolean
+  // };
 }
 
 export default DebtReminderCtrl;

@@ -1,11 +1,5 @@
 import { Request, Response } from 'express';
 
-// Services
-import { broadcastObjAll } from '../services/ws.service.js';
-
-// Interfaces
-import { Notify } from 'interfaces/notify.interface.js';
-
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
@@ -120,12 +114,6 @@ abstract class BaseCtrl {
       obj.__v = undefined;
       obj._status = undefined;
 
-      const objSent: Notify = {
-        type: 'create',
-        table: this.table.toLocaleLowerCase(),
-        msg: `Table ${this.table} has a new data!`
-      };
-      broadcastObjAll(objSent);
       return res.status(201).json({
         mgs: `Create ${this.table} id ${obj.id} success!`,
         data: obj,
@@ -164,12 +152,6 @@ abstract class BaseCtrl {
 
         await this.model.findOneAndUpdate({ id: req.params.id }, tempData, { _id: 0, __v: 0, _status: 0 });
         
-        const objSent: Notify = {
-          type: 'update',
-          table: this.table.toLocaleLowerCase(),
-          msg: `Table ${this.table} has change data!`
-        };
-        broadcastObjAll(objSent);
         return res.status(200).json({
           mgs: `Update user id ${req.params.id} success!`,
           success: true
@@ -197,12 +179,7 @@ abstract class BaseCtrl {
 
       if (idExist) {
         await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false });
-        const objSent: Notify = {
-          type: 'delete',
-          table: this.table.toLocaleLowerCase(),
-          msg: `Table ${this.table} has change data!`
-        };
-        broadcastObjAll(objSent);
+
         return res.status(200).json({
           mgs: `Delete ${this.table} id ${req.params.id} success!`,
           success: true

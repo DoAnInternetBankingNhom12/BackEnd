@@ -80,8 +80,10 @@ const setRoutes = (app: Application): void => {
   router.route('/receiver/:id').delete(auth, receiverCtrl.delete);
 
   //Debt Reminder createDebtReminder
-  router.route('/debtreminder').get(auth, debtReminderCtrl.getMyDebtReminder);
+  router.route('/debtreminders').get(auth, debtReminderCtrl.getMyDebtReminder);
   router.route('/debtreminder').post(auth, debtReminderCtrl.createDebtReminder);
+  router.route('/debtreminder/:id').put(auth, debtReminderCtrl.updateDebtReminder);
+  router.route('/debtreminder/:id').delete(auth, debtReminderCtrl.delete);
 
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);

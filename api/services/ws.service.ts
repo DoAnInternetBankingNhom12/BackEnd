@@ -41,4 +41,16 @@ export function sendObjInList(obj: Notify, userIds: string[]) {
   }
 }
 
+export function sendObjInListByPayNumber(obj: Notify, payNumbers: string[]) {
+  const objString = JSON.stringify(obj);
+  for (const payNumber of payNumbers) {
+    socketServer.clients.forEach((client: any) => {
+      const userPayNumber = client.payNumber.toString('utf8');
+      if (client.readyState === WebSocket.OPEN && payNumber === userPayNumber) {
+        client.send(objString);
+      }
+    });
+  }
+}
+
 export default socketServer;

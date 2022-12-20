@@ -2,6 +2,7 @@ import { Schema, Document, model } from 'mongoose';
 
 const debtReminderSchema = new Schema<DebtReminder>({
   id: { type: String, required: true, unique: true },
+  userId: { type: String, required: true },
   sendPayAccount: { type: String, required: true },
   sendAccountName: { type: String, required: true },
   sendBankId: { type: String, required: true },
@@ -22,6 +23,7 @@ const debtReminderSchema = new Schema<DebtReminder>({
 
 export interface DebtReminder extends Document {
   id: string,
+  userId: string,
   sendPayAccount: string,
   sendAccountName: string,
   sendBankId: string,

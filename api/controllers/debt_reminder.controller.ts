@@ -37,7 +37,7 @@ class DebtReminderCtrl extends BaseCtrl {
         });
       }
 
-      const debtReminders = await this.model.find({ userId: user.userId, _status: true }, { id: 0, _id: 0, __v: 0, _status: 0 });
+      const debtReminders = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }, { userId: user.userId }], _status: true }, { id: 0, _id: 0, __v: 0, _status: 0 });
 
       if (isNull(debtReminders)) {
         return res.status(400).json({
@@ -63,19 +63,20 @@ class DebtReminderCtrl extends BaseCtrl {
   createDebtReminder = async (req: Request, res: Response) => {
     try {
       const user = lodash.cloneDeep(req.body.user);
-      const tempData = lodash.cloneDeep(req.body);
-      const id = await this.generateId();
-      tempData.id = id;
-      tempData.createTime = moment().unix();
-      tempData.updateTime = moment().unix();
-      tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
-      tempData._status = true;
       if (isNull(user)) {
         return res.status(400).json({
           mgs: `No account to get!`,
           success: false
         });
       }
+      const tempData = lodash.cloneDeep(req.body);
+      const id = await this.generateId();
+      tempData.id = id;
+      tempData.userId = user.userId;
+      tempData.createTime = moment().unix();
+      tempData.updateTime = moment().unix();
+      tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
+      tempData._status = true;
 
       const bankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(bankInfo)) {

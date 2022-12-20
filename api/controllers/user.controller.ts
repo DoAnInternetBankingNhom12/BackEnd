@@ -453,7 +453,7 @@ class UserCtrl extends BaseCtrl {
 
         if (user) {
           if ((await bcrypt.compare(password, user.password))) {
-            const token = generalToken(user.id, userName, user.email, user.role);
+            const token = generalToken(user.id, userName, user.email, user.role, user.customer?.paymentAccount ? user.customer.paymentAccount : undefined);
 
             user.token = token;
             user.password = undefined;
@@ -726,9 +726,9 @@ class UserCtrl extends BaseCtrl {
   }
 }
 
-function generalToken(id: string, userName: string, email: string, role: string) {
+function generalToken(id: string, userName: string, email: string, role: string, paymentAccount?: string) {
   return jwt.sign(
-    { userId: id, userName, email, role },
+    { userId: id, userName, email, role, paymentAccount: paymentAccount ? paymentAccount : '' },
     process.env.TOKEN_JWT_KEY as string,
     {
       expiresIn: '5m',

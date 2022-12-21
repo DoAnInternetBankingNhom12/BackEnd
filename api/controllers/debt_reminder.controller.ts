@@ -19,7 +19,7 @@ import { Notify } from 'interfaces/notify.interface.js';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull } from '../utils/utils';
+import { isNull, isNullArray, isNullObj } from '../utils/utils';
 
 class DebtReminderCtrl extends BaseCtrl {
   model = DebtReminder;
@@ -33,7 +33,7 @@ class DebtReminderCtrl extends BaseCtrl {
   getMyDebtReminder = async (req: Request, res: Response) => {
     try {
       const user = lodash.cloneDeep(req.body.user);
-      if (isNull(user)) {
+      if (isNullObj(user)) {
         return res.status(400).json({
           mgs: `No account to get!`,
           success: false
@@ -42,7 +42,7 @@ class DebtReminderCtrl extends BaseCtrl {
 
       const debtReminders = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }, { userId: user.userId }], _status: true }, { _id: 0, __v: 0, _status: 0 });
 
-      if (isNull(debtReminders)) {
+      if (isNullArray(debtReminders)) {
         return res.status(400).json({
           mgs: 'Empty data debt reminder!',
           success: false
@@ -66,7 +66,7 @@ class DebtReminderCtrl extends BaseCtrl {
   createDebtReminder = async (req: Request, res: Response) => {
     try {
       const user = lodash.cloneDeep(req.body.user);
-      if (isNull(user)) {
+      if (isNullObj(user)) {
         return res.status(400).json({
           mgs: `No account to get!`,
           success: false
@@ -82,7 +82,7 @@ class DebtReminderCtrl extends BaseCtrl {
       tempData._status = true;
 
       const bankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
-      if (isNull(bankInfo)) {
+      if (isNullObj(bankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
           success: false
@@ -92,7 +92,7 @@ class DebtReminderCtrl extends BaseCtrl {
       tempData.sendBankId = bankInfo.id;
       tempData.sendBankName = bankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
-      if (isNull(sentUserData)) {
+      if (isNullObj(sentUserData)) {
         return res.status(400).json({
           mgs: `Account sent isn't exist!`,
           success: false
@@ -102,7 +102,7 @@ class DebtReminderCtrl extends BaseCtrl {
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
       const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
-      if (isNull(receiverData)) {
+      if (isNullObj(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
           success: false
@@ -110,7 +110,7 @@ class DebtReminderCtrl extends BaseCtrl {
       }
 
       const bankReceiverInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
-      if (isNull(bankReceiverInfo)) {
+      if (isNullObj(bankReceiverInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
           success: false
@@ -123,7 +123,7 @@ class DebtReminderCtrl extends BaseCtrl {
 
       const statusCreate = await new this.model(tempData).save();
 
-      if (isNull(statusCreate)) {
+      if (isNullObj(statusCreate)) {
         return res.status(400).json({
           mgs: 'Create debt reminder failed!',
           success: false
@@ -150,9 +150,9 @@ class DebtReminderCtrl extends BaseCtrl {
       const tempData = lodash.cloneDeep(req.body);
       delete tempData.user;
 
-      if (!isNull(data)) {
+      if (!isNullObj(data)) {
         const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
-        if (isNull(receiverData)) {
+        if (isNullObj(receiverData)) {
           return res.status(400).json({
             mgs: `Account receiver isn't exist!`,
             success: false
@@ -160,7 +160,7 @@ class DebtReminderCtrl extends BaseCtrl {
         }
   
         const bankReceiverInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
-        if (isNull(bankReceiverInfo)) {
+        if (isNullObj(bankReceiverInfo)) {
           return res.status(400).json({
             mgs: `No bank data!`,
             success: false

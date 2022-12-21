@@ -1,8 +1,18 @@
 import * as crypto from 'crypto';
 
 export function isNull(value: any) {
-    return value === null || value === undefined || value === '' || value === NaN || Object.keys(value).length === 0 || value.length === 0;
+    return value === null || value === undefined || value === '' || value === NaN;
 }
+
+
+export function isNullObj(value: any) {
+    return Object.keys(value).length === 0;
+}
+
+export function isNullArray(value: any) {
+    return value.length === 0;
+}
+
 
 export function verifyMySignature(verifiableData: string) {
     const signature = process.env.SIGNATURE as string;

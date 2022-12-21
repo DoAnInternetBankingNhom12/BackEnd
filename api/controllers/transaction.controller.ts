@@ -15,7 +15,7 @@ import Bank from '../models/bank';
 import * as http from 'http';
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { encryptedStringST, getTokenPartner, isNull, verifyMySignature } from '../utils/utils';
+import { encryptedStringST, getTokenPartner, isNull, isNullObj, verifyMySignature } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
   model = TransactionModel;
@@ -31,7 +31,7 @@ class TransactionCtrl extends BaseCtrl {
       const user: any = lodash.cloneDeep(req.body.user);
       const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 });
 
-      if (isNull(obj)) {
+      if (isNullObj(obj)) {
         return res.status(400).json({
           mgs: `Get data ${this.table} not exist!`,
           success: false
@@ -58,16 +58,29 @@ class TransactionCtrl extends BaseCtrl {
 
   getTransactionExternal = async (req: Request, res: Response) => {
     try {
-      const obj = await this.model.find({ typeTransaction: 'external', _status: true }, { _id: 0, __v: 0, _status: 0 });
+      let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
+      let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
+      
+      if (isNull(startTime)) {
+        startTime = moment().startOf('month').unix();
+      }
 
-      if (isNull(obj)) {
-        return res.status(400).json({
-          mgs: `Get data ${this.table} not exist!`,
-          success: false
+      if (isNull(endTime)) {
+        endTime = moment().endOf('month').unix();
+      }
+
+      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 });
+
+      if (isNullObj(obj)) {
+        return res.status(200).json({
+          mgs: `Get data is empty!`,
+          data: [],
+          success: true
         });
       }
 
       return res.status(200).json({
+        mgs: `Get data ${this.table} is success!`,
         data: obj,
         success: true
       });
@@ -91,7 +104,7 @@ class TransactionCtrl extends BaseCtrl {
       const optionSearch = lodash.cloneDeep(req.query);
       const obj = await this.model.find(optionSearch, { _id: 0, __v: 0, _status: 0 });
 
-      if (isNull(obj)) {
+      if (isNullObj(obj)) {
         return res.status(400).json({
           mgs: `Get data ${this.table} not exist!`,
           success: false
@@ -132,7 +145,7 @@ class TransactionCtrl extends BaseCtrl {
       delete tempData.user;
 
       const bankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
-      if (isNull(bankInfo)) {
+      if (isNullObj(bankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
           success: false
@@ -142,7 +155,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendBankId = bankInfo.id;
       tempData.sendBankName = bankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
-      if (isNull(sentUserData)) {
+      if (isNullObj(sentUserData)) {
         return res.status(400).json({
           mgs: `Account sent isn't exist!`,
           success: false
@@ -152,7 +165,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
       const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
-      if (isNull(receiverData)) {
+      if (isNullObj(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
           success: false
@@ -366,7 +379,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.typeTransaction = 'external';
       const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.bankReferenceId, _status: true }, { _id: 0, __v: 0, _status: 0 });
 
-      if (isNull(partnerBankInfo)) {
+      if (isNullObj(partnerBankInfo)) {
         return res.status(401).json({
           status: false,
           errors: {
@@ -397,7 +410,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.signature = signature;
 
       const myBankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
-      if (isNull(myBankInfo)) {
+      if (isNullObj(myBankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
           success: false
@@ -414,7 +427,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       const customerData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
-      if (isNull(customerData)) {
+      if (isNullObj(customerData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
           success: false
@@ -496,7 +509,7 @@ class TransactionCtrl extends BaseCtrl {
   private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
     try {
       const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, _status: true } },]);
-      if (isNull(data)) return false;
+      if (isNullObj(data)) return false;
       return true;
     } catch (err: any) {
       console.log('err', err);
@@ -507,7 +520,7 @@ class TransactionCtrl extends BaseCtrl {
   private async deductMoneyAccount(paymentAccount: string, money: number, transactionFee: number = 0) {
     try {
       const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
-      if (isNull(account)) return false;
+      if (isNullObj(account)) return false;
 
       money = Math.abs(money);
       transactionFee = Math.abs(transactionFee);
@@ -523,7 +536,7 @@ class TransactionCtrl extends BaseCtrl {
   private async addMoneyAccountInternal(paymentAccount: string, money: number, transactionFee: number = 0) {
     try {
       const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
-      if (isNull(account)) return false;
+      if (isNullObj(account)) return false;
 
       money = Math.abs(money);
       transactionFee = Math.abs(transactionFee);
@@ -538,16 +551,16 @@ class TransactionCtrl extends BaseCtrl {
 
   private async restoreData(infoAccSent?: any, infoAccReceiver?: any) {
     try {
-      if (isNull(infoAccSent) && isNull(infoAccSent)) return true;
+      if (isNullObj(infoAccSent) && isNullObj(infoAccSent)) return true;
 
-      if (!isNull(infoAccSent)) {
+      if (!isNullObj(infoAccSent)) {
         const accountSent: any = await this.modelCustommer.findOne({ paymentAccount: infoAccSent.paymentAccount, _status: true });
         if (!isNull(accountSent)) {
           await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccSent.paymentAccount }, infoAccSent);
         }
       }
 
-      if (!isNull(infoAccSent)) {
+      if (!isNullObj(infoAccSent)) {
         const accountReceiver: any = await this.modelCustommer.findOne({ paymentAccount: infoAccReceiver.paymentAccount, _status: true });
         if (!isNull(accountReceiver)) {
           await this.modelCustommer.findOneAndUpdate({ paymentAccount: infoAccReceiver.paymentAccount }, infoAccReceiver);

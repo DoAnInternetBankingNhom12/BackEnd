@@ -8,7 +8,7 @@ import DebtReminder from '../models/debt_reminder';
 
 // Utils
 import { IncomingMessage } from 'http';
-import { isNull } from '../utils/utils';
+import { isNull, isNullObj } from '../utils/utils';
 
 const WS_PORT = 36236;
 const socketServer = new WebSocketServer({
@@ -30,7 +30,7 @@ socketServer.on('connection', function (client: any, req: IncomingMessage) {
 
     const debtReminders = await model.find({ $or: [{ receiverPayAccount: payNumber }, { userId: userId }], _status: true }, { _id: 0, __v: 0, _status: 0 });
 
-    if (!isNull(debtReminders)) {
+    if (!isNullObj(debtReminders)) {
       if (client.readyState === WebSocket.OPEN) {
         const objData = {
           mgs: 'You receive a debt reminder on the system!',

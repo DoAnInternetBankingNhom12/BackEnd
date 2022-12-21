@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import * as http from 'http';
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull, getTokenPartner, encryptedStringST } from '../utils/utils';
+import { getTokenPartner, encryptedStringST } from '../utils/utils';
 
 class PartnerCtrl {
   // Get
@@ -96,7 +96,7 @@ class PartnerCtrl {
     }
   }
 
-  private getInfoHttp(stk: string) {
+  getInfoHttp(stk: string) {
     return new Promise((resolve) => {
       const time = moment().unix().toString();
       const options: http.RequestOptions = {
@@ -112,6 +112,7 @@ class PartnerCtrl {
           data += chunk.toString();
         });
         resp.on('end', () => {
+          console.log(JSON.parse(data));
           resolve(JSON.parse(data));
         });
       }).on("error", (err) => {

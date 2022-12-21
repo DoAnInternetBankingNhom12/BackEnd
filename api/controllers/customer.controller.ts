@@ -17,7 +17,7 @@ import { Notify } from '../interfaces/notify.interface';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull } from '../utils/utils';
+import { isNull, isNullObj } from '../utils/utils';
 
 class CustomerCtrl extends BaseCtrl {
   model = Customer;
@@ -40,7 +40,7 @@ class CustomerCtrl extends BaseCtrl {
 
       const account = await this.model.findOne({paymentAccount: paymentAccount, _status: true }, { id:0, _id: 0, __v: 0, _status: 0, userId: 0, accountBalance: 0, createTime: 0, updateTime: 0});
       
-      if (isNull(account)) {
+      if (isNullObj(account)) {
         return res.status(400).json({
           mgs: 'Payment account not exist!',
           success: false
@@ -272,7 +272,7 @@ class CustomerCtrl extends BaseCtrl {
       const employee = await this.modelEmployee.findOne({ userId: user.userId, '_status': true });
       if (employee && employee.accountType === 'employee') {
         const customer = await this.model.findOne({ paymentAccount: paymentAccount, _status: true });
-        if (isNull(customer)) {
+        if (isNullObj(customer)) {
           return res.status(400).json({
             mgs: `Payment account does not exist!`,
             success: false

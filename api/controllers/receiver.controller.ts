@@ -19,7 +19,7 @@ import { Notify } from '../interfaces/notify.interface';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull, getPipeLineGet } from '../utils/utils';
+import { isNull, getPipeLineGet, isNullObj } from '../utils/utils';
 
 
 class ReceiverCtrl extends BaseCtrl {
@@ -87,7 +87,7 @@ class ReceiverCtrl extends BaseCtrl {
     try {
       const user = lodash.cloneDeep(req.body.user);
 
-      if (isNull(user)) {
+      if (isNullObj(user)) {
         return res.status(400).json({
           mgs: `No account data to generate receiver!`,
           success: false

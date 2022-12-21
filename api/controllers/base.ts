@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 // Utils
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull } from '../utils/utils';
+import { isNull, isNullObj } from '../utils/utils';
 
 abstract class BaseCtrl {
 
@@ -54,7 +54,7 @@ abstract class BaseCtrl {
   get = async (req: Request, res: Response) => {
     try {
       const obj = await this.model.findOne({ id: req.params.id, _status: true }, { _id: 0, __v: 0, _status: 0 });
-      if (isNull(obj)) {
+      if (isNullObj(obj)) {
         return res.status(400).json({
           mgs: `Get ${this.table} id ${req.body.id} not exist! Maybe ${this.table} has been deleted!`,
           success: false

@@ -9,7 +9,7 @@ import { generalOTP } from '../services/otp.service';
 import { sendMail } from '../services/mail.service';
 
 // Utils
-import { isNull } from '../utils/utils';
+import { isNull, isNullObj } from '../utils/utils';
 import * as lodash from 'lodash';
 
 // Interfaces
@@ -33,7 +33,7 @@ class OTPCtrl {
 
       const user: User = jwt.decode(token) as any;
 
-      if (isNull(user)) {
+      if (isNullObj(user)) {
         return res.status(400).json({
           mgs: `No user information!`,
           success: false
@@ -85,7 +85,7 @@ class OTPCtrl {
 
       const user: any = await this.modelUser.findOne({ userName }, { _id: 0, __v: 0, _status: 0, password: 0 });
 
-      if (isNull(user)) {
+      if (isNullObj(user)) {
         return res.status(400).json({
           mgs: `No user information!`,
           success: false

@@ -392,7 +392,7 @@ class UserCtrl extends BaseCtrl {
     try {
       const isExistUser = await this.model.findOne({ id: req.params.id, _status: true }).exec();
 
-      if (!isNull(isExistUser)) {
+      if (isExistUser) {
         req.body.updateTime = moment().unix();
         await this.model.findOneAndUpdate({ id: req.params.id }, { updateTime: req.body.updateTime, _status: false });
         await this.modelEmployee.findOneAndUpdate({ userId: req.params.id }, { updateTime: req.body.updateTime, _status: false });

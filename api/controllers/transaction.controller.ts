@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 // Controllers
 import BaseCtrl from './base';
+import PartnerCtrl from './partner.controller';
 
 // Models
 import TransactionModel from '../models/transaction';
@@ -11,9 +12,10 @@ import User from '../models/user';
 import Bank from '../models/bank';
 
 // Utils
+import * as http from 'http';
 import * as moment from 'moment';
 import * as lodash from 'lodash';
-import { isNull, verifyMySignature } from '../utils/utils';
+import { encryptedStringST, getTokenPartner, isNull, verifyMySignature } from '../utils/utils';
 
 class TransactionCtrl extends BaseCtrl {
   model = TransactionModel;
@@ -22,6 +24,37 @@ class TransactionCtrl extends BaseCtrl {
   modelReceiver = Receiver;
   modelBank = Bank;
   table = 'Transaction';
+
+  // Get
+  getMyTransaction = async (req: Request, res: Response) => {
+    try {
+      const user: any = lodash.cloneDeep(req.body.user);
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 });
+
+      if (isNull(obj)) {
+        return res.status(400).json({
+          mgs: `Get data ${this.table} not exist!`,
+          success: false
+        });
+      }
+
+      return res.status(200).json({
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
 
   // Find
   findTransaction = async (req: Request, res: Response) => {
@@ -69,7 +102,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.typeTransaction = 'internal';
       delete tempData.user;
 
-      const bankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+      const bankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(bankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
@@ -100,7 +133,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.receiverBankId = bankInfo.id;
       tempData.receiverBankName = bankInfo.name;
       tempData.receiverAccountName = receiverData.reminiscentName;
-      const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
+      const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0);
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 
       if (!statusCheck) {
@@ -157,6 +190,7 @@ class TransactionCtrl extends BaseCtrl {
 
   externalBank = async (req: Request, res: Response) => {
     try {
+      const partnerCtrl = new PartnerCtrl();
       const tempData = lodash.cloneDeep(req.body);
       const id = await this.generateId();
       tempData.id = id;
@@ -168,8 +202,8 @@ class TransactionCtrl extends BaseCtrl {
       tempData.statusMoney = 'delivered';
       tempData.typeTransaction = 'external';
       delete tempData.user;
-      
-      const myBankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+
+      const myBankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(myBankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
@@ -193,21 +227,26 @@ class TransactionCtrl extends BaseCtrl {
       // Check data receiver exist in may data.
       const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true }); // Just test
       if (isNull(receiverData)) {
-        // Here Partner bank's API get user info by paynumber and check
+        const dataPartner: any = partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
+        if (!dataPartner || dataPartner.status === 0 || dataPartner.data === null) {
+          return res.status(400).json({
+            mgs: `Account receiver isn't exist!`,
+            success: false
+          });
+        }
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
           success: false
         });
       }
 
-      const partnerBankInfo: any = await this.modelBank.findOne({id: receiverData.bankId, _status: true});
+      const partnerBankInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
       if (isNull(partnerBankInfo)) {
         return res.status(400).json({
           mgs: `No partner bank data!`,
           success: false
         });
       }
-
 
       tempData.receiverBankId = partnerBankInfo.id;
       tempData.receiverBankName = partnerBankInfo.name;
@@ -240,9 +279,23 @@ class TransactionCtrl extends BaseCtrl {
 
       const hasReceiverTransactionFee = (tempData.receiverPayAccount === tempData.payAccountFee);
       // Here Partner bank's API add money
-      const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0); // Just test
-
-      if (!statusAdd) {
+      const newAmountOwed: number = hasReceiverTransactionFee ? tempData.amountOwed - tempData.transactionFee : tempData.amountOwed;
+      const stringSignaturePartner = `${tempData.sendPayAccount}${newAmountOwed}${tempData.receiverAccountName}`;
+      const signaturePartner = encryptedStringST(stringSignaturePartner, 'bank1');
+      const objDataPartner = {
+        send_STK: tempData.sendPayAccount,
+        send_Money: newAmountOwed,
+        receive_BankID: 2,
+        receive_STK: tempData.receiverAccountName,
+        content: tempData.description,
+        paymentFeeTypeID: 1,
+        transactionTypeID: 1,
+        bankReferenceId: 0,
+        rsa: signaturePartner
+      };
+      // const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0); // Just test
+      const statusAddPartner = await this.postTransactionHttp(objDataPartner, signaturePartner);
+      if (!statusAddPartner) {
         const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
         tempData.statusTransaction = 'failed';
         tempData.statusMoney = 'not_delivered';
@@ -283,7 +336,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.statusMoney = 'not_delivered';
       tempData.typeTransaction = 'external';
       const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.bankReferenceId, _status: true }, { _id: 0, __v: 0, _status: 0 });
-      
+
       if (isNull(partnerBankInfo)) {
         return res.status(401).json({
           status: false,
@@ -314,7 +367,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.signature = signature;
 
-      const myBankInfo: any = await this.modelBank.findOne({type: 'internal', _status: true});
+      const myBankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(myBankInfo)) {
         return res.status(400).json({
           mgs: `No bank data!`,
@@ -374,6 +427,42 @@ class TransactionCtrl extends BaseCtrl {
       });
     }
   };
+
+  private postTransactionHttp(objData: any, signaturePartner: string) {
+    return new Promise((resolve) => {
+      const time = moment().unix().toString();
+      const stringObj = JSON.stringify(objData);
+      const options = {
+        host: '52.147.195.180',
+        port: '8091',
+        path: '/api/External/ExternalTranfer',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(stringObj),
+          Token: getTokenPartner(time, 'bank1'),
+          Time: time,
+          Signature: signaturePartner,
+        }
+      };
+
+      const req = http.request(options, (res) => {
+        let data = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(JSON.parse(data));
+        });
+      }).on('error', (err: any) => {
+        console.log('Error: ' + err.message);
+        resolve(undefined);
+      });
+      req.write(stringObj);
+      req.end();
+    });
+  }
 
   private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
     try {

@@ -88,7 +88,8 @@ const setRoutes = (app: Application): void => {
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
   router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
-  router.route('/transaction').get(authEmployee, transactionCtrl.findTransaction);
+  router.route('/mytransaction').get(auth, transactionCtrl.getMyTransaction);
+  // router.route('/transaction').get(authEmployee, transactionCtrl.findTransaction);
   router.route('/transaction/internal').post(auth, otp, transactionCtrl.internalBank);
   // router.route('/transaction/external').post(auth, transactionCtrl.externalBank); // External done but has not api from Partner
   router.route('/transaction/:id').put(authAdmin, transactionCtrl.update);

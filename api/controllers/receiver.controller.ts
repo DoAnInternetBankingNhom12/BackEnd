@@ -96,12 +96,12 @@ class ReceiverCtrl extends BaseCtrl {
 
       const tempData = lodash.cloneDeep(req.body);
       delete tempData.user;
-      const existIsDelete = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount, _status: false }).exec();
-      const exist = await this.model.findOne({ userId: user.userId, numberAccount: tempData.numberAccount, _status: true }).exec();
+      const existIsDelete = await this.model.findOne({ userId: user.userId, paymentAccount: tempData.paymentAccount, _status: false }).exec();
+      const exist = await this.model.findOne({ userId: user.userId, paymentAccount: tempData.paymentAccount, _status: true }).exec();
 
       if (exist) {
         return res.status(400).json({
-          mgs: `Receiver is exist by numberAccount ${tempData.numberAccount}!`,
+          mgs: `Receiver is exist by paymentAccount ${tempData.paymentAccount}!`,
           success: false
         });
       }
@@ -120,7 +120,7 @@ class ReceiverCtrl extends BaseCtrl {
         if (!isNull(tempData.reminiscentName)) {
           objUpdate.reminiscentName = tempData.reminiscentName;
         } else {
-          const customer = await this.getCustomer('paymentAccount', tempData.numberAccount);
+          const customer = await this.getCustomer('paymentAccount', tempData.paymentAccount);
           if (!customer) {
             return res.status(400).json({
               mgs: `No customer name data to generate receiver!`,
@@ -138,7 +138,7 @@ class ReceiverCtrl extends BaseCtrl {
         objUpdate._status = true;
 
 
-        const dataUpdate: any = await this.model.findOneAndUpdate({ numberAccount: tempData.numberAccount }, objUpdate);
+        const dataUpdate: any = await this.model.findOneAndUpdate({ paymentAccount: tempData.paymentAccount }, objUpdate);
         dataUpdate.__v = undefined;
         dataUpdate._status = undefined;
         dataUpdate.reminiscentName = objUpdate.reminiscentName;
@@ -150,7 +150,7 @@ class ReceiverCtrl extends BaseCtrl {
 
         sendObjInList(objSent, [dataUpdate.userId]);
         return res.status(201).json({
-          mgs: `Create ${this.table} numberAccount ${tempData.numberAccount} success!`,
+          mgs: `Create ${this.table} paymentAccount ${tempData.paymentAccount} success!`,
           data: dataUpdate,
           success: true
         });
@@ -164,7 +164,7 @@ class ReceiverCtrl extends BaseCtrl {
         });
       }
 
-      const customer = await this.getCustomer('paymentAccount', tempData.numberAccount);
+      const customer = await this.getCustomer('paymentAccount', tempData.paymentAccount);
 
       if (!customer) {
         return res.status(400).json({
@@ -197,7 +197,7 @@ class ReceiverCtrl extends BaseCtrl {
 
       sendObjInList(objSent, [obj.userId]);
       return res.status(201).json({
-        mgs: `Create ${this.table} numberAccount ${obj.numberAccount} success!`,
+        mgs: `Create ${this.table} paymentAccount ${obj.paymentAccount} success!`,
         data: obj,
         success: true
       });

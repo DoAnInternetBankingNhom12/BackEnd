@@ -155,7 +155,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendBankId = bankInfo.id;
       tempData.sendBankName = bankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
-      if (isNullObj(sentUserData)) {
+      if (isNullObj(sentUserData) || !sentUserData.paymentAccount) {
         return res.status(400).json({
           mgs: `Account sent isn't exist!`,
           success: false
@@ -164,7 +164,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
-      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
+      const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
       if (isNullObj(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
@@ -267,7 +267,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendAccountName = sentUserData.name;
       // Here for test
       // Check data receiver exist in may data.
-      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true }); // Just test
+      const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
       if (isNull(receiverData)) {
         const dataPartner: any = partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
         if (!dataPartner || dataPartner.status === 0 || dataPartner.data === null) {

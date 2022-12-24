@@ -101,7 +101,7 @@ class DebtReminderCtrl extends BaseCtrl {
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
-      const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
+      const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
       if (isNullObj(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
@@ -151,7 +151,7 @@ class DebtReminderCtrl extends BaseCtrl {
       delete tempData.user;
 
       if (!isNullObj(data)) {
-        const receiverData: any = await this.modelReceiver.findOne({ numberAccount: tempData.receiverPayAccount, _status: true });
+        const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
         if (isNullObj(receiverData)) {
           return res.status(400).json({
             mgs: `Account receiver isn't exist!`,

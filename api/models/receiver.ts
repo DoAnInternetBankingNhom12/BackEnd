@@ -8,7 +8,7 @@ const receiverSchema = new Schema<Receiver>({
   userId: { type: String, required: true},
   bankId: { type: String, required: true},
   remittanceType: { type: String, required: true},
-  numberAccount: { type: String, required: true },
+  paymentAccount: { type: String, required: true },
   createTime: { type: Number, default: moment().unix() },
   updateTime: { type: Number, default: moment().unix() },
   _status: { type: Boolean, default: true }
@@ -21,7 +21,7 @@ export interface Receiver extends Document {
   userId: string,
   bankId: string,
   remittanceType: string,
-  numberAccount: string,
+  paymentAccount: string,
   createTime: number,
   updateTime: number,
   _status: boolean

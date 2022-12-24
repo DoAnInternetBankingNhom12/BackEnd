@@ -225,7 +225,10 @@ class TransactionCtrl extends BaseCtrl {
       const objSent: Notify = {
         type: 'update',
         table: this.table.toLocaleLowerCase(),
-        msg: `The account has just been transferred from the account ${tempData.sendAccountName}!`
+        msg: `The account has just been transferred from the account ${tempData.sendAccountName}!`,
+        data: {
+          amountOwed: tempData.amountOwed
+        }
       };
       
       sendObjInListByPayNumber(objSent, [tempData.receiverPayAccount])

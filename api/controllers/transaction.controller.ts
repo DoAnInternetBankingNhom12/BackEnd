@@ -32,7 +32,7 @@ class TransactionCtrl extends BaseCtrl {
   table = 'Transaction';
 
   // Get
-  getMyTransactionMoneyTransfer= async (req: Request, res: Response) => {
+  getMyTransactionMoneyTransfer = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
       const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 });
@@ -178,6 +178,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'delivered';
       tempData.typeTransaction = 'internal';
+      tempData.transactionFee = 5000;
       delete tempData.user;
 
       const bankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
@@ -206,6 +207,15 @@ class TransactionCtrl extends BaseCtrl {
           mgs: `Account receiver isn't exist!`,
           success: false
         });
+      }
+
+      switch (tempData.typeFee) {
+        case 'receiver':
+          tempData.payAccountFee = tempData.receiverPayAccount;
+          break;
+        default:
+          tempData.payAccountFee = tempData.sendPayAccount;
+          break;
       }
 
       tempData.receiverBankId = bankInfo.id;
@@ -260,7 +270,7 @@ class TransactionCtrl extends BaseCtrl {
           amountOwed: tempData.amountOwed
         }
       };
-      
+
       sendObjInListByPayNumber(objSent, [tempData.receiverPayAccount])
       return res.status(200).json({
         mgs: `Transaction internal success!`,

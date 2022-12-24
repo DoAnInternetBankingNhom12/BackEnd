@@ -11,7 +11,7 @@ const verifyOtp = async (req: Request, res: Response, next: any) => {
     const OTP: any = req.headers?.otp as String;
 
     if (isNull(OTP)) {
-      return res.status(403).json(
+      return res.status(400).json(
         {
           mgs: 'A OTP is required!',
           success: false
@@ -20,7 +20,7 @@ const verifyOtp = async (req: Request, res: Response, next: any) => {
 
     const status = await verifyOTP(OTP);
     if (!status) {
-      return res.status(403).json(
+      return res.status(410).json(
         {
           mgs: 'Wrong OTP!',
           success: false

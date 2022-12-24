@@ -88,7 +88,8 @@ const setRoutes = (app: Application): void => {
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
   router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
-  router.route('/mytransaction').get(auth, transactionCtrl.getMyTransaction);
+  router.route('/mytransaction/transfer').get(auth, transactionCtrl.getMyTransactionMoneyTransfer);
+  router.route('/mytransaction/get').get(auth, transactionCtrl.getMyTransactionMoneyGet);
   router.route('/externalTransaction').get(authEmployee, transactionCtrl.getTransactionExternal);
   // router.route('/transaction').get(authEmployee, transactionCtrl.findTransaction);
   router.route('/transaction/internal').post(auth, otp, transactionCtrl.internalBank);

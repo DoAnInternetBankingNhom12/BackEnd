@@ -35,12 +35,13 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyTransfer = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
-        return res.status(400).json({
-          mgs: `Get data ${this.table} not exist!`,
-          success: false
+        return res.status(200).json({
+          mgs: `No ${this.table}!`,
+          data: [],
+          success: true
         });
       }
 
@@ -65,12 +66,13 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyGet = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const obj = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
-        return res.status(400).json({
-          mgs: `Get data ${this.table} not exist!`,
-          success: false
+        return res.status(200).json({
+          mgs: `No ${this.table}!`,
+          data: [],
+          success: true
         });
       }
 

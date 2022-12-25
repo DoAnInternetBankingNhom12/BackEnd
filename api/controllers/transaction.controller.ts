@@ -201,7 +201,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
-      const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
+      const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
       if (isNullObj(receiverData)) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
@@ -220,7 +220,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.receiverBankId = bankInfo.id;
       tempData.receiverBankName = bankInfo.name;
-      tempData.receiverAccountName = receiverData.reminiscentName;
+      tempData.receiverAccountName = receiverData.name;
       const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0);
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 
@@ -323,7 +323,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendAccountName = sentUserData.name;
       // Here for test
       // Check data receiver exist in may data.
-      const receiverData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
+      const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
       if (isNull(receiverData)) {
         const dataPartner: any = partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
         if (!dataPartner || dataPartner.status === 0 || dataPartner.data === null) {
@@ -348,7 +348,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.receiverBankId = partnerBankInfo.id;
       tempData.receiverBankName = partnerBankInfo.name;
-      tempData.receiverAccountName = receiverData.reminiscentName;
+      tempData.receiverAccountName = receiverData.name;
       const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 

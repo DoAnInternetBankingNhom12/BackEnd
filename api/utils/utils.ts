@@ -16,7 +16,6 @@ export function isNullArray(value: any) {
 
 export function verifyMySignature(verifiableData: string) {
     const signature = process.env.SIGNATURE as string;
-    console.log(decryptedData(verifiableData));
     const isVerified = (decryptedData(verifiableData) === signature);
     return isVerified;
 }

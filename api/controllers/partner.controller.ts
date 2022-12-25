@@ -112,7 +112,6 @@ class PartnerCtrl {
           data += chunk.toString();
         });
         resp.on('end', () => {
-          console.log(JSON.parse(data));
           resolve(JSON.parse(data));
         });
       }).on("error", (err) => {

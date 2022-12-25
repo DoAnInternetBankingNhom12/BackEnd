@@ -8,6 +8,7 @@ import Bank from '../models/bank';
 
 // Controllers
 import BaseCtrl from './base';
+import PartnerCtrl from './partner.controller';
 
 // Services
 import { sendObjInList } from '../services/ws.service';
@@ -165,25 +166,28 @@ class ReceiverCtrl extends BaseCtrl {
       }
 
       const customer = await this.getCustomer('paymentAccount', tempData.paymentAccount);
-
-      if (!customer) {
+      const partnerCtrl = new PartnerCtrl();
+      const resPartner: any = await partnerCtrl.getInfoHttp(tempData.paymentAccount);
+      if (!customer && !resPartner) {
         return res.status(400).json({
           mgs: `No customer data to create receiver!`,
           success: false
         });
       }
-
+      const customerPartner: any = resPartner.data;
+      console.log(customerPartner);
+      const name = customer ? customer.name : customerPartner.name;
       const id = await this.generateId();
       tempData.id = id;
       tempData.userId = user.userId
       tempData.remittanceType = bankType;
-      tempData.name = customer.name;
+      tempData.name = name;
       tempData.createTime = moment().unix();
       tempData.updateTime = moment().unix();
       tempData._status = true;
 
       if (isNull(tempData.reminiscentName)) {
-        tempData.reminiscentName = customer.name;
+        tempData.reminiscentName = name;
       }
 
       const obj: any = await new this.model(tempData).save();

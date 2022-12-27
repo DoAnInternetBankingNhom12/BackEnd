@@ -33,7 +33,7 @@ class DebtReminderCtrl extends BaseCtrl {
   table = 'reminder';
 
   // Get
-  getMyDebtReminder = async (req: Request, res: Response) => {
+  getMyDebtReminders = async (req: Request, res: Response) => {
     try {
       const user = lodash.cloneDeep(req.body.user);
       if (isNullObj(user)) {
@@ -43,12 +43,79 @@ class DebtReminderCtrl extends BaseCtrl {
         });
       }
 
-      const debtReminders = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }, { userId: user.userId }], _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const debtReminders = await this.model.find({ receiverPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullArray(debtReminders)) {
-        return res.status(400).json({
+        return res.status(200).json({
           mgs: 'Empty data debt reminder!',
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        data: debtReminders,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get my ${this.table} error!`,
+        success: false,
+        error: err
+      });
+    }
+  }
+
+  getMyIndebtedness = async (req: Request, res: Response) => {
+    try {
+      const user = lodash.cloneDeep(req.body.user);
+      if (isNullObj(user)) {
+        return res.status(400).json({
+          mgs: `No account to get!`,
           success: false
+        });
+      }
+
+      const debtReminders = await this.model.find({ sendPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+
+      if (isNullArray(debtReminders)) {
+        return res.status(200).json({
+          mgs: 'Empty data debt reminder!',
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        data: debtReminders,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get my ${this.table} error!`,
+        success: false,
+        error: err
+      });
+    }
+  }
+
+  getMyIndebtednessUnpaid = async (req: Request, res: Response) => {
+    try {
+      const user = lodash.cloneDeep(req.body.user);
+      if (isNullObj(user)) {
+        return res.status(400).json({
+          mgs: `No account to get!`,
+          success: false
+        });
+      }
+
+      const debtReminders = await this.model.find({ sendPayAccount: user.paymentAccount, status: 'unpaid', _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+
+      if (isNullArray(debtReminders)) {
+        return res.status(200).json({
+          mgs: 'Empty data debt reminder!',
+          data: [],
+          success: true
         });
       }
 

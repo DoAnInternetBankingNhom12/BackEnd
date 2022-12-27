@@ -483,7 +483,7 @@ class UserCtrl extends BaseCtrl {
 
 
         if (user) {
-          const token = generalToken(user.id, userName, user.email, user.role);
+          const token = generalToken(user.id, userName, user.email, user.role, user.customer?.paymentAccount ? user.customer.paymentAccount : undefined);
 
           user.token = token;
           user.password = undefined;
@@ -530,7 +530,7 @@ class UserCtrl extends BaseCtrl {
         user = lodash.cloneDeep(await this.model.aggregate(getPipeLineGet([], { refreshToken: refreshToken, _status: true }, this.lookups, this.sets)))[0];
 
         if (user) {
-          const token = generalToken(user.id, user.userName, user.email, user.role);
+          const token = generalToken(user.id, user.userName, user.email, user.role, user.customer?.paymentAccount ? user.customer.paymentAccount : undefined);
 
           user.token = token;
           user.password = undefined;

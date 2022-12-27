@@ -212,6 +212,20 @@ abstract class BaseCtrl {
 
     return id;
   }
+
+  async generateIdByTextAndModel(text: string, model: any) {
+    let count = await model.count();
+    let id = `${text.toLocaleLowerCase()}${count}`;
+    let idExist = await model.findOne({ id }).exec();
+
+    do {
+      id = `${text.toLocaleLowerCase()}${count}`;
+      idExist = await model.findOne({ id }).exec();
+      count++;
+    } while (idExist)
+
+    return id;
+  }
 }
 
 export default BaseCtrl;

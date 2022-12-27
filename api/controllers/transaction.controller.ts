@@ -35,7 +35,7 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyTransfer = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      const obj = await this.model.find({ sendPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -66,7 +66,7 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyGet = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ $or: [{ receiverPayAccount: user.paymentAccount }], _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      const obj = await this.model.find({ receiverPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -107,7 +107,50 @@ class TransactionCtrl extends BaseCtrl {
         endTime = moment().endOf('month').unix();
       }
 
-      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+
+      if (isNullObj(obj)) {
+        return res.status(200).json({
+          mgs: `Get data is empty!`,
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        mgs: `Get data ${this.table} is success!`,
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  getMyTransactionDebtReminder = async (req: Request, res: Response) => {
+    try {
+      const user: any = lodash.cloneDeep(req.body.user);
+      let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
+      let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
+
+      if (isNull(startTime)) {
+        startTime = moment().startOf('month').unix();
+      }
+
+      if (isNull(endTime)) {
+        endTime = moment().endOf('month').unix();
+      }
+
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -325,22 +368,17 @@ class TransactionCtrl extends BaseCtrl {
       tempData.sendAccountName = sentUserData.name;
       // Here for test
       // Check data receiver exist in may data.
-      const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
-      if (isNull(receiverData)) {
-        const dataPartner: any = partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
-        if (!dataPartner || dataPartner.status === 0 || dataPartner.data === null) {
-          return res.status(400).json({
-            mgs: `Account receiver isn't exist!`,
-            success: false
-          });
-        }
+      // const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
+      const resPartner: any = await partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
+      if (isNull(resPartner) || resPartner.status === 0 || resPartner.data === null) {
         return res.status(400).json({
           mgs: `Account receiver isn't exist!`,
           success: false
         });
       }
 
-      const partnerBankInfo: any = await this.modelBank.findOne({ id: receiverData.bankId, _status: true });
+      const dataPartner = resPartner.data;
+      const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.receiverBankId, _status: true });
       if (isNull(partnerBankInfo)) {
         return res.status(400).json({
           mgs: `No partner bank data!`,
@@ -350,7 +388,7 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.receiverBankId = partnerBankInfo.id;
       tempData.receiverBankName = partnerBankInfo.name;
-      tempData.receiverAccountName = receiverData.name;
+      tempData.receiverAccountName = dataPartner.name;
       const amountOwedTotal = tempData.amountOwed + (sentUserData.paymentAccount === tempData.payAccountFee ? tempData.transactionFee : 0)
       const statusCheck = await this.checkAmountOwed(sentUserData.paymentAccount, amountOwedTotal);
 
@@ -381,7 +419,7 @@ class TransactionCtrl extends BaseCtrl {
       // Here Partner bank's API add money
       const newAmountOwed: number = hasReceiverTransactionFee ? tempData.amountOwed - tempData.transactionFee : tempData.amountOwed;
       const stringSignaturePartner = `${tempData.sendPayAccount}${newAmountOwed}${tempData.receiverAccountName}`;
-      const signaturePartner = encryptedStringST(stringSignaturePartner, 'bank1');
+      const signaturePartner = encryptedStringST(stringSignaturePartner, tempData.receiverBankId);
       const objDataPartner = {
         send_STK: tempData.sendPayAccount,
         send_Money: newAmountOwed,
@@ -553,6 +591,7 @@ class TransactionCtrl extends BaseCtrl {
           data += chunk.toString();
         });
         res.on('end', () => {
+          console.log('postTransactionHttp', JSON.parse(data));
           resolve(JSON.parse(data));
         });
       }).on('error', (err: any) => {
@@ -564,7 +603,7 @@ class TransactionCtrl extends BaseCtrl {
     });
   }
 
-  private async checkAmountOwed(paymentAccount: string, amountOwed: number) {
+  async checkAmountOwed(paymentAccount: string, amountOwed: number) {
     try {
       const data = await this.modelCustommer.aggregate([{ $match: { paymentAccount: paymentAccount, accountBalance: { $gte: amountOwed }, _status: true } },]);
       if (isNullObj(data)) return false;
@@ -575,7 +614,7 @@ class TransactionCtrl extends BaseCtrl {
     }
   }
 
-  private async deductMoneyAccount(paymentAccount: string, money: number, transactionFee: number = 0) {
+  async deductMoneyAccount(paymentAccount: string, money: number, transactionFee: number = 0) {
     try {
       const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
       if (isNullObj(account)) return false;
@@ -591,7 +630,7 @@ class TransactionCtrl extends BaseCtrl {
     }
   }
 
-  private async addMoneyAccountInternal(paymentAccount: string, money: number, transactionFee: number = 0) {
+  async addMoneyAccountInternal(paymentAccount: string, money: number, transactionFee: number = 0) {
     try {
       const account: any = await this.modelCustommer.findOne({ paymentAccount: paymentAccount, _status: true });
       if (isNullObj(account)) return false;
@@ -607,7 +646,7 @@ class TransactionCtrl extends BaseCtrl {
     }
   }
 
-  private async restoreData(infoAccSent?: any, infoAccReceiver?: any) {
+  async restoreData(infoAccSent?: any, infoAccReceiver?: any) {
     try {
       if (isNullObj(infoAccSent) && isNullObj(infoAccSent)) return true;
 

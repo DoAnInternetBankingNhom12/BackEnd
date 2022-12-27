@@ -6,11 +6,11 @@ export function isNull(value: any) {
 
 
 export function isNullObj(value: any) {
-    return Object.keys(value).length === 0;
+    return !value || Object.keys(value).length === 0;
 }
 
 export function isNullArray(value: any) {
-    return value.length === 0;
+    return !value || value.length === 0;
 }
 
 

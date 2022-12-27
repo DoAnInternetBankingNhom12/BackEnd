@@ -150,7 +150,7 @@ class TransactionCtrl extends BaseCtrl {
         endTime = moment().endOf('month').unix();
       }
 
-      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 });
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({

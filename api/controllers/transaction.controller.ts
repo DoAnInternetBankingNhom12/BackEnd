@@ -440,8 +440,8 @@ class TransactionCtrl extends BaseCtrl {
         rsa: signaturePartner
       };
 
-      const statusAddPartner = await this.postTransactionHttp(objDataPartner, signaturePartner);
-      if (!statusAddPartner) {
+      const statusAddPartner: any = await this.postTransactionHttp(objDataPartner, signaturePartner);
+      if (!statusAddPartner || statusAddPartner.status === 0) {
         const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
         tempData.statusTransaction = 'failed';
         tempData.statusMoney = 'not_delivered';

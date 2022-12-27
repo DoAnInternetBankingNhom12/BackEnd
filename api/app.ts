@@ -16,9 +16,9 @@ import * as cors from 'cors';
 import setMongo from './databases/mogodb';
 import setRoutes from './routes';
 
-import * as crypto from 'crypto';
-import * as moment from 'moment';
-import { myEncryptedStingST, decryptedData, verifyMySignature, getTokenPartner, encryptedStringST } from './utils/utils';
+// import * as crypto from 'crypto';
+// import * as moment from 'moment';
+// import { myEncryptedStingST, decryptedData, verifyMySignature, getTokenPartner, encryptedStringST } from './utils/utils';
 
 // const whitelist = process.env.WHITELIST?.split(',');
 // const corsOptions = {
@@ -91,7 +91,7 @@ const main = async (): Promise<any> => {
     //   content: 'string',
     //   paymentFeeTypeID: 1,
     //   transactionTypeID: 1,
-    //   bankReferenceId: 0,
+    //   bankReferenceId: 1,
     //   rsa: 'string'
     // };
 

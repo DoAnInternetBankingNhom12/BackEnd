@@ -335,6 +335,7 @@ class TransactionCtrl extends BaseCtrl {
     try {
       const partnerCtrl = new PartnerCtrl();
       const tempData = lodash.cloneDeep(req.body);
+      const user = lodash.cloneDeep(req.body.user);
       const id = await this.generateId();
       tempData.id = id;
       tempData.createTime = moment().unix();
@@ -344,8 +345,9 @@ class TransactionCtrl extends BaseCtrl {
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'delivered';
       tempData.typeTransaction = 'external';
+      tempData.transactionFee = 5000;
       delete tempData.user;
-
+      
       const myBankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(myBankInfo)) {
         return res.status(400).json({
@@ -353,10 +355,10 @@ class TransactionCtrl extends BaseCtrl {
           success: false
         });
       }
-
+      
       tempData.sendBankId = myBankInfo.id;
       tempData.sendBankName = myBankInfo.name;
-      const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true });
+      const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: user.paymentAccount, _status: true });
       if (isNull(sentUserData)) {
         return res.status(400).json({
           mgs: `Account sent isn't exist!`,
@@ -364,11 +366,9 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
+      tempData.sendPayAccount = user.paymentAccount;
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
-      // Here for test
-      // Check data receiver exist in may data.
-      // const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true }); // Just test
       const resPartner: any = await partnerCtrl.getInfoHttp(tempData.receiverPayAccount);
       if (isNull(resPartner) || resPartner.status === 0 || resPartner.data === null) {
         return res.status(400).json({
@@ -384,6 +384,15 @@ class TransactionCtrl extends BaseCtrl {
           mgs: `No partner bank data!`,
           success: false
         });
+      }
+
+      switch (tempData.typeFee) {
+        case 'receiver':
+          tempData.payAccountFee = tempData.receiverPayAccount;
+          break;
+        default:
+          tempData.payAccountFee = tempData.sendPayAccount;
+          break;
       }
 
       tempData.receiverBankId = partnerBankInfo.id;
@@ -416,22 +425,21 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       const hasReceiverTransactionFee = (tempData.receiverPayAccount === tempData.payAccountFee);
-      // Here Partner bank's API add money
       const newAmountOwed: number = hasReceiverTransactionFee ? tempData.amountOwed - tempData.transactionFee : tempData.amountOwed;
-      const stringSignaturePartner = `${tempData.sendPayAccount}${newAmountOwed}${tempData.receiverAccountName}`;
+      const stringSignaturePartner = `${tempData.sendPayAccount}${newAmountOwed}${tempData.receiverPayAccount}`;
       const signaturePartner = encryptedStringST(stringSignaturePartner, tempData.receiverBankId);
       const objDataPartner = {
         send_STK: tempData.sendPayAccount,
         send_Money: newAmountOwed,
         receive_BankID: 2,
-        receive_STK: tempData.receiverAccountName,
+        receive_STK: tempData.receiverPayAccount,
         content: tempData.description,
         paymentFeeTypeID: 1,
         transactionTypeID: 1,
-        bankReferenceId: 0,
+        bankReferenceId: 1,
         rsa: signaturePartner
       };
-      // const statusAdd = await this.addMoneyAccountInternal(tempData.receiverPayAccount, amountOwedTotal, hasReceiverTransactionFee ? tempData.transactionFee : 0); // Just test
+
       const statusAddPartner = await this.postTransactionHttp(objDataPartner, signaturePartner);
       if (!statusAddPartner) {
         const statusRestore = await this.restoreData(accSentRestore, accReceiverRestore);
@@ -591,7 +599,6 @@ class TransactionCtrl extends BaseCtrl {
           data += chunk.toString();
         });
         res.on('end', () => {
-          console.log('postTransactionHttp', JSON.parse(data));
           resolve(JSON.parse(data));
         });
       }).on('error', (err: any) => {

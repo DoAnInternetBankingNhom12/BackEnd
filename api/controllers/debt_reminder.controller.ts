@@ -149,7 +149,8 @@ class DebtReminderCtrl extends BaseCtrl {
       tempData.userId = user.userId;
       tempData.createTime = moment().unix();
       tempData.updateTime = moment().unix();
-      tempData.noticeTime = moment().unix() > tempData.noticeTime ? moment().unix() : tempData.noticeTime;
+      tempData.noticeTime = !tempData.noticeTime || moment().unix() > tempData.noticeTime ? moment().unix() : tempData.noticeTime;
+      tempData.typeFee = 'sender';
       tempData._status = true;
 
       const existSentUser: any = await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true }).exec();
@@ -396,7 +397,6 @@ class DebtReminderCtrl extends BaseCtrl {
   private getDataUpdate(objData: any) {
     const newObj = {
       sendPayAccount: objData?.sendPayAccount,
-      typeFee: objData?.typeFee,
       amountOwed: objData?.amountOwed,
       description: objData?.description,
       noticeTime: objData?.noticeTime,

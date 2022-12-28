@@ -31,7 +31,7 @@ class TransactionCtrl extends BaseCtrl {
   modelBank = Bank;
   table = 'Transaction';
 
-  // Get
+  // Get for Customer
   getMyTransactionMoneyTransfer = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
@@ -94,8 +94,9 @@ class TransactionCtrl extends BaseCtrl {
     }
   };
 
-  getTransactionExternal = async (req: Request, res: Response) => {
+  getMyTransactionDebtReminder = async (req: Request, res: Response) => {
     try {
+      const user: any = lodash.cloneDeep(req.body.user);
       let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
       let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
 
@@ -107,7 +108,7 @@ class TransactionCtrl extends BaseCtrl {
         endTime = moment().endOf('month').unix();
       }
 
-      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -136,9 +137,135 @@ class TransactionCtrl extends BaseCtrl {
     }
   };
 
-  getMyTransactionDebtReminder = async (req: Request, res: Response) => {
+
+  // Get for Employee and Admin
+  getTransactionTransferByPayNumber = async (req: Request, res: Response) => {
     try {
-      const user: any = lodash.cloneDeep(req.body.user);
+      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);      
+      if (isNull(paymentAccount)) {
+        return res.status(400).json({
+          mgs: `No params paymentAccount!`,
+          success: false
+        });
+      }
+
+      const obj = await this.model.find({ sendPayAccount: paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+
+      if (isNullObj(obj)) {
+        return res.status(200).json({
+          mgs: `No ${this.table}!`,
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  getTransactionGetByPayNumber = async (req: Request, res: Response) => {
+    try {
+      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);
+      if (isNull(paymentAccount)) {
+        return res.status(400).json({
+          mgs: `No params paymentAccount!`,
+          success: false
+        });
+      }
+
+      const obj = await this.model.find({ receiverPayAccount: paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      if (isNullObj(obj)) {
+        return res.status(200).json({
+          mgs: `No ${this.table}!`,
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  getTransactionDebtReminderByPayNumber = async (req: Request, res: Response) => {
+    try {
+      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);
+      if (isNull(paymentAccount)) {
+        return res.status(400).json({
+          mgs: `No params paymentAccount!`,
+          success: false
+        });
+      }
+
+
+      let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
+      let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
+      if (isNull(startTime)) {
+        startTime = moment().startOf('month').unix();
+      }
+
+      if (isNull(endTime)) {
+        endTime = moment().endOf('month').unix();
+      }
+
+      const obj = await this.model.find({ $or: [{ sendPayAccount: paymentAccount }, { receiverPayAccount: paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+
+      if (isNullObj(obj)) {
+        return res.status(200).json({
+          mgs: `Get data is empty!`,
+          data: [],
+          success: true
+        });
+      }
+
+      return res.status(200).json({
+        mgs: `Get data ${this.table} is success!`,
+        data: obj,
+        success: true
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Get ${this.table} id ${req.body.id} error!`,
+        data: req.params.id,
+        success: false,
+        error: {
+          mgs: err.message,
+          status: 400,
+          code: 5000
+        }
+      });
+    }
+  };
+
+  getTransactionExternal = async (req: Request, res: Response) => {
+    try {
       let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
       let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
 
@@ -150,7 +277,7 @@ class TransactionCtrl extends BaseCtrl {
         endTime = moment().endOf('month').unix();
       }
 
-      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -347,7 +474,7 @@ class TransactionCtrl extends BaseCtrl {
       tempData.typeTransaction = 'external';
       tempData.transactionFee = 5000;
       delete tempData.user;
-      
+
       const myBankInfo: any = await this.modelBank.findOne({ type: 'internal', _status: true });
       if (isNull(myBankInfo)) {
         return res.status(400).json({
@@ -355,7 +482,7 @@ class TransactionCtrl extends BaseCtrl {
           success: false
         });
       }
-      
+
       tempData.sendBankId = myBankInfo.id;
       tempData.sendBankName = myBankInfo.name;
       const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: user.paymentAccount, _status: true });

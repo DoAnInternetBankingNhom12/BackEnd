@@ -90,6 +90,9 @@ const setRoutes = (app: Application): void => {
 
   // Transaction
   router.route('/transactions').get(authEmployee, transactionCtrl.getAll);
+  router.route('/transaction/transfer/:paymentAccount').get(authEmployee, transactionCtrl.getTransactionTransferByPayNumber);
+  router.route('/transaction/get/:paymentAccount').get(authEmployee, transactionCtrl.getTransactionGetByPayNumber);
+  router.route('/transaction/debtreminder/:paymentAccount').get(authEmployee, transactionCtrl.getTransactionDebtReminderByPayNumber);
   router.route('/transactions/count').get(authEmployee, transactionCtrl.count);
   router.route('/mytransaction/transfer').get(auth, transactionCtrl.getMyTransactionMoneyTransfer);
   router.route('/mytransaction/get').get(auth, transactionCtrl.getMyTransactionMoneyGet);

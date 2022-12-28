@@ -76,8 +76,7 @@ const main = async (): Promise<any> => {
     //   sendPayAccount: '34637636346',
     //   sendAccountName: 'Khach Hang 1',
     //   receiverPayAccount: '493747116445',
-    //   payAccountFee: '493747116445',
-    //   transactionFee: 5000,
+    //   typeFee: 'receiver',
     //   amountOwed: 500000,
     //   bankReferenceId: 'bank1',
     //   description: '',
@@ -95,7 +94,7 @@ const main = async (): Promise<any> => {
     //   rsa: 'string'
     // };
 
-    // const stringTransaction = `${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.payAccountFee}${objData.transactionFee}${objData.amountOwed}${objData.bankReferenceId}${time}`;
+    // const stringTransaction = `${key}${'/api/transaction/addmoney'}${objData.sendPayAccount}${objData.sendAccountName}${objData.receiverPayAccount}${objData.typeFee}${objData.amountOwed}${objData.bankReferenceId}${time}`;
     // const hashCreateTokenTransaction = hmac2.update(stringTransaction).digest('base64');
     // const signature = myEncryptedStingST();
 

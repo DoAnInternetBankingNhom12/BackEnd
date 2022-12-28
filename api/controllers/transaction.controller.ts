@@ -481,8 +481,9 @@ class TransactionCtrl extends BaseCtrl {
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${tempData.receiverPayAccount}.`;
       tempData.statusMoney = 'not_delivered';
       tempData.typeTransaction = 'external';
-      const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.bankReferenceId, _status: true }, { _id: 0, __v: 0, _status: 0 });
+      tempData.transactionFee = 5000;
 
+      const partnerBankInfo: any = await this.modelBank.findOne({ id: tempData.bankReferenceId, _status: true }, { _id: 0, __v: 0, _status: 0 });
       if (isNullObj(partnerBankInfo)) {
         return res.status(401).json({
           status: false,
@@ -536,6 +537,16 @@ class TransactionCtrl extends BaseCtrl {
           mgs: `Account receiver isn't exist!`,
           success: false
         });
+      }
+
+
+      switch (tempData.typeFee) {
+        case 'receiver':
+          tempData.payAccountFee = tempData.receiverPayAccount;
+          break;
+        default:
+          tempData.payAccountFee = tempData.sendPayAccount;
+          break;
       }
 
       tempData.receiverBankId = myBankInfo.id;

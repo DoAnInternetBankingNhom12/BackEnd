@@ -62,8 +62,7 @@ function generalStringToken(key: string, url: string, objTransaction: any, time:
   if (objTransaction.sendPayAccount) tokenString += objTransaction.sendPayAccount;
   if (objTransaction.sendAccountName) tokenString += objTransaction.sendAccountName;
   if (objTransaction.receiverPayAccount) tokenString += objTransaction.receiverPayAccount;
-  if (objTransaction.payAccountFee) tokenString += objTransaction.payAccountFee;
-  if (objTransaction.transactionFee) tokenString += objTransaction.transactionFee;
+  if (objTransaction.typeFee) tokenString += objTransaction.typeFee;
   if (objTransaction.amountOwed) tokenString += objTransaction.amountOwed;
   if (objTransaction.bankReferenceId) tokenString += objTransaction.bankReferenceId;
   tokenString += `${time}`;

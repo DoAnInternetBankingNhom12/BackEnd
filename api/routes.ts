@@ -86,6 +86,7 @@ const setRoutes = (app: Application): void => {
   router.route('/debtreminderPay/:id').post(auth, otp, debtReminderCtrl.debtReminderBank);
   router.route('/debtreminder').post(auth, debtReminderCtrl.createDebtReminder);
   router.route('/debtreminder/:id').put(auth, debtReminderCtrl.updateDebtReminder);
+  router.route('/debtremindercancel/:id').put(auth, debtReminderCtrl.cancelDebtReminder);
   router.route('/debtreminder/:id').delete(auth, debtReminderCtrl.delete);
 
   // Transaction

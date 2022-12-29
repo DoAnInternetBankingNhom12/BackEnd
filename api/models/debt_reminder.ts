@@ -22,7 +22,7 @@ export interface DebtReminder extends Document {
   receiverPayAccount: string,
   typeFee: string,
   amountOwed: number,
-  status: string, // unpaid: chưa thanh toán, paid: đã thanh toán
+  status: string, // unpaid: chưa thanh toán, paid: đã thanh toán, cancelled: hủy bỏ
   description: string,
   noticeTime: number,
   createTime: number,

@@ -241,6 +241,47 @@ class DebtReminderCtrl extends BaseCtrl {
     }
   };
 
+  cancelDebtReminder = async (req: Request, res: Response) => {
+    try {
+      const user = lodash.cloneDeep(req.body.user);
+      const data: any = await this.model.findOne({ id: req.params.id, _status: true, status: 'unpaid' });
+
+      if (!isNullObj(data)) {
+        if (data.sendPayAccount === user.paymentAccount || data.receiverPayAccount === user.paymentAccount || user.role === 'admin' || user.role === 'employee') {
+          await this.model.findOneAndUpdate({ id: req.params.id, _status: true, status: 'unpaid' }, { status: 'cancelled' }, { _id: 0, __v: 0, _status: 0 });
+  
+          const objSent: Notify = {
+            type: 'update',
+            table: this.table.toLocaleLowerCase(),
+            msg: `Debt ${this.table} has cancelled!`
+          };
+  
+          sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
+          return res.status(200).json({
+            mgs: `Cancelled debt reminder id ${req.params.id} success!`,
+            success: true
+          });
+        }
+
+        return res.status(400).json({
+          mgs: `The account does not have the right to cancel this debt reminder!`,
+          success: false
+        });
+      }
+
+      return res.status(400).json({
+        mgs: `Not exist ${this.table} id ${req.params.id} to update or the ${this.table} has been paid!`,
+        success: false,
+      });
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Update ${this.table} id ${req.params.id} error!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
   // Pay
   debtReminderBank = async (req: Request, res: Response) => {
     try {

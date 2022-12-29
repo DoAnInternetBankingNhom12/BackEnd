@@ -9,6 +9,7 @@ const debtReminderSchema = new Schema<DebtReminder>({
   amountOwed: { type: Number, required: true },
   status: { type: String, required: true, default: 'unpaid' },
   description: { type: String },
+  descriptionCancel: { type: String },
   noticeTime: { type: Number, required: true },
   createTime: Number,
   updateTime: Number,
@@ -24,6 +25,7 @@ export interface DebtReminder extends Document {
   amountOwed: number,
   status: string, // unpaid: chưa thanh toán, paid: đã thanh toán, cancelled: hủy bỏ
   description: string,
+  descriptionCancel: string
   noticeTime: number,
   createTime: number,
   updateTime: number,

@@ -245,17 +245,19 @@ class DebtReminderCtrl extends BaseCtrl {
     try {
       const user = lodash.cloneDeep(req.body.user);
       const data: any = await this.model.findOne({ id: req.params.id, _status: true, status: 'unpaid' });
+      const tempData = lodash.cloneDeep(req.body);
 
       if (!isNullObj(data)) {
         if (data.sendPayAccount === user.paymentAccount || data.receiverPayAccount === user.paymentAccount || user.role === 'admin' || user.role === 'employee') {
-          await this.model.findOneAndUpdate({ id: req.params.id, _status: true, status: 'unpaid' }, { status: 'cancelled' }, { _id: 0, __v: 0, _status: 0 });
-  
+          const descriptionCancel = tempData.description;
+          await this.model.findOneAndUpdate({ id: req.params.id, _status: true, status: 'unpaid' }, { descriptionCancel: descriptionCancel ? descriptionCancel : '', status: 'cancelled' }, { _id: 0, __v: 0, _status: 0 });
+
           const objSent: Notify = {
             type: 'update',
             table: this.table.toLocaleLowerCase(),
             msg: `Debt ${this.table} has cancelled!`
           };
-  
+
           sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
           return res.status(200).json({
             mgs: `Cancelled debt reminder id ${req.params.id} success!`,

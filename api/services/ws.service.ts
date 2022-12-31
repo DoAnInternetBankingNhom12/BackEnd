@@ -18,7 +18,11 @@ const socketServer = new WebSocketServer({
 const model = DebtReminder;
 
 socketServer.on('connection', function (client: any, req: IncomingMessage) {
-  client.send('Client connects successfully!');
+  const objData = {
+    mgs: 'Client connects successfully!',
+    isConnect: true
+  };
+  client.send(JSON.stringify(objData));
   client.on('message', async function message(data: any) {
     const { userId, payNumber } = JSON.parse(data);
 

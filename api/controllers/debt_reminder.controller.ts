@@ -220,7 +220,7 @@ class DebtReminderCtrl extends BaseCtrl {
           msg: `Debt ${this.table} has change data!`
         };
 
-        sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
+        sendObjInListByPayNumber(objSent, [data.receiverPayAccount, data.sendPayAccount]);
         return res.status(200).json({
           mgs: `Update user id ${req.params.id} success!`,
           success: true
@@ -258,7 +258,7 @@ class DebtReminderCtrl extends BaseCtrl {
             msg: `Debt ${this.table} has cancelled!`
           };
 
-          sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
+          sendObjInListByPayNumber(objSent, [data.receiverPayAccount, data.sendPayAccount]);
           return res.status(200).json({
             mgs: `Cancelled debt reminder id ${req.params.id} success!`,
             success: true

@@ -171,15 +171,30 @@ class DebtReminderCtrl extends BaseCtrl {
 
       tempData.receiverPayAccount = receiverData.paymentAccount;
       tempData.description = !isNull(tempData.description) ? tempData.description : `Chuyển tiền cho tài khoản ${receiverData.paymentAccount}.`;
-      const statusCreate = await new this.model(tempData).save();
+      const createData = await new this.model(tempData).save();
 
-      if (isNullObj(statusCreate)) {
+      if (isNullObj(createData)) {
         return res.status(400).json({
           mgs: 'Create debt reminder failed!',
           success: false
         });
       }
 
+      const objSent: Notify = {
+        type: 'create',
+        table: this.table.toLocaleLowerCase(),
+        data: {
+          id: createData.id,
+          payAccount: createData.receiverPayAccount,
+          nameAccount: receiverData.name,
+          amountOwed: createData.amountOwed,
+          description: createData.description,
+          action: 'create'
+        },
+        msg: `Got a new debt reminder!`
+      };
+
+      sendObjInListByPayNumber(objSent, [tempData.sendPayAccount]);
       return res.status(200).json({
         mgs: `Create ${this.table} success!`,
         success: true
@@ -196,14 +211,37 @@ class DebtReminderCtrl extends BaseCtrl {
   // Update
   updateDebtReminder = async (req: Request, res: Response) => {
     try {
-      const data: any = await this.model.findOne({ id: req.params.id });
+      const user = lodash.cloneDeep(req.body.user);
+      const data: any = await this.model.findOne({ id: req.params.id, status: 'unpaid' });
       const tempData = lodash.cloneDeep(req.body);
       tempData.noticeTime = moment().unix() > tempData.noticeTime ? moment().unix() : tempData.noticeTime;
       delete tempData.user;
 
+      if (isNullObj(user)) {
+        return res.status(400).json({
+          mgs: `No account information!`,
+          success: false
+        });
+      }
+
       if (!isNullObj(data)) {
-        const sendData: any = await this.modelReceiver.findOne({ paymentAccount: tempData.sendPayAccount, _status: true });
+        if (data.receiverPayAccount !== user.paymentAccount) {
+          return res.status(400).json({
+            mgs: `Account does not have permission to update!`,
+            success: false
+          });
+        }
+
+        const sendData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.sendPayAccount, _status: true });
         if (isNullObj(sendData)) {
+          return res.status(400).json({
+            mgs: `Account send isn't exist!`,
+            success: false
+          });
+        }
+
+        const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: user.paymentAccount, _status: true });
+        if (isNullObj(receiverData)) {
           return res.status(400).json({
             mgs: `Account receiver isn't exist!`,
             success: false
@@ -211,16 +249,22 @@ class DebtReminderCtrl extends BaseCtrl {
         }
 
         const objUpdate = lodash.cloneDeep(this.getDataUpdate(tempData))
-
         await this.model.findOneAndUpdate({ id: req.params.id }, objUpdate, { _id: 0, __v: 0, _status: 0 });
-
         const objSent: Notify = {
           type: 'update',
           table: this.table.toLocaleLowerCase(),
-          msg: `Debt ${this.table} has change data!`
+          data: {
+            id: req.params.id,
+            payAccount: receiverData.paymentAccount,
+            nameAccount: receiverData.name,
+            amountOwed: objUpdate.amountOwed,
+            description: objUpdate.description,
+            action: 'update'
+          },
+          msg: `The debt reminder has been updated!`
         };
 
-        sendObjInListByPayNumber(objSent, [data.receiverPayAccount, data.sendPayAccount]);
+        sendObjInListByPayNumber(objSent, [sendData.paymentAccount]);
         return res.status(200).json({
           mgs: `Update user id ${req.params.id} success!`,
           success: true
@@ -228,8 +272,7 @@ class DebtReminderCtrl extends BaseCtrl {
       }
 
       return res.status(400).json({
-        mgs: `Not exist ${this.table} id ${req.params.id} to update!`,
-        data: tempData,
+        mgs: `Not exist ${this.table} id ${req.params.id} to update or the ${this.table} has been paid!`,
         success: false,
       });
     } catch (err: any) {
@@ -249,16 +292,59 @@ class DebtReminderCtrl extends BaseCtrl {
 
       if (!isNullObj(data)) {
         if (data.sendPayAccount === user.paymentAccount || data.receiverPayAccount === user.paymentAccount || user.role === 'admin' || user.role === 'employee') {
+          const sendData: any = await this.modelCustommer.findOne({ paymentAccount: data.sendPayAccount, _status: true });
+          if (isNullObj(sendData)) {
+            return res.status(400).json({
+              mgs: `Account send isn't exist!`,
+              success: false
+            });
+          }
+
+          const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: data.receiverPayAccount, _status: true });
+          if (isNullObj(receiverData)) {
+            return res.status(400).json({
+              mgs: `Account receiver isn't exist!`,
+              success: false
+            });
+          }
+
           const descriptionCancel = tempData.description;
           await this.model.findOneAndUpdate({ id: req.params.id, _status: true, status: 'unpaid' }, { descriptionCancel: descriptionCancel ? descriptionCancel : '', status: 'cancelled' }, { _id: 0, __v: 0, _status: 0 });
 
-          const objSent: Notify = {
-            type: 'update',
-            table: this.table.toLocaleLowerCase(),
-            msg: `Debt ${this.table} has cancelled!`
-          };
+          if (user.paymentAccount === data.sendPayAccount) {
+            const objSent: Notify = {
+              type: 'cancelled',
+              table: this.table.toLocaleLowerCase(),
+              data: {
+                id: req.params.id,
+                payAccount: sendData.paymentAccount,
+                nameAccount: sendData.name,
+                amountOwed: data.amountOwed,
+                description: descriptionCancel,
+                action: 'cancelled'
+              },
+              msg: `Debt ${this.table} has cancelled!`
+            };
+            sendObjInListByPayNumber(objSent, [data.receiverPayAccount]);
+          }
 
-          sendObjInListByPayNumber(objSent, [data.receiverPayAccount, data.sendPayAccount]);
+          if (user.paymentAccount === data.receiverPayAccount) {
+            const objSent: Notify = {
+              type: 'cancelled',
+              table: this.table.toLocaleLowerCase(),
+              data: {
+                id: req.params.id,
+                payAccount: receiverData.paymentAccount,
+                nameAccount: receiverData.name,
+                amountOwed: data.amountOwed,
+                description: descriptionCancel,
+                action: 'cancelled'
+              },
+              msg: `Debt ${this.table} has cancelled!`
+            };
+            sendObjInListByPayNumber(objSent, [data.sendPayAccount]);
+          }
+
           return res.status(200).json({
             mgs: `Cancelled debt reminder id ${req.params.id} success!`,
             success: true
@@ -413,16 +499,21 @@ class DebtReminderCtrl extends BaseCtrl {
 
       await new this.modelTransaction(transactionData).save();
       await this.model.findOneAndUpdate({ id: debtReminderId }, { status: 'paid' }, { _id: 0, __v: 0, _status: 0 });
-      // const objSent: Notify = {
-      //   type: 'update',
-      //   table: this.table.toLocaleLowerCase(),
-      //   msg: `The account has just been transferred from the account ${transactionData.sendAccountName}!`,
-      //   data: {
-      //     amountOwed: transactionData.amountOwed
-      //   }
-      // };
+      const objSent: Notify = {
+        type: 'pay',
+        table: this.table.toLocaleLowerCase(),
+        data: {
+          id: req.params.id,
+          payAccount: transactionData.sendPayAccount,
+          nameAccount: transactionData.sendAccountName,
+          amountOwed: transactionData.amountOwed,
+          description: debtReminderData.description,
+          action: 'pay'
+        },
+        msg: `Debt reminder has been paid!`
+      };
+      sendObjInListByPayNumber(objSent, [debtReminderData.receiverPayAccount]);
 
-      // sendObjInListByPayNumber(objSent, [transactionData.receiverPayAccount])
       return res.status(200).json({
         mgs: `Transaction internal success!`,
         success: true
@@ -449,27 +540,6 @@ class DebtReminderCtrl extends BaseCtrl {
 
     return newObj;
   }
-
-  // export interface DebtReminder extends Document {
-  //   id: string,
-  //   userId: string,
-  //   sendPayAccount: string,
-  //   sendAccountName: string,
-  //   sendBankId: string,
-  //   sendBankName: string,
-  //   receiverPayAccount: string,
-  //   receiverAccountName: string,
-  //   receiverBankId: string,
-  //   receiverBankName: string,
-  //   payAccountFee: string,
-  //   transactionFee: number,
-  //   amountOwed: number,
-  //   description: string,
-  //   noticeTime: number,
-  //   createTime: number,
-  //   updateTime: number,
-  //   _status: boolean
-  // };
 }
 
 export default DebtReminderCtrl;

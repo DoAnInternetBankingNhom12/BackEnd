@@ -31,18 +31,6 @@ socketServer.on('connection', function (client: any, req: IncomingMessage) {
       if (userId) client.userId = userId;
       if (payNumber) client.payNumber = payNumber as string;
     }
-
-    const debtReminders = await model.find({ $or: [{ receiverPayAccount: payNumber }, { userId: userId }], _status: true }, { _id: 0, __v: 0, _status: 0 });
-
-    if (!isNullObj(debtReminders)) {
-      if (client.readyState === WebSocket.OPEN) {
-        const objData = {
-          mgs: 'You receive a debt reminder on the system!',
-          data: debtReminders
-        };
-        client.send(JSON.stringify(objData));
-      }
-    }
   });
 });
 console.log(`WebSocket Server is running at ws://localhost:${WS_PORT}`);

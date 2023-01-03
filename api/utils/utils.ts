@@ -1,9 +1,8 @@
 import * as crypto from 'crypto';
 
 export function isNull(value: any) {
-    return value === null || value === undefined || value === '' || value === NaN;
+    return value === null || value === undefined || value === '';
 }
-
 
 export function isNullObj(value: any) {
     return !value || Object.keys(value).length === 0;
@@ -12,7 +11,6 @@ export function isNullObj(value: any) {
 export function isNullArray(value: any) {
     return !value || value.length === 0;
 }
-
 
 export function verifyMySignature(verifiableData: string) {
     const signature = process.env.SIGNATURE as string;
@@ -30,7 +28,6 @@ export function decryptedData(encryptedData: string) {
             {
                 key: privateKey,
                 padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-                // oaepHash: "sha256",
             },
             dataBuff
         );
@@ -64,7 +61,6 @@ function encryptedRSA(text: string, key: any) {
         {
             key: key,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-            // oaepHash: "sha256",
         },
         Buffer.from(text)
     );

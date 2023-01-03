@@ -7,3 +7,11 @@
   - Morgan.
   - Jsonwebtoken.
   - Bcrypt JS.
+  - Dot Env.
+  - Lodash.
+  - Moment.
+  - Node-cache.
+  - Nodemailer.
+  - Winston.
+  - Winston Daily Rotate File.
+  - Websocket.

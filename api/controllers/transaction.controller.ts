@@ -363,20 +363,20 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.sendBankId = bankInfo.id;
       tempData.sendBankName = bankInfo.name;
-      const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true });
+      const sentUserData: any = await this.modelCustommer.findOne({ userId: user.userId, _status: true, isActive: true });
       if (isNullObj(sentUserData) || !sentUserData.paymentAccount) {
         return res.status(400).json({
-          mgs: `Account sent isn't exist!`,
+          mgs: `Account sent isn't exist or inactive!`,
           success: false
         });
       }
 
       tempData.sendPayAccount = sentUserData.paymentAccount;
       tempData.sendAccountName = sentUserData.name;
-      const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
+      const receiverData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true, isActive: true });
       if (isNullObj(receiverData)) {
         return res.status(400).json({
-          mgs: `Account receiver isn't exist!`,
+          mgs: `Account receiver isn't exist or inactive!`,
           success: false
         });
       }
@@ -485,10 +485,10 @@ class TransactionCtrl extends BaseCtrl {
 
       tempData.sendBankId = myBankInfo.id;
       tempData.sendBankName = myBankInfo.name;
-      const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: user.paymentAccount, _status: true });
+      const sentUserData: any = await this.modelCustommer.findOne({ paymentAccount: user.paymentAccount, _status: true, isActive: true });
       if (isNull(sentUserData)) {
         return res.status(400).json({
-          mgs: `Account sent isn't exist!`,
+          mgs: `Account sent isn't exist or inactive!`,
           success: false
         });
       }
@@ -658,10 +658,10 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
-      const customerData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true });
+      const customerData: any = await this.modelCustommer.findOne({ paymentAccount: tempData.receiverPayAccount, _status: true, isActive: true });
       if (isNullObj(customerData)) {
         return res.status(400).json({
-          mgs: `Account receiver isn't exist!`,
+          mgs: `Account receiver isn't exist or inactive!`,
           success: false
         });
       }

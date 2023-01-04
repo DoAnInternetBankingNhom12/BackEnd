@@ -60,6 +60,8 @@ const setRoutes = (app: Application): void => {
   router.route('/customer').post(auth, customerCtrl.createCustomer);
   router.route('/customer/recharge').post(auth, customerCtrl.recharge);
   router.route('/customer/:id').put(auth, customerCtrl.updateCustomer);
+  router.route('/activecustomer/:id').put(auth, customerCtrl.activeCustomer);
+  router.route('/inactivecustomer/:id').put(auth, customerCtrl.inactiveCustomer);
   router.route('/customer/:id').delete(auth, customerCtrl.deleteCustomer);
 
   // Employee

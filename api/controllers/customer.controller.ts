@@ -26,7 +26,6 @@ class CustomerCtrl extends BaseCtrl {
   table = 'Customer';
 
   // Get
-  
   getCustomerByPayNumber = async (req: Request, res: Response) => {
     try {
       const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);
@@ -38,8 +37,7 @@ class CustomerCtrl extends BaseCtrl {
         });
       }
 
-      const account = await this.model.findOne({paymentAccount: paymentAccount, _status: true }, { id:0, _id: 0, __v: 0, _status: 0, userId: 0, accountBalance: 0, createTime: 0, updateTime: 0});
-      
+      const account = await this.model.findOne({ paymentAccount: paymentAccount, _status: true }, { id: 0, _id: 0, __v: 0, _status: 0, userId: 0, accountBalance: 0, createTime: 0, updateTime: 0 });
       if (isNullObj(account)) {
         return res.status(400).json({
           mgs: 'Payment account not exist!',
@@ -218,6 +216,82 @@ class CustomerCtrl extends BaseCtrl {
     }
   };
 
+  activeCustomer = async (req: Request, res: Response) => {
+    try {
+      const idExist = await this.model.findOne({ id: req.params.id }).exec();
+
+      if (!idExist) {
+        return res.status(400).json({
+          mgs: `Not exist ${this.table} id ${req.params.id} to active!`,
+          data: req.body,
+          success: false,
+          error: {
+            status: 200,
+            code: 5002
+          }
+        });
+      }
+
+      const objData: any = await this.model.findOneAndUpdate({ id: req.params.id }, { isActive: true }, { _id: 0, __v: 0, _status: 0 });
+      const objSent: Notify = {
+        type: 'update',
+        table: this.table.toLocaleLowerCase(),
+        msg: `Active customer ${objData.userId}!`
+      };
+
+      sendObjInList(objSent, [objData.userId]);
+      return res.status(200).json({
+        mgs: `Active ${this.table} id ${req.params.id} success!`,
+        success: true
+      });
+
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Active ${this.table} id ${req.params.id} error!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
+  inactiveCustomer = async (req: Request, res: Response) => {
+    try {
+      const idExist = await this.model.findOne({ id: req.params.id }).exec();
+
+      if (!idExist) {
+        return res.status(400).json({
+          mgs: `Not exist ${this.table} id ${req.params.id} to inactive!`,
+          data: req.body,
+          success: false,
+          error: {
+            status: 200,
+            code: 5002
+          }
+        });
+      }
+
+      const objData: any = await this.model.findOneAndUpdate({ id: req.params.id }, { isActive: false }, { _id: 0, __v: 0, _status: 0 });
+      const objSent: Notify = {
+        type: 'update',
+        table: this.table.toLocaleLowerCase(),
+        msg: `Inactive customer ${objData.userId}!`
+      };
+
+      sendObjInList(objSent, [objData.userId]);
+      return res.status(200).json({
+        mgs: `Inactive ${this.table} id ${req.params.id} success!`,
+        success: true
+      });
+
+    } catch (err: any) {
+      return res.status(400).json({
+        mgs: `Inactive ${this.table} id ${req.params.id} error!`,
+        success: false,
+        error: err
+      });
+    }
+  };
+
   // Delete
   deleteCustomer = async (req: Request, res: Response) => {
     try {
@@ -234,7 +308,7 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       if (idExist) {
-        await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false });
+        await this.model.findOneAndUpdate({ id: req.params.id }, { _status: false, isActive: false });
         return res.status(200).json({
           mgs: `Delete ${this.table} id ${req.params.id} and can't delete user success!`,
           success: true
@@ -286,7 +360,7 @@ class CustomerCtrl extends BaseCtrl {
           table: this.table.toLocaleLowerCase(),
           msg: `Data customer ${objData.userId} has recharge ${newAccountBalance}!`
         };
-  
+
         sendObjInList(objSent, [objData.userId]);
         return res.status(200).json({
           mgs: `Recharge ${this.table} payment account ${paymentAccount} success!`,

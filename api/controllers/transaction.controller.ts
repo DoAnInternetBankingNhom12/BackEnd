@@ -141,7 +141,7 @@ class TransactionCtrl extends BaseCtrl {
   // Get for Employee and Admin
   getTransactionTransferByPayNumber = async (req: Request, res: Response) => {
     try {
-      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);      
+      const paymentAccount = lodash.cloneDeep(req.params.paymentAccount);
       if (isNull(paymentAccount)) {
         return res.status(400).json({
           mgs: `No params paymentAccount!`,
@@ -268,6 +268,7 @@ class TransactionCtrl extends BaseCtrl {
     try {
       let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
       let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
+      let bankId = lodash.cloneDeep(req.body ? req.body.bankId : moment().endOf('month').unix());
 
       if (isNull(startTime)) {
         startTime = moment().startOf('month').unix();
@@ -277,8 +278,12 @@ class TransactionCtrl extends BaseCtrl {
         endTime = moment().endOf('month').unix();
       }
 
-      const obj = await this.model.find({ typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      let objFind: any = { typeTransaction: 'external', createTime: { $gte: startTime, $lt: endTime }, _status: true };
+      if (!isNull(bankId)) {
+        objFind.$or = [{ sendBankId: bankId }, { receiverBankId: bankId }];
+      }
 
+      const obj = await this.model.find(objFind, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
       if (isNullObj(obj)) {
         return res.status(200).json({
           mgs: `Get data is empty!`,
@@ -287,9 +292,15 @@ class TransactionCtrl extends BaseCtrl {
         });
       }
 
+      let totalMoney = 0;
+      obj.map((item:any) => {
+        totalMoney += item.amountOwed;
+      });
+
       return res.status(200).json({
         mgs: `Get data ${this.table} is success!`,
         data: obj,
+        totalMoney: totalMoney,
         success: true
       });
     } catch (err: any) {

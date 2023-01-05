@@ -233,13 +233,6 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       const objData: any = await this.model.findOneAndUpdate({ id: req.params.id }, { isActive: true }, { _id: 0, __v: 0, _status: 0 });
-      const objSent: Notify = {
-        type: 'update',
-        table: this.table.toLocaleLowerCase(),
-        msg: `Active customer ${objData.userId}!`
-      };
-
-      sendObjInList(objSent, [objData.userId]);
       return res.status(200).json({
         mgs: `Active ${this.table} id ${req.params.id} success!`,
         success: true
@@ -271,13 +264,6 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       const objData: any = await this.model.findOneAndUpdate({ id: req.params.id }, { isActive: false }, { _id: 0, __v: 0, _status: 0 });
-      const objSent: Notify = {
-        type: 'update',
-        table: this.table.toLocaleLowerCase(),
-        msg: `Inactive customer ${objData.userId}!`
-      };
-
-      sendObjInList(objSent, [objData.userId]);
       return res.status(200).json({
         mgs: `Inactive ${this.table} id ${req.params.id} success!`,
         success: true

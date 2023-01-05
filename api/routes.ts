@@ -36,7 +36,7 @@ const setRoutes = (app: Application): void => {
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
   router.route('/users/count').get(auth, userCtrl.count);
   router.route('/user/changepws').post(auth, userCtrl.changePassword);
-  router.route('/user/forgotpws').post(auth, otp, userCtrl.forgotPassword);
+  router.route('/user/forgotpws').post(otp, userCtrl.forgotPassword);
   router.route('/user').post(auth, userCtrl.createUser);
   router.route('/user/customer').post(auth, userCtrl.createUserCustommer);
   router.route('/user/employee').post(auth, userCtrl.createUserEmployee);

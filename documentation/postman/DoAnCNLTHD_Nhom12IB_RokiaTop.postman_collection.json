@@ -1,0 +1,2155 @@
+{
+	"info": {
+		"_postman_id": "5b2266d8-e601-45d1-ba9c-983a4fa441ab",
+		"name": "DoAnCNLTHD_Nhom12IB_RokiaTop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24595401"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get all user in Nhom12IB",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NzA2NTIwODEsImV4cCI6MTY3MDY1MjM4MX0.Yy50_dcCQ57nWqv3Zhj6o2jkfj9GSEsR9Z2SvRK4LHQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/users",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ user trong hệ thống yêu cầu access token để lấy dữ liệu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get count user in Nhom12IB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/users/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"users",
+								"count"
+							]
+						},
+						"description": "- Api đếm số toàn bộ user trong hệ thống yêu cầu access token để lấy dữ liệu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user info by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MDIxNjMxOSwiZXhwIjoxNjcwMjE2NjE5fQ.how0LaJUv__8o3H8t-O0b3irvy_stjrwr165eLve-u4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/user/user0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"user0"
+							]
+						},
+						"description": "- Api Lấy thông tin user trong hệ thống yêu cầu access token để lấy dữ liệu và id để lấy thông tin user theo id."
+					},
+					"response": []
+				},
+				{
+					"name": "Get user info by token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3MDIxNjMxOSwiZXhwIjoxNjcwMjE2NjE5fQ.how0LaJUv__8o3H8t-O0b3irvy_stjrwr165eLve-u4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://api.rokia.top/api/myinfo",
+							"protocol": "http",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"myinfo"
+							]
+						},
+						"description": "- Api Lấy thông tin cá nhân trong hệ thống yêu cầu access token để lấy dữ liệu cá nhân."
+					},
+					"response": []
+				},
+				{
+					"name": "Login user by userName, password or refresh token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJyb2tpYUFkbWluMSIsInBhc3N3b3JkIjogIjEyM2FiYzQ1NiJ9",
+								"description": "Only userName, password (encode base64) (customer)",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJyb2tpYUFkbWluNSIsInBhc3N3b3JkIjogIjEyM2FiYzQ1NiJ9",
+								"description": "Only userName, password (encode base64) (employee)",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJyb2tpYUFkbWluIiwicGFzc3dvcmQiOiAiMTIzYWJjNDU2In0=",
+								"description": "Only userName, password (encode base64) (admin)",
+								"type": "text"
+							},
+							{
+								"key": "info",
+								"value": "eyJyZWZyZXNoVG9rZW4iOiIkMmEkMDQkcnE0VkI0OEd0ZnpPbnpKQTNiUWtXZXNtWWNZa3FHL0pTM3U2THo5TFQ0NzBOZlpNZFlzeHkifQ==",
+								"description": "Only refreshtoken (encode base64)",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJyb2tpYUFkbWluMyIsInBhc3N3b3JkIjogIjEyM2FiYzQ1NiJ9",
+								"description": "rokiaAdmin3",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJraGFkZXYiLCJwYXNzd29yZCI6ICIxMjNhYmM0NTYifQ==",
+								"description": "khadev",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/login",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						},
+						"description": "- Api login để đang nhập mã hóa thông tin đăng nhập thành base64. Sau đó gửi vào trường info trong header.\n    \n\n- Thông tin đăng nhập có định dạng :\n    - {\"userName\": \"rokiaAdmin\",\"password\": \"123abc456\"}"
+					},
+					"response": []
+				},
+				{
+					"name": "Login user by refresh token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "info",
+								"value": "eyJyZWZyZXNoVG9rZW4iOiIkMmEkMDQkQ25ZUFJ0V2c4WVRkSnFJN0RNQUhZT0N6QkdvT3FTZlQwcGJUZlZhMU9OU1BGZEtsMHd3aDYifQ==",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/loginrt?info=eyAicmVmcmVzaFRva2VuIjogIiQyYSQwNCRpL0hpdmwwUklKVTZodHJyS1VVbVAudzUxUnVBZE5YR1UvVWp1NzhtR1pLNkdxTHFmY3NlVyIgfQ==",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"loginrt"
+							],
+							"query": [
+								{
+									"key": "info",
+									"value": "eyAicmVmcmVzaFRva2VuIjogIiQyYSQwNCRpL0hpdmwwUklKVTZodHJyS1VVbVAudzUxUnVBZE5YR1UvVWp1NzhtR1pLNkdxTHFmY3NlVyIgfQ=="
+								}
+							]
+						},
+						"description": "- Api login by refreshToken để đăng nhập mã hóa thông tin đăng nhập thành base64. Sau đó gửi vào trường info trong header.\n- Thông tin đăng nhập có định dạng :\n    - { \"refreshToken\": \"$2a$04$i/Hivl0RIJU6htrrKUUmP.w51RuAdNXGU/Uju78mGZK6GqLqfcseW\" }"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout user by userName, password or refresh token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "info",
+								"value": "eyJ1c2VyTmFtZSI6ICJyb2tpYUFkbWluIiwicGFzc3dvcmQiOiAiMTIzIn0=",
+								"description": "Only userName, password (encode base64)",
+								"type": "default"
+							},
+							{
+								"key": "info",
+								"value": "eyJyZWZyZXNoVG9rZW4iOiAiJDJhJDA0JHVSQWdNLnREM0h2ZlVYYTdqa3RadXU2TzNyQTYyN1JDcmRQVnd6eFVWdWN2TUV2cVN6R2tPIn0=",
+								"description": "Only refreshtoken (encode base64)",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/logout",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						},
+						"description": "- Api logout by refreshToken or userName, password để đăng nhập mã hóa thông tin đăng nhập thành base64. Sau đó gửi vào trường info trong header.\n- Thông tin đăng nhập có định dạng :\n    - {\"userName\": \"rokiaAdmin\",\"password\": \"123abc456\"}\n    - hoặc\n    - { \"refreshToken\": \"$2a$04$i/Hivl0RIJU6htrrKUUmP.w51RuAdNXGU/Uju78mGZK6GqLqfcseW\" }\n- Logout này sẽ làm mới lại refreshToken."
+					},
+					"response": []
+				},
+				{
+					"name": "Create user customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hà Hoàng Long 1\",\r\n    \"userName\": \"rokiaAdmin1\",\r\n    \"email\": \"hahoanglong71@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/user/customer",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"customer"
+							]
+						},
+						"description": "- Api tạo tài khoản khách hàng. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `name: Tên tài khoản.`\n    - `userName: Tên đăng nhập.`\n    - `email: Email cá nhân nhận OTP và các thông báo.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hà Hoàng Long 1\",\r\n    \"userName\": \"rokiaAdmin1\",\r\n    \"email\": \"hahoanglong71@gmail.com\",\r\n    \"phoneNumbers\": [\"0725416987\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/user/employee",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"employee"
+							]
+						},
+						"description": "- Api tạo tài khoản Nhân Viên. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `name: Tên tài khoản.`\n    - `userName: Tên đăng nhập.`\n    - `email: Email cá nhân nhận OTP và các thông báo.`\n    - `phoneNumbers: Danh sách các số điện thoại cá nhân.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJlbXBsb3llZSIsInBheW1lbnRBY2NvdW50IjoiIiwiaWF0IjoxNjcyOTIxMzI2LCJleHAiOjE2NzI5MjE2MjZ9.6CPGVWcCaB-wPDpkbwNpURTiZu2hQcAmeXRffDCUA_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hà Hoàng Long admin\",\r\n    \"userName\": \"rokiaAdmin88\",\r\n    \"email\": \"hahoanglong7@gmail.com\",\r\n    \"phoneNumbers\": [\"0725416987\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/user/admin",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"admin"
+							]
+						},
+						"description": "- Api tạo tài khoản Quản trị viên. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - name: Tên tài khoản.\n    - userName: Tên đăng nhập.\n    - email: Email cá nhân nhận OTP và các thông báo.\n    - phoneNumbers: Danh sách các số điện thoại cá nhân."
+					},
+					"response": []
+				},
+				{
+					"name": "Update user in Nhom12IB",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"hahoanglong7@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/user/user0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"user0"
+							]
+						},
+						"description": "- Api cập nhật tài khoản. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - name: Tên tài khoản.\n    - email: Email cá nhân nhận OTP và các thông báo."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user in Nhom12IB",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/user/user3",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"user3"
+							]
+						},
+						"description": "- Api xóa tài khoản. Yêu cầu có access token để sử dụng và id user cần xóa và truyền vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Change password user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "info",
+								"value": "eyAidXNlck5hbWUiOiAicm9raWFBZG1pbjEiLCAicGFzc3dvcmQiOiAiYWJjIiwgIm5ld1Bhc3N3b3JkIjogIjEyMyJ9",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/user/changepws",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"changepws"
+							]
+						},
+						"description": "- Api đổi mật khẩu để đổi mật khẩu mã hóa thông tin đổi mật khẩu thành base64. Sau đó gửi vào trường info trong header.\n    \n\n- Thông tin thay đổi password có định dạng :\n    - { \"userName\": \"rokiaAdmin1\", \"password\": \"abc\", \"newPassword\": \"123\"}"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot password user need OTP to change Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "info",
+								"value": "eyAidXNlck5hbWUiOiAicm9raWFBZG1pbiIsICJuZXdQYXNzd29yZCI6ICIxMjMifQ==",
+								"type": "default"
+							},
+							{
+								"key": "otp",
+								"value": "443567",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/user/forgotpws",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"user",
+								"forgotpws"
+							]
+						},
+						"description": "- Api quên mật khẩu để đổi mật khẩu mã hóa thông tin đổi mật khẩu thành base64. Sau đó gửi vào trường info trong header, phải có mã OTP để thay đổi và điền vào trường otp trong header.\n- Thông tin thay đổi password có định dạng:\n    - { \"userName\": \"rokiaAdmin\", \"newPassword\": \"123\"}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bank",
+			"item": [
+				{
+					"name": "Get all banks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NzA2NTIwODEsImV4cCI6MTY3MDY1MjM4MX0.Yy50_dcCQ57nWqv3Zhj6o2jkfj9GSEsR9Z2SvRK4LHQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/banks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"banks"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ ngân hàng trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Count data bank is exist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/banks/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"banks",
+								"count"
+							]
+						},
+						"description": "- Api đếm toàn bộ ngân hàng trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Create new bank",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Ngân Hàng XYZ\",\r\n  \"phoneNumbers\": [\"07125463\", \"07652397\"],\r\n  \"addresses\": [\"Số b/12, Đường 23, Xã BCA, Huyện YZ, TP.TRG\", \"Số C/16, Đường 27, Xã DFR, Huyện TH, TP.IUY\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/bank",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"bank"
+							]
+						},
+						"description": "- Api tạo Ngân hàng. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `name: Tên ngân hàng.`\n    - `phoneNumbers: Danh sách các số điện thoại của ngân hàng.`\n    - `addresses: Danh sách các địa chỉ của ngân hàng.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Update bank information by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Ngân Hàng ABC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/bank/bank1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"bank",
+								"bank1"
+							]
+						},
+						"description": "- Api cập nhật Ngân hàng. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `name: Tên ngân hàng.`\n    - `phoneNumbers: Danh sách các số điện thoại của ngân hàng.`\n    - `addresses: Danh sách các địa chỉ của ngân hàng.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete bank by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/bank/bank1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"bank",
+								"bank1"
+							]
+						},
+						"description": "- Api xóa ngân hàng. Yêu cầu có access token để sử dụng và id ngân hàng cần xóa và truyền vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Get all customer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/customers",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customers"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ khách hàng trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get customer by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/customer/customer0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customer",
+								"customer0"
+							]
+						},
+						"description": "- Api Lấy thông tin user trong hệ thống yêu cầu access token để lấy dữ liệu và id để lấy thông tin user theo id."
+					},
+					"response": []
+				},
+				{
+					"name": "Get customer by paynumber",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MTg3OTYwOSwiZXhwIjoxNjcxODc5OTA5fQ.mJHNJrPwt5_LZWaHlDo-8I06e7B8cEAJS-KXFP_3fhc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/customerpaynumber/463029405607",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customerpaynumber",
+								"463029405607"
+							]
+						},
+						"description": "- Api Lấy thông tin user trong hệ thống yêu cầu access token để lấy dữ liệu và paymentAccount để lấy thông tin user và phải truyền vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Count customer data exist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/customers/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customers",
+								"count"
+							]
+						},
+						"description": "- Api đếm toàn bộ khác hàng trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Recharge customer by payment account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyNiIsInVzZXJOYW1lIjoicm9raWFBZG1pbjUiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJpYXQiOjE2NzA5MjQ3MDIsImV4cCI6MTY3MDkyNTAwMn0.GfYiTOzjAmrGqwb73XxhyFbBy1-5spaZgvjepoyGOKY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentAccount\": \"463029405607\",\r\n    \"amountMoney\": 5000000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/customer/recharge",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customer",
+								"recharge"
+							]
+						},
+						"description": "- Api nạp tiền cho tài khoản khách hàng. Yêu cầu có access token để sử dùng.\n- Ý nghĩa các trường trong body:\n    - `paymentAccount: Số tài khoản nạp tiền.`\n    - `amountMoney: Số tiền cần nạp.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Active customer by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJlbXBsb3llZSIsInBheW1lbnRBY2NvdW50IjoiIiwiaWF0IjoxNjcyODQ1ODI3LCJleHAiOjE2NzI4NDYxMjd9.iEkdT6iy81IZwDhBEA2NbW3kjQccWoDxzAp69fUlFuE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/activecustomer/customer1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"activecustomer",
+								"customer1"
+							]
+						},
+						"description": "- API kích hoạt lại tài khoản khi bị khóa. Yêu cầu phải có access token để sử dụng và truyền vào param id khách hàng để kích hoạt lại tài khoản."
+					},
+					"response": []
+				},
+				{
+					"name": "Inactive customer by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJlbXBsb3llZSIsInBheW1lbnRBY2NvdW50IjoiIiwiaWF0IjoxNjcyODQ1ODI3LCJleHAiOjE2NzI4NDYxMjd9.iEkdT6iy81IZwDhBEA2NbW3kjQccWoDxzAp69fUlFuE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/inactivecustomer/customer1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"inactivecustomer",
+								"customer1"
+							]
+						},
+						"description": "- API khóa tài khoản. Yêu cầu phải có access token để sử dụng và truyền vào param id khách hàng để khóa tài khoản."
+					},
+					"response": []
+				},
+				{
+					"name": "Update customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"user3\",\r\n    \"name\": \"Customer new 3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/customer/customer1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customer",
+								"customer1"
+							]
+						},
+						"description": "- Api cập nhật tài khoản khách hàng. Yêu cầu có access token để sử dùng.\n- Ý nghĩa các trường trong body:\n    - `userId: ID tài khoản đăng nhập.`\n    - `name: Tên khách hàng.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/customer/customer1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"customer",
+								"customer1"
+							]
+						},
+						"description": "- Api xóa khách hàng. Yêu cầu có access token để sử dụng và id khách hàng cần xóa truyền vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "Get all employee",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/employees",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"employees"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ nhân viên trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Count data exist employee",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/employees/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"employees",
+								"count"
+							]
+						},
+						"description": "- Api đếm toàn bộ nhân viên trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get employee by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/employee/employee0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"employee",
+								"employee0"
+							]
+						},
+						"description": "- Api Lấy thông tin nhân viên trong hệ thống theo id. Yêu cầu access token để lấy dữ liệu và truyền param id nhân viên cần lấy thông tin."
+					},
+					"response": []
+				},
+				{
+					"name": "Update employee",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"user4\",\r\n    \"name\": \"employee test1\",\r\n    \"phoneNumbers\": [\r\n        \"0725416987\"\r\n    ],\r\n    \"accountType\": \"employee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/employee/employee2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"employee",
+								"employee2"
+							]
+						},
+						"description": "- Api cập nhật tài khoản khách hàng. Yêu cầu có access token để sử dùng.\n- Ý nghĩa các trường trong body:\n    - `userId: ID tài khoản đăng nhập.`\n    - `name: Tên khách hàng.`\n    - `phoneNumbers: Danh sách sso điện thoại của nhân viên`\n    - `accountType: Quyền của tài khoản gòm 2 loại là nhân viên (employee) và quản trị viên (admin).`"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete employee by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/employee/employee2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"employee",
+								"employee2"
+							]
+						},
+						"description": "- Api xóa nhân viên. Yêu cầu có access token để sử dụng và id nhân viên cần xóa và truyền vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Receiver",
+			"item": [
+				{
+					"name": "Get all receiver status true",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/receivers",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receivers"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ người nhận trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Count receiver exist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/receivers/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receivers",
+								"count"
+							]
+						},
+						"description": "- Api đếm thông tin toàn bộ người nhận trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get receiver by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/receiver/receiver0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receiver",
+								"receiver0"
+							]
+						},
+						"description": "- Api Lấy thông tin người nhận trong hệ thống theo id người nhận. Yêu cầu access token để lấy dữ liệu và truyền id người nhận vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Get receiver by token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NzA1NjUxMDYsImV4cCI6MTY3MDU2NTQwNn0.YBC1r7lIaV0Vg5RwoiBsvZ0OgVRIRpuyKi7xF81Eess",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/myreceiver",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"myreceiver"
+							]
+						},
+						"description": "- Api Lấy thông tin người nhận của chính người đăng nhập trong hệ thống. Yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Create receiver by user and bank id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NzA1OTg5MjMsImV4cCI6MTY3MDU5OTIyM30.aRwcL_TD-QJuSFCg6HeSpSJ429WP7Y8e8mJ1iDp6COM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bankId\": \"bank0\",\r\n    \"reminiscentName\": \"Handsome Men new api\",\r\n    \"paymentAccount\": \"493747116445\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/receiver",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receiver"
+							]
+						},
+						"description": "- Api tạo người nhận. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `bankId: Mã ngân hàng của người nhận.`\n    - `reminiscentName: Tên gợi nhớ của người nhận.`\n    - `paymentAccount: Số tài khoản của người nhận.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Update receiver by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2NzA0MjU1OTMsImV4cCI6MTY3MDQyNTg5M30.Jqzp-_cqnt9XCFugv3fMEFn0-lZW9HrFbI3vBnDyOQY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bankId\": \"bank0\",\r\n    \"reminiscentName\": \"Handsome Men new api\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/receiver/receiver2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receiver",
+								"receiver2"
+							]
+						},
+						"description": "- Api cập nhật người nhận. Yêu cầu có access token để sử dụng.\n- Ý nghĩa các trường trong body:\n    - `bankId: Mã ngân hàng của người nhận.`\n    - `reminiscentName: Tên gợi nhớ của người nhận.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete receiver by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/receiver/receiver0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"receiver",
+								"receiver0"
+							]
+						},
+						"description": "- Api xóa người nhận. Yêu cầu có access token để sử dụng và id người nhận cần xóa và truyền vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Get all transaction history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transactions",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transactions"
+							]
+						},
+						"description": "- Api Lấy thông tin toàn bộ giao dịch trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Count transaction history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transactions/count",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"count"
+							]
+						},
+						"description": "- Api đếm thông tin toàn bộ giao dịch trong hệ thống yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Find transtion by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction?id=transaction0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "transaction0"
+								}
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch trong hệ thống theo id giao dịch. Yêu cầu access token để lấy dữ liệu và truyền id giao dịch vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Fine transaction by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction?idUser=user2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "idUser",
+									"value": "user2"
+								}
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch trong hệ thống theo id user. Yêu cầu access token để lấy dữ liệu và truyền id user vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Fine transaction by bank id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction?idReceivingBank=bank0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "idReceivingBank",
+									"value": "bank0"
+								}
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch trong hệ thống theo id ngân hàng. Yêu cầu access token để lấy dữ liệu và truyền id ngân hàng vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Get my transaction transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMyIsInVzZXJOYW1lIjoicm9raWFBZG1pbjMiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ5Mzc0NzExNjQ0NSIsImlhdCI6MTY3MjE0Nzg4MiwiZXhwIjoxNjcyMTQ4MTgyfQ.KPL-22ZvLSKi7MIKbncVR4frQLkTop-Oir5ya55kCo0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/mytransaction/transfer",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"mytransaction",
+								"transfer"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch chuyển của chính người đăng nhập trong hệ thống. Yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get my transaction get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMjEiLCJ1c2VyTmFtZSI6ImtoYWRldiIsImVtYWlsIjoiaG9haWtoYXFuMTk5NkBnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjIwMDc5NzM5NjE4MyIsImlhdCI6MTY3MTk3Mjg3OCwiZXhwIjoxNjcxOTczMTc4fQ.MrI5SSnnh23ojp1pCWO3qqdT4fNKzz6un2Tv1i_RSts",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/mytransaction/get",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"mytransaction",
+								"get"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch nhận của chính người đăng nhập trong hệ thống. Yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get my transaction Debt Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMyIsInVzZXJOYW1lIjoicm9raWFBZG1pbjMiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ5Mzc0NzExNjQ0NSIsImlhdCI6MTY3MjE0Nzg4MiwiZXhwIjoxNjcyMTQ4MTgyfQ.KPL-22ZvLSKi7MIKbncVR4frQLkTop-Oir5ya55kCo0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/mytransaction/debtreminder",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"mytransaction",
+								"debtreminder"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch nhắc nợ của chính người đăng nhập trong hệ thống. Yêu cầu access token để lấy dữ liệu."
+					},
+					"response": []
+				},
+				{
+					"name": "Get external Transaction by time",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMCIsInVzZXJOYW1lIjoicm9raWFBZG1pbiIsImVtYWlsIjoiaGFob2FuZ2xvbmc3QGdtYWlsLmNvbSIsInJvbGUiOiJlbXBsb3llZSIsInBheW1lbnRBY2NvdW50IjoiIiwiaWF0IjoxNjcyOTEzNjg5LCJleHAiOjE2NzI5MTM5ODl9.eOEls7vi4cuYwgvztoom-jnIL-GlmFgL7WsUwqOMCdY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startTime\": 1667264461,\r\n    \"endTime\": 1672448461,\r\n    \"bankId\": \"bank1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.rokia.top/api/externalTransaction",
+							"protocol": "http",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"externalTransaction"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch liên ngân hàng trong hệ thống. Yêu cầu access token để lấy dữ liệu.\n- Ý nghĩa các trường trong body:\n    - `bankId: Mã ngân hàng cần tìm.`\n    - `startTime: Thời gian bắt đầu tìm.`\n    - `endTime: Thời gian kết thúc cần tìm.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Internal transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MTk1ODU4MCwiZXhwIjoxNjcxOTU4ODgwfQ.E6fI74WNez9ksbI0-sJA4A-wP2pzOzAaQQFaC6iRIXs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "otp",
+								"value": "119422",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiverPayAccount\": \"676700681620\",\r\n    \"typeFee\": \"receiver\",\r\n    \"amountOwed\": 10000,\r\n    \"description\": \"Chuyen tien noi bo test 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/internal",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"internal"
+							]
+						},
+						"description": "- Api giao dịch nội bộ trong hệ thống. Yêu cầu access token để lấy sử dụng và phải có OTP để giao dịch và truyền vào trường otp trong header.\n- Ý nghĩa các trường trong body:\n    - `receiverPayAccount: Số tài khoản người nhận.`\n    - `typeFee: Loại tính phí`\n    - `amountOwed: Số tiền giao dịch.`\n    - `description: Mô ta giao dịch.`"
+					},
+					"response": []
+				},
+				{
+					"name": "External transaction",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiverPayAccount\": \"1000002\",\r\n    \"receiverBankId\": \"bank1\",\r\n    \"typeFee\": \"sender\",\r\n    \"amountOwed\": 10000,\r\n    \"description\": \"Chuyen tien test 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/external",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"external"
+							]
+						},
+						"description": "- Api giao dịch liên ngân hàng trong hệ thống. Yêu cầu access token để lấy sử dụng và phải có OTP để giao dịch và truyền vào trường otp trong header.\n- Ý nghĩa các trường trong body:\n    - `receiverPayAccount: Số tài khoản người nhận.`\n    - `receiverBankId: Mã ngân hàng người nhận.`\n    - `typeFee: Loại tính phí`\n    - `amountOwed: Số tiền giao dịch.`\n    - `description: Mô ta giao dịch.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Get transaction transfer by paymentAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyNiIsInVzZXJOYW1lIjoicm9raWFBZG1pbjUiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJwYXltZW50QWNjb3VudCI6IiIsImlhdCI6MTY3MjIxNjk2MywiZXhwIjoxNjcyMjE3MjYzfQ.ZGWehHcKJE96hx8wq5zq4q_71pmTHcp9FZ8bFAuCkOg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/transfer/200797396183",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"transfer",
+								"200797396183"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch chuyển trong hệ thống bằng số tài khoản cần tìm. Yêu cầu access token để lấy dữ liệu và truyền số tài khoản cần tìm vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Get transaction money get by paymentAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyNiIsInVzZXJOYW1lIjoicm9raWFBZG1pbjUiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJwYXltZW50QWNjb3VudCI6IiIsImlhdCI6MTY3MjIxNjk2MywiZXhwIjoxNjcyMjE3MjYzfQ.ZGWehHcKJE96hx8wq5zq4q_71pmTHcp9FZ8bFAuCkOg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/get/493747116445",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"get",
+								"493747116445"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch nhận trong hệ thống bằng số tài khoản cần tìm. Yêu cầu access token để lấy dữ liệu và truyền số tài khoản cần tìm vào param."
+					},
+					"response": []
+				},
+				{
+					"name": "Get transaction debt reminder by paymentAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyNiIsInVzZXJOYW1lIjoicm9raWFBZG1pbjUiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJwYXltZW50QWNjb3VudCI6IiIsImlhdCI6MTY3MjIxNjk2MywiZXhwIjoxNjcyMjE3MjYzfQ.ZGWehHcKJE96hx8wq5zq4q_71pmTHcp9FZ8bFAuCkOg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/debtreminder/493747116445",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"debtreminder",
+								"493747116445"
+							]
+						},
+						"description": "- Api Lấy thông tin giao dịch nhắc nợ trong hệ thống bằng số tài khoản cần tìm. Yêu cầu access token để lấy dữ liệu và truyền số tài khoản cần tìm vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OTP",
+			"item": [
+				{
+					"name": "Send OTP email user access token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMyIsInVzZXJOYW1lIjoicm9raWFBZG1pbjMiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ5Mzc0NzExNjQ0NSIsImlhdCI6MTY3MjE0MTMxMiwiZXhwIjoxNjcyMTQxNjEyfQ.DZ2sYfe4cR06civqFsL2UAwNVqw9KRRf2FvsQXy9xKs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/otp",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"otp"
+							]
+						},
+						"description": "- Api gửi OTP quá email của người đăng nhập. Yêu cầu có access token để sử đụng."
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP by userName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/otp/rokiaAdmin",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"otp",
+								"rokiaAdmin"
+							]
+						},
+						"description": "- Api gửi OTP quá email của người dùng bằng tên đăng nhập. Yêu cầu truyền tên đăng nhập vào param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API Partner",
+			"item": [
+				{
+					"name": "Get Info Recipient partner by STK my API",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MTg4MzM0MiwiZXhwIjoxNjcxODgzNjQyfQ.s6oixXoSqfFjmE52-ac6Rl6HlV3CR43ujGLlctl4_J0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/getInfoRecipient/1000002",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"getInfoRecipient",
+								"1000002"
+							]
+						},
+						"description": "- Api lấy thông tin tài khoản bên đối tác thông quá số tài khoản. Yêu cầu có access token và truyền số tài khoản vào trong param."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Debt Reminder",
+			"item": [
+				{
+					"name": "Get My Debt Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MjI5MjYyMywiZXhwIjoxNjcyMjkyOTIzfQ.2sXzs2pFRQcF7Csu2VtidEg_NGa3fRU-mMr_7N2VGqA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/debtreminders",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtreminders"
+							]
+						},
+						"description": "- Api lấy toàn bộ thông tin nhắc nợ của chính tài khoản đăng nhập. Yêu cầu có access token để sử dụng."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Debt Reminders Indebtedness",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MjE0ODA0NiwiZXhwIjoxNjcyMTQ4MzQ2fQ.ULVKhwOhpMmL0mioXx4p7ld8fv6VozK0VNibGdLl1uI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/indebtedness",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"indebtedness"
+							]
+						},
+						"description": "- Api lấy toàn bộ thông tin bị nhắc nợ của chính tài khoản đăng nhập. Yêu cầu có access token để sử dụng."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Debt Reminder Indebtedness Unpaid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMyIsInVzZXJOYW1lIjoicm9raWFBZG1pbjMiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ5Mzc0NzExNjQ0NSIsImlhdCI6MTY3MjE0ODEzNCwiZXhwIjoxNjcyMTQ4NDM0fQ.99mvHT6S3AlYL0sB9XmIAJerfXPLxpVBAOWqnrCJnPM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/indebtedness/unpaid",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"indebtedness",
+								"unpaid"
+							]
+						},
+						"description": "- Api lấy toàn bộ thông tin bị nhắc nợ của chính tài khoản đăng nhập và chưa thanh toán. Yêu cầu có access token để sử dụng."
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Debt Reminder by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMyIsInVzZXJOYW1lIjoicm9raWFBZG1pbjMiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ5Mzc0NzExNjQ0NSIsImlhdCI6MTY3MjE0MTMxMiwiZXhwIjoxNjcyMTQxNjEyfQ.DZ2sYfe4cR06civqFsL2UAwNVqw9KRRf2FvsQXy9xKs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "otp",
+								"value": "118664",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/debtreminderPay/reminder1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtreminderPay",
+								"reminder1"
+							]
+						},
+						"description": "- Api thanh toán nhắc nợ bằng id nhắc nợ. Yếu cầu có access token để sữ dụng và yêu cầu có OTP để thực hiện giao dịch phải truyền vào trường otp trong header."
+					},
+					"response": []
+				},
+				{
+					"name": "Create debt reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MjE0MTI0NCwiZXhwIjoxNjcyMTQxNTQ0fQ.KDG4dLxm17lqr6U8YQ_NNubT9o_Vsnq3AngttjiuYeI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"493747116445\",\r\n    \"typeFee\": \"sender\",\r\n    \"amountOwed\": 10000,\r\n    \"noticeTime\": 1671515471,\r\n    \"description\": \"Chuyen tien noi bo test 11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/debtreminder",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtreminder"
+							]
+						},
+						"description": "- Api tạo nhắc nợ của tài khoản đăng nhập trong hệ thống. Yêu cầu access token để lấy sử dụng.\n- Ý nghĩa các trường trong body:\n    - `sendPayAccount: Số tài khoản người gửi.`\n    - `typeFee: Loại tính phí.`\n    - `amountOwed: Số tiền giao dịch.`\n    - `noticeTime: thời gian nhắc nợ.`\n    - `description: Nội dung nhắc nợ.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Debt Reminder by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MTUzMTkzMiwiZXhwIjoxNjcxNTMyMjMyfQ.6-0eLspxboIIiqT72qX9C-TNISsu6xxrWZ9o8OqxcHE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"493747116445\",\r\n    \"typeFee\": \"sender\",\r\n    \"amountOwed\": 10000,\r\n    \"noticeTime\": 1671515471,\r\n    \"description\": \"Chuyen tien noi bo test 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/debtreminder/reminder0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtreminder",
+								"reminder0"
+							]
+						},
+						"description": "- Api cập nhật nhắc nợ của tài khoản đăng nhập trong hệ thống. Yêu cầu access token để lấy sử dụng.\n- Ý nghĩa các trường trong body:\n    - `sendPayAccount: Số tài khoản người gửi.`\n    - `typeFee: Loại tính phí.`\n    - `amountOwed: Số tiền giao dịch.`\n    - `noticeTime: thời gian nhắc nợ.`\n    - `description: Nội dung nhắc nợ.`"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel debt eminder by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MjMwNjAxMywiZXhwIjoxNjcyMzA2MzEzfQ.R8i8nliSR4SMUANk7By1r675jJOyb8rUIpcC5fdO1xI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"test cancel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/debtremindercancel/reminder0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtremindercancel",
+								"reminder0"
+							]
+						},
+						"description": "StartFragment\n\n- Api hủy nhắc nợ của tài khoản đăng nhập trong hệ thống. Yêu cầu access token để lấy sử dụng và tuyền id nhắc nợ vào param để hủy.\n    \n\nEndFragment"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Debt Reminder by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyMSIsInVzZXJOYW1lIjoicm9raWFBZG1pbjEiLCJlbWFpbCI6ImhhaG9hbmdsb25nN0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJwYXltZW50QWNjb3VudCI6IjQ2MzAyOTQwNTYwNyIsImlhdCI6MTY3MjI5MjYyMywiZXhwIjoxNjcyMjkyOTIzfQ.2sXzs2pFRQcF7Csu2VtidEg_NGa3fRU-mMr_7N2VGqA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.rokia.top/api/debtreminder/reminder0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"debtreminder",
+								"reminder0"
+							]
+						},
+						"description": "- Api xóa nhắc nợ. Yêu cầu có access token để sử dụng và id nhắc nợ cần xóa và truyền vào param."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

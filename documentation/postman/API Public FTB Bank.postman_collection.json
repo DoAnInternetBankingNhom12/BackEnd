@@ -1,0 +1,711 @@
+{
+	"info": {
+		"_postman_id": "2e239155-f50b-4665-b56d-0814d0da7c7b",
+		"name": "API Public FTB Bank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24595401"
+	},
+	"item": [
+		{
+			"name": "Get info recipient by account number",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "XeZ8BiL0VNL7wrjyhKZS/EBN6jVF9V6Rtj0z6psLdBI=",
+						"description": "Token được tạo từ chuổi: nhom12ibFTP/api/getInfo/4630294056071671277352",
+						"type": "text"
+					},
+					{
+						"key": "time",
+						"value": "1671278746",
+						"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút.",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.rokia.top/api/getInfo/463029405607",
+					"protocol": "https",
+					"host": [
+						"api",
+						"rokia",
+						"top"
+					],
+					"path": [
+						"api",
+						"getInfo",
+						"463029405607"
+					]
+				},
+				"description": "# API lấy thông tin tài khoản từ số tài khoản\n\n### URL:\n\n- [**https://api.rokia.top/api/getInfo/463029405607**](https://api.rokia.top/api/getInfo/463029405607)\n    \n\n### Params:\n\n- **paymentAccount**: Số tài khoản cần tìm.\n    - VD: 463029405607.\n\n### Headers:\n\n- **token**: Tạo ra từ Hash SHA256 và hash từ chuổi.\n    - **KEY**: nhom12ibFTP\n    - Chuổi hash gồm: _**key**_+\"/api/getInfo/_**paymentAccount**_\"+_**time**_\n- **time**: Thời gian dùng định dạng Unix time.\n    - VD: 1671277352. Có thể dùng trang web này để hiểu thêm. [https://www.epochconverter.com/](https://www.epochconverter.com/)"
+			},
+			"response": [
+				{
+					"name": "Lấy thông tin thành công.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "oUvFXa1N8WAZb7zqribjVE4r6cJIzEPwm4U79QsImW0=",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/getInfo/4630294056071671277352",
+								"type": "text"
+							},
+							{
+								"key": "time",
+								"value": "1671278554",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút.",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/getInfo/463029405607",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"getInfo",
+								"463029405607"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "84"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:02:42 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"54-1uc+BeEWbEmwvdLeUvAlHi2WTVk\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"name\": \"Hà Hoàng Long 1\",\n        \"paymentAccount\": \"463029405607\"\n    },\n    \"success\": true\n}"
+				},
+				{
+					"name": "Token quá hạn.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "Enz4Ms/rKNFEYS5l6KcdjVNOkv3rcIVq+NjUSB3r198=",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/getInfo/4630294056071671277352",
+								"type": "text"
+							},
+							{
+								"key": "time",
+								"value": "1671277352",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút.",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/getInfo/463029405607",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"getInfo",
+								"463029405607"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:00:45 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"35-+oSNjIHKoDW4wGazo8D4pnW9GCI\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": false,\n    \"errors\": {\n        \"mgs\": \"Token expiration!\"\n    }\n}"
+				},
+				{
+					"name": "Số tài khoản không tồn tại.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "JCAJnkxRtFHokFuVl96B6J8qxq2R5YLjRVuKyqAhicc=",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/getInfo/4630294056071671277352",
+								"type": "text"
+							},
+							{
+								"key": "time",
+								"value": "1671278671",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút.",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/getInfo/46302940560755",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"getInfo",
+								"46302940560755"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "52"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:04:40 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"34-1Z9Sb6u+GDJmL/wNwQwX9rnGEos\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"mgs\": \"Payment account not exist!\",\n    \"success\": false\n}"
+				},
+				{
+					"name": "Token không hợp lệ.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "XeZ8BiL0VNL7wrjyhKZS/EBN6jVF9V6Rtj0z6psLdBI=",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/getInfo/4630294056071671277352",
+								"type": "text"
+							},
+							{
+								"key": "time",
+								"value": "1671278746",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút.",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.rokia.top/api/getInfo/46302940560755",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"getInfo",
+								"46302940560755"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "58"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:05:52 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"3a-7XefBwWU5qWFQ6H4yDq50pGL9tA\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": false,\n    \"errors\": {\n        \"mgs\": \"Access is not allowed!\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Transaction add money for partner",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "signature",
+						"value": "tETt6MFkjE0nXCFAOVFZXDAWYC72eOQHt+OIYXh1jcouz1xlZCL/rrnI990le9rnSGhB2V1NecHJN0WhjTxhLcb/IcqmIZq9SkIitt2VdXVg8fCFWIrypEyE8nEnKk/OazhsgnvdwO7zr8xZBgsSrF8GD3fY1ZlN4UQYPZt0v1I=",
+						"type": "text",
+						"description": "Chữ ký số để xác nhận giao dịch."
+					},
+					{
+						"key": "token",
+						"value": "+iZcrkWFqmek1f4BkL2JYv23Bx7lEWyYgJ7U6ADBsII=",
+						"type": "text",
+						"description": "Token được tạo từ chuổi: nhom12ibFTP/api/transaction/addmoney34637636346Khach Hang 14937471164454937471164455000500000bank11671277352"
+					},
+					{
+						"key": "time",
+						"value": "1671359793",
+						"type": "text",
+						"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sendPayAccount\": \"34637636346\",\r\n    \"sendAccountName\": \"Khach Hang 1\",\r\n    \"receiverPayAccount\": \"493747116445\",\r\n    \"typeFee\": \"receiver\",\r\n    \"amountOwed\": 500000,\r\n    \"bankReferenceId\": \"bank1\",\r\n    \"description\": \"Chuyen tien nhieu nhieu nhieu\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.rokia.top/api/transaction/addmoney",
+					"protocol": "https",
+					"host": [
+						"api",
+						"rokia",
+						"top"
+					],
+					"path": [
+						"api",
+						"transaction",
+						"addmoney"
+					]
+				},
+				"description": "# API nạp tiền vào tài khoản\n\n### URL:\n\n- [**https://api.rokia.top/api/getInfo/463029405607**](https://api.rokia.top/api/getInfo/463029405607)\n    \n\n### Headers:\n\n- **signature**: Chữ ký số tạo chữ ký RSA.\n    - **PublicKey**:\n        - \\-----BEGIN PUBLIC KEY-----\\\\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8MCaGl7v/YpQIbOoFZCpQ34o2\\\\nBsnhwquRuQL6kn/CLGyGIpOYk0ua1x3cMHgRUSGULzSGtRzRQT0W0wP6TWSIONzn\\\\nup5AnXH3eP7z2ZlWs7PGbWSjFSX1WMe2anibchqVGvjWD1QNLbbqxhgv8zHGfleH\\\\n7mETJoeWBXvigsjg2QIDAQAB\\\\n-----END PUBLIC KEY-----\n        - **Chuổi key signature:** nhom12FTBRokia\n- **token**: Tạo ra từ Hash SHA256 và hash từ chuổi.\n    - **KEY**_**:**_ nhom12ibFTP\n    - Chuổi hash gồm: _**key**_+\"/api/transaction/addmoney\"+_**sendPayAccount**_+_**sendAccountName**_+_**receiverPayAccount**_+**typeFee**+_**amountOwed**_+_**bankReferenceId**_+_**time**_\n- **time**: Thời gian dùng định dạng Unix time.\n    - VD: 1671280591. Có thể dùng trang web này để hiểu thêm. [https://www.epochconverter.com/](https://www.epochconverter.com/Body:sendPayAccount:)\n\n### Body:\n\n- **sendPayAccount**[**:**](https://www.epochconverter.com/Body:sendPayAccount:) Số tài khoản người gửi.\n- **sendAccountName**[**:**](https://www.epochconverter.com/Body:sendPayAccount:) Tên tài khoản người gửi.\n- **receiverPayAccount:** Số tài khoản cần chuyển tiền vào.\n- **typeFee:** Loại trả phí giao dịch nếu là receiver người nhận sẽ trả phí và sender thì người gửi sẽ trả phí.\n- **amountOwed**: Số tiền chuyển.\n- bankReferenceId: Mã ngân hàng của người dùng. Hiện tại nhóm anh Tình là bank1.\n- description: Mô tả giao dịch."
+			},
+			"response": [
+				{
+					"name": "Chuyển tiền thành công.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "signature",
+								"value": "YTnOSk6akWtQ6wcao4aZ0hUbKvcNPy5/FqoaVHb+9SRAFmSdYjhwnOvruWrVZbaz0kplNL/ROwSAoU7q0fCn83MT3V3PobqSahzOU8sPUF+AcC3+rIx0u5GjLInSI5FCSGQsY5grdFgfsWdjAp8oreoIweOe1d1vSz/n6hfjUC4=",
+								"type": "text",
+								"description": "Chữ ký số để xác nhận giao dịch."
+							},
+							{
+								"key": "token",
+								"value": "2kU6BdXbbD5EuSYsHXnz1XQm3lJkmWx1EPK1d2P/dxo=",
+								"type": "text",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/transaction/addmoney34637636346Khach Hang 14937471164454937471164455000500000bank11671277352"
+							},
+							{
+								"key": "time",
+								"value": "1671278746",
+								"type": "text",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"34637636346\",\r\n    \"sendAccountName\": \"Khach Hang 1\",\r\n    \"receiverPayAccount\": \"493747116445\",\r\n    \"payAccountFee\": \"493747116445\",\r\n    \"transactionFee\": 5000,\r\n    \"amountOwed\": 500000,\r\n    \"bankReferenceId\": \"bank1\",\r\n    \"description\": \"Chuyen tien nhieu nhieu nhieu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/addmoney",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"addmoney"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "55"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:07:16 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"37-EtD1ZnZA2gXgqoo+o/WiCtMPjgk\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"mgs\": \"Transaction add money success!\",\n    \"success\": true\n}"
+				},
+				{
+					"name": "Quá hạn token.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "signature",
+								"value": "h6MTaWSk2XmFtZy6W2BFJj8f4HBqBxlu7d2xT9m6TfHHDJ1XUqf8pOTqs8SPUUvkPXT+qvKyxKkNHKlEONj9rkLHN5p9MD03yMsQrIoRopsEsIeq1HThN45ByqXPAVvqeI1xpXCExXcVh55NsDLHRUaRNuo1C5c2Cih1RRqi1E8=",
+								"type": "text",
+								"description": "Chữ ký số để xác nhận giao dịch."
+							},
+							{
+								"key": "token",
+								"value": "SWMe6Difxj+3e60HbR+9rUSE5HnhrSTPhqIwrwfrHLU=",
+								"type": "text",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/transaction/addmoney34637636346Khach Hang 14937471164454937471164455000500000bank11671277352"
+							},
+							{
+								"key": "time",
+								"value": "1671277352",
+								"type": "text",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"34637636346\",\r\n    \"sendAccountName\": \"Khach Hang 1\",\r\n    \"receiverPayAccount\": \"493747116445\",\r\n    \"payAccountFee\": \"493747116445\",\r\n    \"transactionFee\": 5000,\r\n    \"amountOwed\": 500000,\r\n    \"bankReferenceId\": \"bank1\",\r\n    \"description\": \"Chuyen tien nhieu nhieu nhieu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/addmoney",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"addmoney"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:06:30 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"35-+oSNjIHKoDW4wGazo8D4pnW9GCI\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": false,\n    \"errors\": {\n        \"mgs\": \"Token expiration!\"\n    }\n}"
+				},
+				{
+					"name": "Token không hợp lệ có thể đo dữ liệu đã bị thay đổi.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "signature",
+								"value": "YTnOSk6akWtQ6wcao4aZ0hUbKvcNPy5/FqoaVHb+9SRAFmSdYjhwnOvruWrVZbaz0kplNL/ROwSAoU7q0fCn83MT3V3PobqSahzOU8sPUF+AcC3+rIx0u5GjLInSI5FCSGQsY5grdFgfsWdjAp8oreoIweOe1d1vSz/n6hfjUC4=",
+								"type": "text",
+								"description": "Chữ ký số để xác nhận giao dịch."
+							},
+							{
+								"key": "token",
+								"value": "2kU6BdXbbD5EuSYsHXnz1XQm3lJkmWx1EPK1d2P/dxo=",
+								"type": "text",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/transaction/addmoney34637636346Khach Hang 14937471164454937471164455000500000bank11671277352"
+							},
+							{
+								"key": "time",
+								"value": "1671278746",
+								"type": "text",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"34637636346\",\r\n    \"sendAccountName\": \"Khach Hang 1\",\r\n    \"receiverPayAccount\": \"493747116445\",\r\n    \"payAccountFee\": \"493747116445\",\r\n    \"transactionFee\": 5000,\r\n    \"amountOwed\": 5000000,\r\n    \"bankReferenceId\": \"bank1\",\r\n    \"description\": \"Chuyen tien nhieu nhieu nhieu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/addmoney",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"addmoney"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "58"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:08:03 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"3a-7XefBwWU5qWFQ6H4yDq50pGL9tA\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": false,\n    \"errors\": {\n        \"mgs\": \"Access is not allowed!\"\n    }\n}"
+				},
+				{
+					"name": "Chữ ký không hợp lệ.",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "signature",
+								"value": "LdOGiS/Wh3n8BOr4JhfdEJFI+GxO+sPJJgI6vPq3B1jYdXeA9qwCZrRfkwg+wsen7OoaepzEE/FF9l+gL1b/AZt35BYZ3yBJ7SXQJcdWodJnCjqr+d6k6X+eHyXY29zul9nrdtzwyPFmDQNBsLW/V21do34SN5VfnqMx06OjC",
+								"type": "text",
+								"description": "Chữ ký số để xác nhận giao dịch."
+							},
+							{
+								"key": "token",
+								"value": "1L5q4RouChL8cgo2BJkDYwAvD2otM59vhzfuKqOEPyA=",
+								"type": "text",
+								"description": "Token được tạo từ chuổi: nhom12ibFTP/api/transaction/addmoney34637636346Khach Hang 14937471164454937471164455000500000bank11671277352"
+							},
+							{
+								"key": "time",
+								"value": "1671280591",
+								"type": "text",
+								"description": "Thời gian dùng định dạng Unix time. Và token có thời hạn 15 phút."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sendPayAccount\": \"34637636346\",\r\n    \"sendAccountName\": \"Khach Hang 1\",\r\n    \"receiverPayAccount\": \"493747116445\",\r\n    \"payAccountFee\": \"493747116445\",\r\n    \"transactionFee\": 5000,\r\n    \"amountOwed\": 500000,\r\n    \"bankReferenceId\": \"bank1\",\r\n    \"description\": \"Chuyen tien nhieu nhieu nhieu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.rokia.top/api/transaction/addmoney",
+							"protocol": "https",
+							"host": [
+								"api",
+								"rokia",
+								"top"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"addmoney"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Length",
+							"value": "61"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 17 Dec 2022 12:36:49 GMT"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"3d-wyh1AbPGhm2ewlGCxsc/+Eynysg\""
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": false,\n    \"errors\": {\n        \"mgs\": \"Signature does not match!\"\n    }\n}"
+				}
+			]
+		}
+	]
+}

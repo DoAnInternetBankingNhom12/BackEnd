@@ -31,46 +31,46 @@ const setRoutes = (app: Application): void => {
   const debtReminderCtrl = new DebtReminderCtrl();
 
   // User
-  router.route('/users').get(auth, userCtrl.getAllUser);
-  router.route('/user/:id').get(auth, userCtrl.getUser);
+  router.route('/users').get(authEmployee, userCtrl.getAllUser);
+  router.route('/user/:id').get(authEmployee, userCtrl.getUser);
   router.route('/myinfo').get(auth, userCtrl.getUserInfo);
-  router.route('/users/count').get(auth, userCtrl.count);
+  router.route('/users/count').get(authEmployee, userCtrl.count);
   router.route('/user/changepws').post(auth, userCtrl.changePassword);
   router.route('/user/forgotpws').post(otp, userCtrl.forgotPassword);
-  router.route('/user').post(auth, userCtrl.createUser);
-  router.route('/user/customer').post(auth, userCtrl.createUserCustommer);
-  router.route('/user/employee').post(auth, userCtrl.createUserEmployee);
-  router.route('/user/admin').post(auth, userCtrl.createUserAdmin);
-  router.route('/user/:id').put(auth, userCtrl.update);
-  router.route('/user/:id').delete(auth, userCtrl.deleteUser);
+  router.route('/user').post(authEmployee, userCtrl.createUser);
+  router.route('/user/customer').post(authEmployee, userCtrl.createUserCustommer);
+  router.route('/user/employee').post(authAdmin, userCtrl.createUserEmployee);
+  router.route('/user/admin').post(authAdmin, userCtrl.createUserAdmin);
+  router.route('/user/:id').put(authEmployee, userCtrl.update);
+  router.route('/user/:id').delete(authEmployee, userCtrl.deleteUser);
 
   // Bank
-  router.route('/banks').get(auth, bankCtrl.getAll);
-  router.route('/banks/count').get(auth, bankCtrl.count);
-  router.route('/bank/:id').get(auth, bankCtrl.get);
-  router.route('/bank').post(auth, bankCtrl.insert);
-  router.route('/bank/:id').put(auth, bankCtrl.update);
-  router.route('/bank/:id').delete(auth, bankCtrl.delete);
+  router.route('/banks').get(authAdmin, bankCtrl.getAll);
+  router.route('/banks/count').get(authAdmin, bankCtrl.count);
+  router.route('/bank/:id').get(authAdmin, bankCtrl.get);
+  router.route('/bank').post(authAdmin, bankCtrl.insert);
+  router.route('/bank/:id').put(authAdmin, bankCtrl.update);
+  router.route('/bank/:id').delete(authAdmin, bankCtrl.delete);
 
   // Customer
-  router.route('/customers').get(auth, customerCtrl.getAll);
-  router.route('/customers/count').get(auth, customerCtrl.count);
-  router.route('/customer/:id').get(auth, customerCtrl.get);
+  router.route('/customers').get(authEmployee, customerCtrl.getAll);
+  router.route('/customers/count').get(authEmployee, customerCtrl.count);
+  router.route('/customer/:id').get(authEmployee, customerCtrl.get);
   router.route('/customerpaynumber/:paymentAccount').get(auth, customerCtrl.getCustomerByPayNumber);
-  router.route('/customer').post(auth, customerCtrl.createCustomer);
-  router.route('/customer/recharge').post(auth, customerCtrl.recharge);
-  router.route('/customer/:id').put(auth, customerCtrl.updateCustomer);
+  router.route('/customer').post(authEmployee, customerCtrl.createCustomer);
+  router.route('/customer/recharge').post(authEmployee, customerCtrl.recharge);
+  router.route('/customer/:id').put(authEmployee, customerCtrl.updateCustomer);
   router.route('/activecustomer/:id').put(auth, customerCtrl.activeCustomer);
   router.route('/inactivecustomer/:id').put(auth, customerCtrl.inactiveCustomer);
-  router.route('/customer/:id').delete(auth, customerCtrl.deleteCustomer);
+  router.route('/customer/:id').delete(authEmployee, customerCtrl.deleteCustomer);
 
   // Employee
-  router.route('/employees').get(auth, employeeCtrl.getAll);
-  router.route('/employees/count').get(auth, employeeCtrl.count);
-  router.route('/employee/:id').get(auth, employeeCtrl.get);
-  router.route('/employee').post(auth, employeeCtrl.createEmployee);
-  router.route('/employee/:id').put(auth, employeeCtrl.updateEmployee);
-  router.route('/employee/:id').delete(auth, employeeCtrl.deleteEmployee);
+  router.route('/employees').get(authAdmin, employeeCtrl.getAll);
+  router.route('/employees/count').get(authAdmin, employeeCtrl.count);
+  router.route('/employee/:id').get(authAdmin, employeeCtrl.get);
+  router.route('/employee').post(authAdmin, employeeCtrl.createEmployee);
+  router.route('/employee/:id').put(authAdmin, employeeCtrl.updateEmployee);
+  router.route('/employee/:id').delete(authAdmin, employeeCtrl.deleteEmployee);
 
   // Receiver
   router.route('/receivers').get(auth, receiverCtrl.getAll);

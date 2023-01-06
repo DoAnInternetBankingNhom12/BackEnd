@@ -45,9 +45,9 @@ const setRoutes = (app: Application): void => {
   router.route('/user/:id').delete(authEmployee, userCtrl.deleteUser);
 
   // Bank
-  router.route('/banks').get(authAdmin, bankCtrl.getAll);
-  router.route('/banks/count').get(authAdmin, bankCtrl.count);
-  router.route('/bank/:id').get(authAdmin, bankCtrl.get);
+  router.route('/banks').get(auth, bankCtrl.getAll);
+  router.route('/banks/count').get(auth, bankCtrl.count);
+  router.route('/bank/:id').get(auth, bankCtrl.get);
   router.route('/bank').post(authAdmin, bankCtrl.insert);
   router.route('/bank/:id').put(authAdmin, bankCtrl.update);
   router.route('/bank/:id').delete(authAdmin, bankCtrl.delete);

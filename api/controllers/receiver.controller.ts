@@ -56,8 +56,7 @@ class ReceiverCtrl extends BaseCtrl {
         });
       }
 
-      const data = await this.model.aggregate(getPipeLineGet([], { userId: user.userId, _status: true }, this.lookups, this.sets))
-
+      const data = await this.model.aggregate(getPipeLineGet([], { userId: user.userId, _status: true }, this.lookups, this.sets));
       if (!data || data.length === 0) {
         return res.status(200).json({
           mgs: `Get receivers success but is empty!`,
@@ -136,7 +135,7 @@ class ReceiverCtrl extends BaseCtrl {
         objUpdate._status = true;
 
 
-        const dataUpdate: any = await this.model.findOneAndUpdate({ paymentAccount: tempData.paymentAccount }, objUpdate);
+        const dataUpdate: any = await this.model.findOneAndUpdate({  userId: user.userId, paymentAccount: tempData.paymentAccount }, objUpdate);
         dataUpdate.__v = undefined;
         dataUpdate._status = undefined;
         dataUpdate.reminiscentName = objUpdate.reminiscentName;
@@ -165,7 +164,6 @@ class ReceiverCtrl extends BaseCtrl {
         });
       }
       const customerPartner: any = resPartner.data;
-      console.log(customerPartner);
       const name = customer ? customer.name : customerPartner.name;
       const id = await this.generateId();
       tempData.id = id;

@@ -32,7 +32,9 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyTransfer = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ sendPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      let endTime = moment().endOf('day').unix();
+      let startTime = moment.unix(endTime).subtract(30, 'days').unix();
+      const obj = await this.model.find({ sendPayAccount: user.paymentAccount, createTime: { $gte: startTime, $lt: endTime }, _status: true, }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -63,7 +65,9 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionMoneyGet = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      const obj = await this.model.find({ receiverPayAccount: user.paymentAccount, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      let endTime = moment().endOf('day').unix();
+      let startTime = moment.unix(endTime).subtract(30, 'days').unix();
+      const obj = await this.model.find({ receiverPayAccount: user.paymentAccount, createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -94,18 +98,9 @@ class TransactionCtrl extends BaseCtrl {
   getMyTransactionDebtReminder = async (req: Request, res: Response) => {
     try {
       const user: any = lodash.cloneDeep(req.body.user);
-      let startTime = lodash.cloneDeep(req.body ? req.body.startTime : moment().startOf('month').unix());
-      let endTime = lodash.cloneDeep(req.body ? req.body.endTime : moment().endOf('month').unix());
-
-      if (isNull(startTime)) {
-        startTime = moment().startOf('month').unix();
-      }
-
-      if (isNull(endTime)) {
-        endTime = moment().endOf('month').unix();
-      }
-
-      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
+      let endTime = moment().endOf('day').unix();
+      let startTime = moment.unix(endTime).subtract(30, 'days').unix();
+      const obj = await this.model.find({ $or: [{ sendPayAccount: user.paymentAccount }, { receiverPayAccount: user.paymentAccount }], debtReminderId: { $exists: true, $nin: [''] }, createTime: { $gte: startTime, $lt: endTime }, _status: true }, { _id: 0, __v: 0, _status: 0 }).sort({ updateTime: -1 });
 
       if (isNullObj(obj)) {
         return res.status(200).json({
@@ -290,7 +285,7 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       let totalMoney = 0;
-      obj.map((item:any) => {
+      obj.map((item: any) => {
         totalMoney += item.amountOwed;
       });
 

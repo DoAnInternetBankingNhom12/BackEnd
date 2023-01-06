@@ -11,9 +11,6 @@ import Customer from '../models/customer';
 import User from '../models/user';
 import Bank from '../models/bank';
 
-// Services
-import { sendObjInListByPayNumber } from '../services/ws.service'
-
 // Interfaces
 import { Notify } from '../interfaces/notify.interface';
 
@@ -445,16 +442,6 @@ class TransactionCtrl extends BaseCtrl {
       }
 
       await new this.model(tempData).save();
-      const objSent: Notify = {
-        type: 'update',
-        table: this.table.toLocaleLowerCase(),
-        msg: `The account has just been transferred from the account ${tempData.sendAccountName}!`,
-        data: {
-          amountOwed: tempData.amountOwed
-        }
-      };
-
-      sendObjInListByPayNumber(objSent, [tempData.receiverPayAccount])
       return res.status(200).json({
         mgs: `Transaction internal success!`,
         success: true

@@ -12,7 +12,6 @@ import EmployeeCtrl from './employee.controller';
 
 // Services
 import { sendPassMail } from '../services/mail.service';
-// import { sendMgsInList, sendObjInList } from '../services/ws.service';
 
 // Utils
 import * as moment from 'moment';

@@ -8,9 +8,6 @@ import User from '../models/user';
 import Customer from '../models/customer';
 import Employee from '../models/employee';
 
-// Services
-import { sendObjInList } from '../services/ws.service';
-
 // Interfaces
 import { Notify } from '../interfaces/notify.interface';
 
@@ -190,13 +187,6 @@ class CustomerCtrl extends BaseCtrl {
       }
 
       const objData: any = await this.model.findOneAndUpdate({ id: req.params.id }, req.body, { _id: 0, __v: 0, _status: 0 });
-      const objSent: Notify = {
-        type: 'update',
-        table: this.table.toLocaleLowerCase(),
-        msg: `Data customer ${objData.userId} has changed!`
-      };
-
-      sendObjInList(objSent, [objData.userId]);
       return res.status(200).json({
         data: req.body,
         success: true
@@ -341,13 +331,6 @@ class CustomerCtrl extends BaseCtrl {
 
         const newAccountBalance = customer?.accountBalance + amountMoney;
         const objData: any = await this.model.findOneAndUpdate({ paymentAccount }, { accountBalance: newAccountBalance }, { _status: true });
-        const objSent: Notify = {
-          type: 'update',
-          table: this.table.toLocaleLowerCase(),
-          msg: `Data customer ${objData.userId} has recharge ${newAccountBalance}!`
-        };
-
-        sendObjInList(objSent, [objData.userId]);
         return res.status(200).json({
           mgs: `Recharge ${this.table} payment account ${paymentAccount} success!`,
           success: true
